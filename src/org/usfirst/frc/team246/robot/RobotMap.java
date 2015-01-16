@@ -1,13 +1,12 @@
 package org.usfirst.frc.team246.robot;
 
+import org.usfirst.frc.team246.robot.overclockedLibraries.Talon246;
+import org.usfirst.frc.team246.robot.overclockedLibraries.Victor246;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDSource;
-import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
@@ -23,13 +22,13 @@ public class RobotMap {
 	
 	//Motors
 	
-	public static Talon frontWheelMotor;
-	public static Talon leftWheelMotor;
-	public static Talon rightWheelMotor;
+	public static Talon246 frontWheelMotor;
+	public static Talon246 leftWheelMotor;
+	public static Talon246 rightWheelMotor;
 	
-	public static Victor frontModuleMotor;
-	public static Victor leftModuleMotor;
-	public static Victor rightModuleMotor;
+	public static Victor246 frontModuleMotor;
+	public static Victor246 leftModuleMotor;
+	public static Victor246 rightModuleMotor;
 	
 	//Sensors
 	
@@ -45,8 +44,29 @@ public class RobotMap {
 	
 	//constants
 	
-	public static final double WHEEL_ENCODER_DISTANCE_PER_TICK = .603; //TODO: Get this constant
-	public static final double MODULE_ENCODER_DISTANCE_PER_TICK = .603; //TODO: Get this constant
+	public static final double WHEEL_ENCODER_DISTANCE_PER_TICK = .0123;
+	public static final double MODULE_ENCODER_DISTANCE_PER_TICK = .703;
+	
+	public static final double WHEEL_kP = 0;
+	public static final double WHEEL_kI = 1;
+	public static final double WHEEL_kD = 0;
+	public static final double WHEEL_kF = 0;
+	
+	public static final double MODULE_kP = 1;
+	public static final double MODULE_kI = 0;
+	public static final double MODULE_kD = 0;
+	public static final double MODULE_kF = 0;
+	
+    public static final double K_MODULE_ANGLE_DELTA = 1;
+    public static final double K_MODULE_ANGLE_TWIST = 0;
+    public static final double K_MODULE_ANGLE_REVERSE = 0;
+    
+    public static final double MAX_MODULE_ANGLE = 1*360 + 180; //the maximum angle which can be commanded to a module
+    public static final double UNSAFE_MODULE_ANGLE = MAX_MODULE_ANGLE + 360; //the angle at which a module motor should be emergency stopped
+    
+    public static final double LEFT_RIGHT_WIDTH = 34.5; //distance between "left" and "right" modules
+    public static final double FRONT_BACK_LENGTH = 32.5; //distance between "front" and "back" modules
+    public static final double WHEEL_TOP_ABSOLUTE_SPEED = 11; //the highest speed that our wheels can move
 	
 //Getters
 	
@@ -105,23 +125,23 @@ public class RobotMap {
 	
 	public static DigitalInput canDetector;
 	
-	public void init()
+	public static void init()
 	{
 	//Drivetrain
 		
 		//Motors
-		frontWheelMotor = new Talon(0);
+		frontWheelMotor = new Talon246(0);
 		LiveWindow.addActuator("Drivetrain", "frontWheelMotor", frontWheelMotor);
-		leftWheelMotor = new Talon(2);
+		leftWheelMotor = new Talon246(2);
 		LiveWindow.addActuator("Drivetrain", "leftWheelMotor", leftWheelMotor);
-		rightWheelMotor = new Talon(4);
+		rightWheelMotor = new Talon246(4);
 		LiveWindow.addActuator("Drivetrain", "rightWheelMotor", rightWheelMotor);
 		
-		frontModuleMotor = new Victor(1);
+		frontModuleMotor = new Victor246(1);
 		LiveWindow.addActuator("Drivetrain", "frontModuleMotor", frontModuleMotor);
-		leftModuleMotor = new Victor(3);
+		leftModuleMotor = new Victor246(3);
 		LiveWindow.addActuator("Drivetrain", "leftModuleMotor", leftModuleMotor);
-		rightModuleMotor = new Victor(5);
+		rightModuleMotor = new Victor246(5);
 		LiveWindow.addActuator("Drivetrain", "rightModuleMotor", rightModuleMotor);
 		
 		//Sensors
