@@ -5,6 +5,7 @@ package org.usfirst.frc.team246.robot.overclockedLibraries;
  * and open the template in the editor.
  */
 
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Victor;
 
 /**
@@ -14,10 +15,19 @@ import edu.wpi.first.wpilibj.Victor;
 public class Victor246 extends Victor {
     
     boolean overridden = false;
+    int pdpPort;
+    PowerDistributionPanel pdp;
     
-    public Victor246(final int channel)
+    public Victor246(final int channel, int pdpPort, PowerDistributionPanel pdp)
     {
-        super(channel);
+    	super(channel);
+    	this.pdpPort = pdpPort;
+    	this.pdp = pdp;
+    }
+    
+    public double getCurrent()
+    {
+    	return pdp.getCurrent(pdpPort);
     }
     
     public void set(double speed)

@@ -1,19 +1,13 @@
 package org.usfirst.frc.team246.robot.subsystems;
 
-import org.usfirst.frc.team246.nav6.IMUAdvanced;
 import org.usfirst.frc.team246.robot.SwerveModule;
 import org.usfirst.frc.team246.robot.commands.CrabWithTwist;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
-
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
-import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
-
 import org.usfirst.frc.team246.robot.RobotMap;
-
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 /**
  * This is the heart of the swerve code. All vector calculations are done here.
@@ -24,44 +18,23 @@ public class Drivetrain extends Subsystem {
     
 	//every SwerveModule object is referenced twice: once in the array and once in its own variable
     public SwerveModule[] swerves;
-    public SwerveModule frontModule;
+    public SwerveModule backModule;
     public SwerveModule leftModule;
     public SwerveModule rightModule;
     
-    public double FOV = 0; //the front of the vehicle in degrees. May be used in different ways by different control schemes.
-    
-    public IMUAdvanced navX;
+    public double FOV = 0; //the back of the vehicle in degrees. May be used in different ways by different control schemes.
     
     public Drivetrain()
     {
-    	frontModule = new SwerveModule(RobotMap.frontWheelEncoder, RobotMap.frontModuleEncoder, RobotMap.frontWheelMotor, RobotMap.frontModuleMotor, RobotMap.FRONT_BACK_LENGTH/2, 0, "frontModule");
+    	backModule = new SwerveModule(RobotMap.backWheelEncoder, RobotMap.backModuleEncoder, RobotMap.backWheelMotor, RobotMap.backModuleMotor, -RobotMap.FRONT_BACK_LENGTH/2, 0, "backModule");
     	leftModule = new SwerveModule(RobotMap.leftWheelEncoder, RobotMap.leftModuleEncoder, RobotMap.leftWheelMotor, RobotMap.leftModuleMotor, -RobotMap.FRONT_BACK_LENGTH/2, -RobotMap.LEFT_RIGHT_WIDTH/2, "leftModule");
     	rightModule = new SwerveModule(RobotMap.rightWheelEncoder, RobotMap.rightModuleEncoder, RobotMap.rightWheelMotor, RobotMap.rightModuleMotor, -RobotMap.FRONT_BACK_LENGTH/2, RobotMap.LEFT_RIGHT_WIDTH/2, "rightModule");
     	swerves = new SwerveModule[3];
-    	swerves[0] = frontModule;
+    	swerves[0] = backModule;
     	swerves[1] = leftModule;
     	swerves[2] = rightModule;
-    	
-        //We were having occasional errors with the creation of the nav6 object, so we make 5 attempts before allowing the error to go through and being forced to redeploy.
-        int count = 0;
-        int maxTries = 5;
-        while(true) {
-            try {
-                navX = new IMUAdvanced(new SerialPort(57600,SerialPort.Port.kMXP), (byte)50);
-                if(navX != null) break;
-            } catch (Exception e) {
-                if (++count == maxTries)
-                {
-                    e.printStackTrace();
-                    break;
-                }
-                Timer.delay(.01);
-            }
-        }
         
-        LiveWindow.addSensor("Drivetrain", "Gyro", navX);
-        
-        absoluteTwistPID = new PIDController(ABSOLUTE_TWIST_kP, ABSOLUTE_TWIST_kI, ABSOLUTE_TWIST_kD, ABSOLUTE_TWIST_kF, navX, absoluteTwistPIDOutput, ABSOLUTE_TWIST_PERIOD);
+        absoluteTwistPID = new PIDController(ABSOLUTE_TWIST_kP, ABSOLUTE_TWIST_kI, ABSOLUTE_TWIST_kD, ABSOLUTE_TWIST_kF, RobotMap.navX, absoluteTwistPIDOutput, ABSOLUTE_TWIST_PERIOD);
     }
 
     public void initDefaultCommand() {
@@ -197,13 +170,13 @@ public class Drivetrain extends Subsystem {
     
     public double getFieldCentricHeading() //returns the direction of the robot relative to the direction the driver is facing.
     {
-        return navX.getYaw();
+        return RobotMap.navX.getYaw();
     }
     
     double lastTimeWasMoving = Long.MAX_VALUE;
     public boolean isMoving()
     {
-        if(navX.isMoving())
+        if(RobotMap.navX.isMoving())
         {
             return Timer.getFPGATimestamp() - lastTimeWasMoving > .5;
         }

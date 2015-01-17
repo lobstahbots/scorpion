@@ -1,14 +1,24 @@
 package org.usfirst.frc.team246.robot.overclockedLibraries;
 
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Talon;
 
 public class Talon246 extends Talon{
 	
 	boolean overridden = false;
+	int pdpPort;
+    PowerDistributionPanel pdp;
     
-    public Talon246(final int channel)
+    public Talon246(final int channel, int pdpPort, PowerDistributionPanel pdp)
     {
-        super(channel);
+    	super(channel);
+    	this.pdpPort = pdpPort;
+    	this.pdp = pdp;
+    }
+    
+    public double getCurrent()
+    {
+    	return pdp.getCurrent(pdpPort);
     }
     
     public void set(double speed)

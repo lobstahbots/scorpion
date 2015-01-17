@@ -2,7 +2,12 @@
 package org.usfirst.frc.team246.robot;
 
 import org.usfirst.frc.team246.robot.overclockedLibraries.Victor246;
+import org.usfirst.frc.team246.robot.subsystems.Arm;
 import org.usfirst.frc.team246.robot.subsystems.Drivetrain;
+import org.usfirst.frc.team246.robot.subsystems.Forklift;
+import org.usfirst.frc.team246.robot.subsystems.Getters;
+import org.usfirst.frc.team246.robot.subsystems.Grabber;
+import org.usfirst.frc.team246.robot.subsystems.Pusher;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -24,8 +29,14 @@ public class Robot extends IterativeRobot {
 	public static boolean test2 = false;
 	public static boolean gyroDisabled = false;
 	public static boolean gasMode = false;
+	public static boolean trojan = true;
 	
 	public static Drivetrain drivetrain;
+	public static Getters getters;
+	public static Forklift forklift;
+	public static Pusher pusher;
+	public static Arm arm;
+	public static Grabber grabber;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -35,6 +46,11 @@ public class Robot extends IterativeRobot {
         RobotMap.init();
         
         drivetrain = new Drivetrain();
+        getters = new Getters();
+        forklift = new Forklift();
+        pusher = new Pusher();
+        arm = new Arm();
+        grabber = new Grabber();
         
         if(test1)
         {
@@ -55,10 +71,10 @@ public class Robot extends IterativeRobot {
             SmartDashboard.putNumber("speedI", RobotMap.WHEEL_kI);
             SmartDashboard.putNumber("speedD", RobotMap.WHEEL_kD);
             SmartDashboard.putNumber("speedF", RobotMap.WHEEL_kF);
-            SmartDashboard.putNumber("frontModuleSpeed", 0);
+            SmartDashboard.putNumber("backModuleSpeed", 0);
             SmartDashboard.putNumber("leftModuleSpeed", 0);
             SmartDashboard.putNumber("rightModuleSpeed", 0);
-            SmartDashboard.putNumber("frontModuleSpeedSetpoint", 0);
+            SmartDashboard.putNumber("backModuleSpeedSetpoint", 0);
             SmartDashboard.putNumber("leftModuleSpeedSetpoint", 0);
             SmartDashboard.putNumber("rightModuleSpeedSetpoint", 0);
             SmartDashboard.putNumber("spinRate", 0);
@@ -85,7 +101,7 @@ public class Robot extends IterativeRobot {
         {
             drivetrain.zeroAngles();
         }
-        if(drivetrain.navX.isCalibrating()) System.out.println("Calibrating NavX");
+        if(RobotMap.navX.isCalibrating()) System.out.println("Calibrating NavX");
 		Scheduler.getInstance().run();
 	}
 
@@ -114,16 +130,16 @@ public class Robot extends IterativeRobot {
     	
         if(test2)
         {
-            SmartDashboard.putNumber("frontModuleSpeed", drivetrain.frontModule.getWheelSpeed());
+            SmartDashboard.putNumber("backModuleSpeed", drivetrain.backModule.getWheelSpeed());
             SmartDashboard.putNumber("leftModuleSpeed", drivetrain.leftModule.getWheelSpeed());
             SmartDashboard.putNumber("rightModuleSpeed", drivetrain.rightModule.getWheelSpeed());
-            SmartDashboard.putNumber("frontModuleSpeedSetpoint", drivetrain.frontModule.getSpeedSetpoint());
+            SmartDashboard.putNumber("backModuleSpeedSetpoint", drivetrain.backModule.getSpeedSetpoint());
             SmartDashboard.putNumber("leftModuleSpeedSetpoint", drivetrain.leftModule.getSpeedSetpoint());
             SmartDashboard.putNumber("rightModuleSpeedSetpoint", drivetrain.rightModule.getSpeedSetpoint());
         }
         if(test1)
         {
-            SwerveModule mod = drivetrain.frontModule;
+            SwerveModule mod = drivetrain.backModule;
             
             if(SmartDashboard.getBoolean("unwind", false))
             {
@@ -164,6 +180,7 @@ public class Robot extends IterativeRobot {
             {
                 drivetrain.unwind();
             }
+            
             Scheduler.getInstance().run();
         }
     }
@@ -200,7 +217,7 @@ public class Robot extends IterativeRobot {
             }
         }
         
-        SmartDashboard.putNumber("Heading", drivetrain.navX.getYaw());
+        SmartDashboard.putNumber("Heading", RobotMap.navX.getYaw());
         
         gyroDisabled = !SmartDashboard.getBoolean("field-centric", true);
     }

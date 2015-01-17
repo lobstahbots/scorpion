@@ -7,6 +7,7 @@
 package org.usfirst.frc.team246.robot.overclockedLibraries;
 
 import edu.wpi.first.wpilibj.Jaguar;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 /**
  *
@@ -15,10 +16,19 @@ import edu.wpi.first.wpilibj.Jaguar;
 public class Jaguar246 extends Jaguar {
     
     boolean overridden = false;
+    int pdpPort;
+    PowerDistributionPanel pdp;
     
-    public Jaguar246(final int channel)
+    public Jaguar246(final int channel, int pdpPort, PowerDistributionPanel pdp)
     {
-        super(channel);
+    	super(channel);
+    	this.pdpPort = pdpPort;
+    	this.pdp = pdp;
+    }
+    
+    public double getCurrent()
+    {
+    	return pdp.getCurrent(pdpPort);
     }
     
     public void set(double speed)

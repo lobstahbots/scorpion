@@ -1,12 +1,17 @@
 package org.usfirst.frc.team246.robot;
 
+import org.usfirst.frc.team246.nav6.IMUAdvanced;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Talon246;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Victor246;
+
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
@@ -17,36 +22,40 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
  * floating around.
  */
 public class RobotMap {
+	
+	public static PowerDistributionPanel pdp;
     
 //Drivetrain
 	
 	//Motors
 	
-	public static Talon246 frontWheelMotor;
+	public static Talon246 backWheelMotor;
 	public static Talon246 leftWheelMotor;
 	public static Talon246 rightWheelMotor;
 	
-	public static Victor246 frontModuleMotor;
+	public static Victor246 backModuleMotor;
 	public static Victor246 leftModuleMotor;
 	public static Victor246 rightModuleMotor;
 	
 	//Sensors
 	
-	public static Encoder frontWheelEncoder;
+	public static Encoder backWheelEncoder;
 	public static Encoder leftWheelEncoder;
 	public static Encoder rightWheelEncoder;
 	
-	public static Encoder frontModuleEncoder;
+	public static Encoder backModuleEncoder;
 	public static Encoder leftModuleEncoder;
 	public static Encoder rightModuleEncoder;
+	
+	public static IMUAdvanced navX;
 	
 	public static DigitalInput encoderZeroing;
 	
 	//constants
 	
 	public static final double WHEEL_ENCODER_DISTANCE_PER_TICK = .0123;
-	public static final double MODULE_ENCODER_DISTANCE_PER_TICK = .703;
-	
+	public static final double MODULE_ENCODER_DISTANCE_PER_TICK = 360/256*(2/1);
+		
 	public static final double WHEEL_kP = 0;
 	public static final double WHEEL_kI = 1;
 	public static final double WHEEL_kD = 0;
@@ -90,6 +99,32 @@ public class RobotMap {
 	
 	public static AnalogPotentiometer liftPot;
 	
+	//Constants
+	
+	public static final double LIFT_kP = 1;
+	public static final double LIFT_kI = 0;
+	public static final double LIFT_kD = 0;
+	public static final double LIFT_TOLERANCE = .5;
+	
+	public static final double LIFT_MAX_HEIGHT = 3;
+	public static final double LIFT_MIN_HEIGHT = 0;
+	
+	public enum ArmSetpoints {
+		GROUND(-5), SCORING_PLATFORM(2), STEP(6.25);
+		
+		private double value;
+		
+		private ArmSetpoints(double value)
+		{
+			this.value = value;
+		}
+		
+		public double getValue()
+		{
+			return value;
+		}
+	}
+	
 //Pusher
 	
 	//Motors
@@ -127,29 +162,31 @@ public class RobotMap {
 	
 	public static void init()
 	{
+		pdp = new PowerDistributionPanel();
+		
 	//Drivetrain
 		
 		//Motors
-		frontWheelMotor = new Talon246(0);
-		LiveWindow.addActuator("Drivetrain", "frontWheelMotor", frontWheelMotor);
-		leftWheelMotor = new Talon246(2);
+		backWheelMotor = new Talon246(0, 12, pdp);
+		LiveWindow.addActuator("Drivetrain", "backWheelMotor", backWheelMotor);
+		leftWheelMotor = new Talon246(2, 13, pdp);
 		LiveWindow.addActuator("Drivetrain", "leftWheelMotor", leftWheelMotor);
-		rightWheelMotor = new Talon246(4);
+		rightWheelMotor = new Talon246(4, 14, pdp);
 		LiveWindow.addActuator("Drivetrain", "rightWheelMotor", rightWheelMotor);
 		
-		frontModuleMotor = new Victor246(1);
-		LiveWindow.addActuator("Drivetrain", "frontModuleMotor", frontModuleMotor);
-		leftModuleMotor = new Victor246(3);
+		backModuleMotor = new Victor246(1, 15, pdp);
+		LiveWindow.addActuator("Drivetrain", "backModuleMotor", backModuleMotor);
+		leftModuleMotor = new Victor246(3, 1, pdp);
 		LiveWindow.addActuator("Drivetrain", "leftModuleMotor", leftModuleMotor);
-		rightModuleMotor = new Victor246(5);
+		rightModuleMotor = new Victor246(5, 0, pdp);
 		LiveWindow.addActuator("Drivetrain", "rightModuleMotor", rightModuleMotor);
 		
 		//Sensors
 		
-		frontWheelEncoder = new Encoder(0,1);
-	    frontWheelEncoder.setDistancePerPulse(WHEEL_ENCODER_DISTANCE_PER_TICK);
-	    frontWheelEncoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kRate); // have encoder measure rate, not distance
-	    LiveWindow.addSensor("Drivetrain", "frontWheelEncoder", frontWheelEncoder);
+		backWheelEncoder = new Encoder(0,1);
+	    backWheelEncoder.setDistancePerPulse(WHEEL_ENCODER_DISTANCE_PER_TICK);
+	    backWheelEncoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kRate); // have encoder measure rate, not distance
+	    LiveWindow.addSensor("Drivetrain", "backWheelEncoder", backWheelEncoder);
 		leftWheelEncoder = new Encoder(4,5);
 	    leftWheelEncoder.setDistancePerPulse(WHEEL_ENCODER_DISTANCE_PER_TICK);
 	    leftWheelEncoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kRate); // have encoder measure rate, not distance
@@ -159,10 +196,10 @@ public class RobotMap {
 	    rightWheelEncoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kRate); // have encoder measure rate, not distance
 	    LiveWindow.addSensor("Drivetrain", "rightWheelEncoder", rightWheelEncoder);
 		
-	    frontModuleEncoder = new Encoder(2,3);
-	    frontModuleEncoder.setDistancePerPulse(MODULE_ENCODER_DISTANCE_PER_TICK); 
-	    frontModuleEncoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kDistance); // have encoder measure distance
-	    LiveWindow.addSensor("Drivetrain", "frontModuleEncoder", frontModuleEncoder);
+	    backModuleEncoder = new Encoder(2,3);
+	    backModuleEncoder.setDistancePerPulse(MODULE_ENCODER_DISTANCE_PER_TICK); 
+	    backModuleEncoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kDistance); // have encoder measure distance
+	    LiveWindow.addSensor("Drivetrain", "backModuleEncoder", backModuleEncoder);
 		leftModuleEncoder = new Encoder(6,7);
 	    leftModuleEncoder.setDistancePerPulse(MODULE_ENCODER_DISTANCE_PER_TICK); 
 	    leftModuleEncoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kDistance); // have encoder measure distance
@@ -171,6 +208,24 @@ public class RobotMap {
 	    rightModuleEncoder.setDistancePerPulse(MODULE_ENCODER_DISTANCE_PER_TICK); 
 	    rightModuleEncoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kDistance); // have encoder measure distance
 	    LiveWindow.addSensor("Drivetrain", "rightModuleEncoder", rightModuleEncoder);
+	    
+	  //We were having occasional errors with the creation of the nav6 object, so we make 5 attempts before allowing the error to go through and being forced to redeploy.
+        int count = 0;
+        int maxTries = 5;
+        while(true) {
+            try {
+                navX = new IMUAdvanced(new SerialPort(57600,SerialPort.Port.kMXP), (byte)50);
+                if(navX != null) break;
+            } catch (Exception e) {
+                if (++count == maxTries)
+                {
+                    e.printStackTrace();
+                    break;
+                }
+                Timer.delay(.01);
+            }
+        }
+        LiveWindow.addSensor("Drivetrain", "Gyro", navX);
 	    
 	    encoderZeroing = new DigitalInput(12);
 	    LiveWindow.addSensor("Drivetrain", "encoderZeroing", encoderZeroing);
