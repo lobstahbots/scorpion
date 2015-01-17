@@ -65,6 +65,7 @@ public class Robot extends IterativeRobot {
         }
         
         SmartDashboard.putBoolean("motorKilled", false);
+        SmartDashboard.putBoolean("field-centric", true);
     }
     
     /**
@@ -200,5 +201,7 @@ public class Robot extends IterativeRobot {
         }
         
         SmartDashboard.putNumber("Heading", drivetrain.navX.getYaw());
+        
+        gyroDisabled = !SmartDashboard.getBoolean("field-centric", true);
     }
 }
