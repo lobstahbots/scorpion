@@ -22,18 +22,20 @@ public class OI {
     
     public OI()
     {
-        driverLeftJoystick = new Joystick246(1);
+        driverLeftJoystick = new Joystick246(0);
         driverLeftJoystick.setDeadband(.1);
-        driverRightJoystick = new Joystick246(2);
+        driverRightJoystick = new Joystick246(1);
         driverRightJoystick.setDeadband(.1);
         operatorJoystick = new Joystick246(3);
         operatorJoystick.setDeadband(.1);
         
+        /*
         operator.getLeft().whenPressed(new MoveForklift(ArmSetpoints.SCORING_PLATFORM));
         operator.getRight().whenPressed(new MoveForklift(ArmSetpoints.GROUND));
         operator.getBack().whenPressed(new MoveForklift(ArmSetpoints.STEP));
         operator.getUp().whenPressed(new MoveForkliftUp1());
         operator.getDown().whenPressed(new MoveForkliftDown1());
+        */
     }
 }
 

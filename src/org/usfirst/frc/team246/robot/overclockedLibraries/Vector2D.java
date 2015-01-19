@@ -27,7 +27,8 @@ public class Vector2D {
     }
     
     public static double[] polarToCart(double r, double theta){
-        double[] cartCoords = {r*Math.cos(theta), r*Math.sin(theta)};
+    	theta -= 90;
+        double[] cartCoords = {r*Math.cos(Math.toRadians(theta)), r*Math.sin(Math.toRadians(theta))};
         return cartCoords;
     }
     
@@ -41,7 +42,7 @@ public class Vector2D {
     }
     
     public double getAngle(){
-        return Math.atan2(y, x);
+        return Math.toDegrees(Math.atan2(y, x)) + 90;
     }
     
     public double getMagnitude() {

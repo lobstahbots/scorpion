@@ -54,16 +54,16 @@ public class RobotMap {
 	//constants
 	
 	public static final double WHEEL_ENCODER_DISTANCE_PER_TICK = .0123;
-	public static final double MODULE_ENCODER_DISTANCE_PER_TICK = 360/256*(2/1);
+	public static final double MODULE_ENCODER_DISTANCE_PER_TICK = 360./(256.*2.);
 		
 	public static final double WHEEL_kP = 0;
 	public static final double WHEEL_kI = 1;
 	public static final double WHEEL_kD = 0;
 	public static final double WHEEL_kF = 0;
 	
-	public static final double MODULE_kP = 1;
+	public static final double MODULE_kP = .035;
 	public static final double MODULE_kI = 0;
-	public static final double MODULE_kD = 0;
+	public static final double MODULE_kD = .025;
 	public static final double MODULE_kF = 0;
 	
     public static final double K_MODULE_ANGLE_DELTA = 1;
@@ -73,8 +73,6 @@ public class RobotMap {
     public static final double MAX_MODULE_ANGLE = 1*360 + 180; //the maximum angle which can be commanded to a module
     public static final double UNSAFE_MODULE_ANGLE = MAX_MODULE_ANGLE + 360; //the angle at which a module motor should be emergency stopped
     
-    public static final double LEFT_RIGHT_WIDTH = 34.5; //distance between "left" and "right" modules
-    public static final double FRONT_BACK_LENGTH = 32.5; //distance between "front" and "back" modules
     public static final double WHEEL_TOP_ABSOLUTE_SPEED = 11; //the highest speed that our wheels can move
 	
 //Getters
@@ -214,7 +212,7 @@ public class RobotMap {
         int maxTries = 5;
         while(true) {
             try {
-                navX = new IMUAdvanced(new SerialPort(57600,SerialPort.Port.kMXP), (byte)50);
+                navX = new IMUAdvanced(new SerialPort(57600,SerialPort.Port.kUSB), (byte)50);
                 if(navX != null) break;
             } catch (Exception e) {
                 if (++count == maxTries)
@@ -241,10 +239,10 @@ public class RobotMap {
 		
 		//Pneumatics
 		
-		leftGetterCylinder = new DoubleSolenoid(0,1);
-		LiveWindow.addActuator("Getters", "leftGetterCylinder", leftGetterCylinder);
-		rightGetterCylinder = new DoubleSolenoid(2,3);
-		LiveWindow.addActuator("Getters", "rightGetterCylinder", rightGetterCylinder);
+//		leftGetterCylinder = new DoubleSolenoid(0,1);
+//		LiveWindow.addActuator("Getters", "leftGetterCylinder", leftGetterCylinder);
+//		rightGetterCylinder = new DoubleSolenoid(2,3);
+//		LiveWindow.addActuator("Getters", "rightGetterCylinder", rightGetterCylinder);
 		
 	//Forklift
 		
@@ -275,12 +273,12 @@ public class RobotMap {
 		
 		//Motors
 		
-		armShoulderMotor = new VictorSP(10);
-		LiveWindow.addActuator("Arm", "armShoulderMotor", armShoulderMotor);
-		armElbowMotor = new VictorSP(11);
-		LiveWindow.addActuator("Arm", "armElbowMotor", armElbowMotor);
-		armWristMotor = new VictorSP(12);
-		LiveWindow.addActuator("Arm", "armWristMotor", armWristMotor);
+//		armShoulderMotor = new VictorSP(10);
+//		LiveWindow.addActuator("Arm", "armShoulderMotor", armShoulderMotor);
+//		armElbowMotor = new VictorSP(11);
+//		LiveWindow.addActuator("Arm", "armElbowMotor", armElbowMotor);
+//		armWristMotor = new VictorSP(12);
+//		LiveWindow.addActuator("Arm", "armWristMotor", armWristMotor);
 		
 		//Sensors
 		
@@ -295,10 +293,10 @@ public class RobotMap {
 		
 		//Pneumatics
 		
-		leftGrabberCylinder = new DoubleSolenoid(4,5);
-		LiveWindow.addActuator("Grabber", "leftGrabberCylinder", leftGrabberCylinder);
-		rightGrabberCylinder = new DoubleSolenoid(6,7);
-		LiveWindow.addActuator("Grabber",  "rightGrabberCylinder", rightGrabberCylinder);
+//		leftGrabberCylinder = new DoubleSolenoid(4,5);
+//		LiveWindow.addActuator("Grabber", "leftGrabberCylinder", leftGrabberCylinder);
+//		rightGrabberCylinder = new DoubleSolenoid(6,7);
+//		LiveWindow.addActuator("Grabber",  "rightGrabberCylinder", rightGrabberCylinder);
 		
 		//Sensors
 		

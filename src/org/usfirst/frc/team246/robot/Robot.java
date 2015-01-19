@@ -28,7 +28,7 @@ public class Robot extends IterativeRobot {
 	public static boolean test1 = false;
 	public static boolean test2 = false;
 	public static boolean gyroDisabled = false;
-	public static boolean gasMode = false;
+	public static boolean gasMode = true;
 	public static boolean trojan = true;
 	
 	public static Drivetrain drivetrain;
@@ -44,6 +44,8 @@ public class Robot extends IterativeRobot {
      */
     public void robotInit() {
         RobotMap.init();
+        
+        oi = new OI();
         
         drivetrain = new Drivetrain();
         getters = new Getters();
@@ -95,9 +97,10 @@ public class Robot extends IterativeRobot {
 	public void disabledPeriodic() {
 		
 		allPeriodic();
+        SmartDashboard.putBoolean("encoderZeroing", false);
         
         //Zeros the module angle encoders when the driver presses the button
-        if(RobotMap.encoderZeroing.get())
+        if(RobotMap.encoderZeroing.get() || SmartDashboard.getBoolean("encoderZeroing", false))
         {
             drivetrain.zeroAngles();
         }
@@ -106,6 +109,7 @@ public class Robot extends IterativeRobot {
 	}
 
     public void autonomousInit() {
+    	RobotMap.navX.zeroYaw();
     	drivetrain.PIDOn(true);
     }
 
@@ -180,6 +184,8 @@ public class Robot extends IterativeRobot {
             {
                 drivetrain.unwind();
             }
+            
+            SmartDashboard.putBoolean("Forklift On Target", forklift.onTarget());
             
             Scheduler.getInstance().run();
         }

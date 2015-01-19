@@ -26,9 +26,9 @@ public class Drivetrain extends Subsystem {
     
     public Drivetrain()
     {
-    	backModule = new SwerveModule(RobotMap.backWheelEncoder, RobotMap.backModuleEncoder, RobotMap.backWheelMotor, RobotMap.backModuleMotor, -RobotMap.FRONT_BACK_LENGTH/2, 0, "backModule");
-    	leftModule = new SwerveModule(RobotMap.leftWheelEncoder, RobotMap.leftModuleEncoder, RobotMap.leftWheelMotor, RobotMap.leftModuleMotor, -RobotMap.FRONT_BACK_LENGTH/2, -RobotMap.LEFT_RIGHT_WIDTH/2, "leftModule");
-    	rightModule = new SwerveModule(RobotMap.rightWheelEncoder, RobotMap.rightModuleEncoder, RobotMap.rightWheelMotor, RobotMap.rightModuleMotor, -RobotMap.FRONT_BACK_LENGTH/2, RobotMap.LEFT_RIGHT_WIDTH/2, "rightModule");
+    	backModule = new SwerveModule(RobotMap.backWheelEncoder, RobotMap.backModuleEncoder, RobotMap.backWheelMotor, RobotMap.backModuleMotor, 0, -11/68, "backModule");
+    	leftModule = new SwerveModule(RobotMap.leftWheelEncoder, RobotMap.leftModuleEncoder, RobotMap.leftWheelMotor, RobotMap.leftModuleMotor, 20.82, -17.25, "leftModule");
+    	rightModule = new SwerveModule(RobotMap.rightWheelEncoder, RobotMap.rightModuleEncoder, RobotMap.rightWheelMotor, RobotMap.rightModuleMotor, 20.82, 17.25, "rightModule");
     	swerves = new SwerveModule[3];
     	swerves[0] = backModule;
     	swerves[1] = leftModule;
@@ -176,6 +176,8 @@ public class Drivetrain extends Subsystem {
     double lastTimeWasMoving = Long.MAX_VALUE;
     public boolean isMoving()
     {
+    	return true;
+    	/*
         if(RobotMap.navX.isMoving())
         {
             return Timer.getFPGATimestamp() - lastTimeWasMoving > .5;
@@ -185,6 +187,7 @@ public class Drivetrain extends Subsystem {
             lastTimeWasMoving = Timer.getFPGATimestamp();
             return false;
         }
+        */
     }
     
     public void PIDOn(boolean on)

@@ -157,6 +157,7 @@ public class SwerveModule
         }
         else
         {
+        	speedPID.disable();
             wheelMotor.set(speed);
         }
     }
