@@ -7,17 +7,16 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class RetractleftPneumatic extends Command {
+public class RetractLeftGetter extends Command {
 
-    public RetractleftPneumatic() {
-    	requires(Robot.Getters)
+    public RetractLeftGetter() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.Getters.reverse();
+    	Robot.getters.retractLeftGetter();
     }
 
     // Called repeatedly when this Command is scheduled to run

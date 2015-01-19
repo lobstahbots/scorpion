@@ -7,17 +7,18 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class DeployleftPneumatic extends Command {
+public class OpenGrabber extends Command {
 
-    public DeployleftPneumatic() {
-    	requires(Robot.Getters)
+    public OpenGrabber() {
+    	requires(Robot.grabber);
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.Getters.forward();}
+    	Robot.grabber.open();
+    }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {

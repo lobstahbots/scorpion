@@ -7,17 +7,16 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class DeployGrabber extends Command {
+public class DeployRightGetter extends Command {
 
-    public DeployGrabber() {
-    	requires(Robot.Grabber)
+    public DeployRightGetter() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.Grabber.forward();
+    	Robot.getters.deployRightGetter();;
     }
 
     // Called repeatedly when this Command is scheduled to run

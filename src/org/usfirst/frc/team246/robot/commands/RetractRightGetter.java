@@ -1,21 +1,22 @@
 package org.usfirst.frc.team246.robot.commands;
 
+import org.usfirst.frc.team246.robot.Robot;
+
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
-public class RetractrightPneumatic extends Command {
+public class RetractRightGetter extends Command {
 
-    public RetractrightPneumatic() {
+    public RetractRightGetter() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-    	requires(Robot.Getters)
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.Getters.reverse();
+    	Robot.getters.retractRightGetter();;
     }
 
     // Called repeatedly when this Command is scheduled to run

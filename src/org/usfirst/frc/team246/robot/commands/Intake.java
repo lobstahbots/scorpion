@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class Intake extends Command {
 
     public Intake() {
-    	requires(Robot.getters)
+    	requires(Robot.getters);
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }

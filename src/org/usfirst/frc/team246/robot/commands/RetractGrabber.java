@@ -10,14 +10,15 @@ import edu.wpi.first.wpilibj.command.Command;
 public class RetractGrabber extends Command {
 
     public RetractGrabber() {
-    	requires(Robot.Grabber)
+    	requires(Robot.grabber);
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.Grabber.reverse();}
+    	Robot.grabber.close();
+    }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {

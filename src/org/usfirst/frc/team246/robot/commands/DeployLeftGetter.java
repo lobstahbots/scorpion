@@ -7,17 +7,16 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class DeployrightPneumatic extends Command {
+public class DeployLeftGetter extends Command {
 
-    public DeployrightPneumatic() {
-    	requires(Robot.Getters)
+    public DeployLeftGetter() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.Getters.forward();
+    	Robot.getters.deployLeftGetter();
     }
 
     // Called repeatedly when this Command is scheduled to run

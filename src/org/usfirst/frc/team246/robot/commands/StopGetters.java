@@ -7,17 +7,15 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class Outake extends Command {
+public class StopGetters extends Command {
 
-    public Outake() {
-    	requires(Robot.getters);
-        // Use requires() here to declare subsystem dependencies
-        // eg. requires(chassis);
+    public StopGetters() {
+        requires(Robot.getters);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.getters.backward();
+    	Robot.getters.stop();
     }
 
     // Called repeatedly when this Command is scheduled to run
