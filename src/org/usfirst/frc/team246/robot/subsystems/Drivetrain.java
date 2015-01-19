@@ -100,8 +100,6 @@ public class Drivetrain extends Subsystem {
         Vector2D[] moduleSetpoints = new Vector2D[swerves.length];
         Vector2D[] crab = crab(direction, speed);
         Vector2D[] snake = snake(spinRate, corX, corY);
-        System.out.println("Snake vector left magnitude: " + snake[1].getMagnitude());
-        System.out.println("Snake vector left angle: " + snake[1].getAngle());
         
         //Add together the crab and snake vectors. Also find which wheel will be spinning the fastest.
         double largestVector = 0;
@@ -109,7 +107,6 @@ public class Drivetrain extends Subsystem {
             moduleSetpoints[i] = Vector2D.addVectors(crab[i], snake[i]);
             if(moduleSetpoints[i].getMagnitude() > largestVector) largestVector = moduleSetpoints[i].getMagnitude();
         }
-        System.out.println("Snake vector left angle2: " +  moduleSetpoints[1].getAngle());
         
         //normalize the vectors so that none of them have a magnitude greater than 1
         if(largestVector > 1)
@@ -119,11 +116,13 @@ public class Drivetrain extends Subsystem {
                 moduleSetpoints[i].setMagnitude(moduleSetpoints[i].getMagnitude() / largestVector);
             }
         }
-        System.out.println("Snake vector left angle3: " + moduleSetpoints[1].getAngle());
         
         for(int i=0; i < swerves.length; i++)
         {
-        	swerves[i].setAngle(moduleSetpoints[i].getAngle());
+        	if(moduleSetpoints[i].getMagnitude() != 0)
+        	{
+        		swerves[i].setAngle(moduleSetpoints[i].getAngle());
+        	}
         	swerves[i].setWheelSpeed(moduleSetpoints[i].getMagnitude());
         }
     }

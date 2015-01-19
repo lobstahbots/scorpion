@@ -33,7 +33,7 @@ public class CrabWithTwist extends FieldCentricDrivingCommand{
     }
 
     protected Vector2D getCOR() {
-        return new Vector2D(true, 0, 0);
+        return new Vector2D(true, 0, -11.67);
     }
 
     protected void initialize() {
