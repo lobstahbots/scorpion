@@ -27,7 +27,8 @@ public class CrabWithTwist extends FieldCentricDrivingCommand{
         if(Robot.test2)
         {
             return SmartDashboard.getNumber("spinRate", 0) / RobotMap.WHEEL_TOP_ABSOLUTE_SPEED;
-        }
+        } 
+        System.out.println("Joystick: " + Robot.oi.driverLeftJoystick.getX());
         return Robot.oi.driverLeftJoystick.getX();
     }
 
