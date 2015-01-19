@@ -35,6 +35,10 @@ public class OI {
         operator.getBack().whenPressed(new MoveForklift(ArmSetpoints.STEP));
         operator.getUp().whenPressed(new MoveForkliftUp1());
         operator.getDown().whenPressed(new MoveForkliftDown1());
+        
+        driver.getLT().whileHeld(new Intake());
+        driver.getRT().whileHeld(new Outake());
+        
         */
     }
 }
