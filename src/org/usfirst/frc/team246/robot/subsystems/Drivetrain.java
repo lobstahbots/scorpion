@@ -1,12 +1,16 @@
 package org.usfirst.frc.team246.robot.subsystems;
 
+import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.SwerveModule;
 import org.usfirst.frc.team246.robot.commands.CrabWithTwist;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
+
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.Timer;
+
 import org.usfirst.frc.team246.robot.RobotMap;
+
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -26,9 +30,9 @@ public class Drivetrain extends Subsystem {
     
     public Drivetrain()
     {
-    	backModule = new SwerveModule(RobotMap.backWheelEncoder, RobotMap.backModuleEncoder, RobotMap.backWheelMotor, RobotMap.backModuleMotor, 0, -11/68, "backModule");
-    	leftModule = new SwerveModule(RobotMap.leftWheelEncoder, RobotMap.leftModuleEncoder, RobotMap.leftWheelMotor, RobotMap.leftModuleMotor, 20.82, -17.25, "leftModule");
-    	rightModule = new SwerveModule(RobotMap.rightWheelEncoder, RobotMap.rightModuleEncoder, RobotMap.rightWheelMotor, RobotMap.rightModuleMotor, 20.82, 17.25, "rightModule");
+    	backModule = new SwerveModule(RobotMap.backWheelEncoder, RobotMap.backModuleEncoder, RobotMap.backWheelMotor, RobotMap.backModuleMotor, 0, -32.5, "backModule");
+    	leftModule = new SwerveModule(RobotMap.leftWheelEncoder, RobotMap.leftModuleEncoder, RobotMap.leftWheelMotor, RobotMap.leftModuleMotor, 17.25, 0, "leftModule");
+    	rightModule = new SwerveModule(RobotMap.rightWheelEncoder, RobotMap.rightModuleEncoder, RobotMap.rightWheelMotor, RobotMap.rightModuleMotor, 17.25, 0, "rightModule");
     	swerves = new SwerveModule[3];
     	swerves[0] = backModule;
     	swerves[1] = leftModule;
@@ -92,9 +96,12 @@ public class Drivetrain extends Subsystem {
     //The primary driving method. Adds the crab and snake vectors together, allowing the robot to drive in any direction while rotating at the same time.
     public void drive(double speed, double direction, double spinRate, double corX, double corY)
     {
+    	System.out.println("spinRate: " + spinRate);
         Vector2D[] moduleSetpoints = new Vector2D[swerves.length];
         Vector2D[] crab = crab(direction, speed);
         Vector2D[] snake = snake(spinRate, corX, corY);
+        System.out.println("Snake vector left magnitude: " + snake[1].getMagnitude());
+        System.out.println("Snake vector left angle: " + snake[1].getAngle());
         
         //Add together the crab and snake vectors. Also find which wheel will be spinning the fastest.
         double largestVector = 0;
@@ -102,6 +109,7 @@ public class Drivetrain extends Subsystem {
             moduleSetpoints[i] = Vector2D.addVectors(crab[i], snake[i]);
             if(moduleSetpoints[i].getMagnitude() > largestVector) largestVector = moduleSetpoints[i].getMagnitude();
         }
+        System.out.println("Snake vector left angle2: " +  moduleSetpoints[1].getAngle());
         
         //normalize the vectors so that none of them have a magnitude greater than 1
         if(largestVector > 1)
@@ -111,11 +119,12 @@ public class Drivetrain extends Subsystem {
                 moduleSetpoints[i].setMagnitude(moduleSetpoints[i].getMagnitude() / largestVector);
             }
         }
+        System.out.println("Snake vector left angle3: " + moduleSetpoints[1].getAngle());
         
         for(int i=0; i < swerves.length; i++)
         {
-        	swerves[i].setAngle(moduleSetpoints[0].getAngle());
-        	swerves[i].setWheelSpeed(moduleSetpoints[0].getMagnitude());
+        	swerves[i].setAngle(moduleSetpoints[i].getAngle());
+        	swerves[i].setWheelSpeed(moduleSetpoints[i].getMagnitude());
         }
     }
     
@@ -176,7 +185,7 @@ public class Drivetrain extends Subsystem {
     double lastTimeWasMoving = Long.MAX_VALUE;
     public boolean isMoving()
     {
-    	return true;
+    	return !Robot.oi.driverRightJoystick.getRawButton(1);
     	/*
         if(RobotMap.navX.isMoving())
         {

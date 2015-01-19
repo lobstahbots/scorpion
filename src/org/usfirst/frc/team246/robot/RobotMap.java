@@ -131,7 +131,11 @@ public class RobotMap {
 	
 	//Sensors
 	
-	public static AnalogPotentiometer pusherPot;
+	public static Encoder pusherEncoder;
+	
+	//Constants
+	
+	public static final double PUSHER_ENCODER_DISTANCE_PER_TICK = 1; //TODO: Get this constant
 	
 //Arm
 	
@@ -266,8 +270,10 @@ public class RobotMap {
 		
 		//Sensors
 		
-		pusherPot = new AnalogPotentiometer(1, 1); //TODO: Get this constant
-		LiveWindow.addSensor("Pusher", "pusherPot", pusherPot);
+		pusherEncoder = new Encoder(13, 14); //TODO: Get this constant
+		pusherEncoder.setDistancePerPulse(PUSHER_ENCODER_DISTANCE_PER_TICK); 
+		pusherEncoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kDistance);
+		LiveWindow.addSensor("Pusher", "pusherEncoder", pusherEncoder);
 		
 	//Arm
 		
@@ -300,7 +306,7 @@ public class RobotMap {
 		
 		//Sensors
 		
-		canDetector = new DigitalInput(13);
+		canDetector = new DigitalInput(15);
 		LiveWindow.addActuator("Grabber", "canDetector", canDetector);
 	}
 }
