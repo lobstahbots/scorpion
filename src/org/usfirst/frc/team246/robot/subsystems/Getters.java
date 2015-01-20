@@ -47,4 +47,12 @@ public class Getters extends Subsystem {
     public void retractRightGetter(){
     	rightCylinder.set(DoubleSolenoid.Value.kReverse);
     }
+    public DoubleSolenoid.Value getLeftGetterPosition()
+    {
+    	return leftCylinder.get();
+    }
+    public DoubleSolenoid.Value getRightGetterPosition()
+    {
+    	return rightCylinder.get();
+    }
 }

@@ -7,9 +7,9 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class RetractGrabber extends Command {
+public class CloseGrabber extends Command {
 
-    public RetractGrabber() {
+    public CloseGrabber() {
     	requires(Robot.grabber);
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);

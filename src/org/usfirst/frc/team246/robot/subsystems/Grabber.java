@@ -30,5 +30,9 @@ public class Grabber extends Subsystem {
     	leftCylinder.set(DoubleSolenoid.Value.kForward);
     	rightCylinder.set(DoubleSolenoid.Value.kForward);
     }
+    public DoubleSolenoid.Value getPosition()
+    {
+    	return leftCylinder.get();
+    }
 }
 
