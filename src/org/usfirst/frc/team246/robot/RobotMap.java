@@ -131,11 +131,13 @@ public class RobotMap {
 	
 	//Sensors
 	
-	public static Encoder pusherEncoder;
+	public static AnalogPotentiometer pusherPot;
 	
 	//Constants
 	
-	public static final double PUSHER_ENCODER_DISTANCE_PER_TICK = 1; //TODO: Get this constant
+	public static final double PUSHER_kP = 1;
+	public static final double PUSHER_kI = 0;
+	public static final double PUSHER_kD = 0;
 	
 //Arm
 	
@@ -243,10 +245,10 @@ public class RobotMap {
 		
 		//Pneumatics
 		
-//		leftGetterCylinder = new DoubleSolenoid(0,1);
-//		LiveWindow.addActuator("Getters", "leftGetterCylinder", leftGetterCylinder);
-//		rightGetterCylinder = new DoubleSolenoid(2,3);
-//		LiveWindow.addActuator("Getters", "rightGetterCylinder", rightGetterCylinder);
+		leftGetterCylinder = new DoubleSolenoid(0,1);
+		LiveWindow.addActuator("Getters", "leftGetterCylinder", leftGetterCylinder);
+		rightGetterCylinder = new DoubleSolenoid(2,3);
+		LiveWindow.addActuator("Getters", "rightGetterCylinder", rightGetterCylinder);
 		
 	//Forklift
 		
@@ -270,21 +272,19 @@ public class RobotMap {
 		
 		//Sensors
 		
-		pusherEncoder = new Encoder(13, 14); //TODO: Get this constant
-		pusherEncoder.setDistancePerPulse(PUSHER_ENCODER_DISTANCE_PER_TICK); 
-		pusherEncoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kDistance);
-		LiveWindow.addSensor("Pusher", "pusherEncoder", pusherEncoder);
+		pusherPot = new AnalogPotentiometer(1, 1); //TODO: Get this constant
+		LiveWindow.addSensor("Pusher", "pusherEncoder", pusherPot);
 		
 	//Arm
 		
 		//Motors
 		
-//		armShoulderMotor = new VictorSP(10);
-//		LiveWindow.addActuator("Arm", "armShoulderMotor", armShoulderMotor);
-//		armElbowMotor = new VictorSP(11);
-//		LiveWindow.addActuator("Arm", "armElbowMotor", armElbowMotor);
-//		armWristMotor = new VictorSP(12);
-//		LiveWindow.addActuator("Arm", "armWristMotor", armWristMotor);
+		armShoulderMotor = new VictorSP(10);
+		LiveWindow.addActuator("Arm", "armShoulderMotor", armShoulderMotor);
+		armElbowMotor = new VictorSP(11);
+		LiveWindow.addActuator("Arm", "armElbowMotor", armElbowMotor);
+		armWristMotor = new VictorSP(12);
+		LiveWindow.addActuator("Arm", "armWristMotor", armWristMotor);
 		
 		//Sensors
 		
@@ -299,14 +299,14 @@ public class RobotMap {
 		
 		//Pneumatics
 		
-//		leftGrabberCylinder = new DoubleSolenoid(4,5);
-//		LiveWindow.addActuator("Grabber", "leftGrabberCylinder", leftGrabberCylinder);
-//		rightGrabberCylinder = new DoubleSolenoid(6,7);
-//		LiveWindow.addActuator("Grabber",  "rightGrabberCylinder", rightGrabberCylinder);
+		leftGrabberCylinder = new DoubleSolenoid(4,5);
+		LiveWindow.addActuator("Grabber", "leftGrabberCylinder", leftGrabberCylinder);
+		rightGrabberCylinder = new DoubleSolenoid(6,7);
+		LiveWindow.addActuator("Grabber",  "rightGrabberCylinder", rightGrabberCylinder);
 		
 		//Sensors
 		
-		canDetector = new DigitalInput(15);
+		canDetector = new DigitalInput(13);
 		LiveWindow.addActuator("Grabber", "canDetector", canDetector);
 	}
 }
