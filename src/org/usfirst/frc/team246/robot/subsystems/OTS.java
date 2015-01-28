@@ -1,30 +1,30 @@
 package org.usfirst.frc.team246.robot.subsystems;
 
+import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.RobotMap;
-import org.usfirst.frc.team246.robot.commands.RetractPusher;
+import org.usfirst.frc.team246.robot.commands.OTSController;
 
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 
 /**
  *
  */
-public class Pusher extends PIDSubsystem {
+public class OTS extends PIDSubsystem {
 
     // Initialize your subsystem here
-    public Pusher() {
-        super(RobotMap.PUSHER_kP, RobotMap.PUSHER_kI, RobotMap.PUSHER_kD);
-        this.setAbsoluteTolerance(.05);
+    public OTS() {
+    	super("OTS", RobotMap.OTS_kP, RobotMap.OTS_kI, RobotMap.OTS_kD, RobotMap.OTS_kF);
     }
     
     public void initDefaultCommand() {
-        setDefaultCommand(new RetractPusher());
+        setDefaultCommand(new OTSController());
     }
     
     protected double returnPIDInput() {
-    	return RobotMap.pusherPot.get();
+    	return Robot.otsRPM;
     }
     
     protected void usePIDOutput(double output) {
-        RobotMap.pusherMotor.set(output);
+        RobotMap.otsMotor.set(output);
     }
 }

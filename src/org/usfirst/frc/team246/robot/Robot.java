@@ -1,12 +1,23 @@
 
 package org.usfirst.frc.team246.robot;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.BitSet;
+
+import org.usfirst.frc.team246.robot.overclockedLibraries.SwerveModule;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Victor246;
 import org.usfirst.frc.team246.robot.subsystems.Arm;
 import org.usfirst.frc.team246.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team246.robot.subsystems.Forklift;
 import org.usfirst.frc.team246.robot.subsystems.Getters;
 import org.usfirst.frc.team246.robot.subsystems.Grabber;
+import org.usfirst.frc.team246.robot.subsystems.OTS;
 import org.usfirst.frc.team246.robot.subsystems.Pusher;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -25,8 +36,17 @@ public class Robot extends IterativeRobot {
 
 	public static OI oi;
 	
+	public static boolean beagleBoneConnected = true;
+	public static boolean requestCorner = false;
+	
+	public static double toteCornerX = 65536;
+	public static double toteCornerY = 65536;
+	public static int toteAngle = 255;
+	public static double toteDistance = 65536;
+	public static double otsRPM = 0;
+	
 	public static boolean test1 = false;
-	public static boolean test2 = true;
+	public static boolean test2 = false;
 	public static boolean gyroDisabled = false;
 	public static boolean gasMode = true;
 	public static boolean trojan = true;
@@ -37,6 +57,7 @@ public class Robot extends IterativeRobot {
 	public static Pusher pusher;
 	public static Arm arm;
 	public static Grabber grabber;
+	public static OTS ots;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -53,6 +74,9 @@ public class Robot extends IterativeRobot {
         pusher = new Pusher();
         arm = new Arm();
         grabber = new Grabber();
+        ots = new OTS();
+        
+        //(new Thread(new BeagleBoneCollector())).start();
         
         if(test1)
         {
@@ -226,5 +250,74 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("Heading", RobotMap.navX.getYaw());
         
         gyroDisabled = !SmartDashboard.getBoolean("field-centric", true);
+        
+        if(isEnabled())
+        {
+        	//Tote possession indicator
+        	SmartDashboard.putBoolean("haveTote", toteDistance <= RobotMap.OTS_FULL_TOTE_DISTANCE);
+        }
     }
+    
+    public class BeagleBoneCollector implements Runnable {
+		
+    	public DatagramSocket beagleBone;
+    	
+    	public void run() {
+			try {
+				beagleBone = new DatagramSocket(5800);
+			} catch (SocketException e) {
+				beagleBoneConnected = false;
+				e.printStackTrace();
+			}
+			while(isEnabled())
+			{
+				byte[] data = new byte[1];
+		        InetAddress address = null;
+		        int port = 0;
+		        DatagramPacket packet = new DatagramPacket(data, data.length, address, port);
+		        try {
+					beagleBone.send(packet);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		     
+		        data = new byte[9];
+		        packet = new DatagramPacket(data, data.length);
+		        try {
+					beagleBone.receive(packet);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		        
+		        toteCornerX = littleEndianConcatenation(data[0], data [1])/25.4;
+		        toteCornerY = littleEndianConcatenation(data[2], data[3])/25.4;
+		        toteAngle = data[4];
+		        toteDistance = littleEndianConcatenation(data[5], data[6])/25.4;
+		        otsRPM = littleEndianConcatenation(data[7], data[8]);
+			}
+			beagleBone.close();
+		}
+    	
+    	public int littleEndianConcatenation(byte byte1, byte byte2)
+    	{
+    		byte[] arr1 = {byte1};
+    		BitSet bits1 = BitSet.valueOf(arr1);
+    		byte[] arr2 = {byte2};
+    		BitSet bits2 = BitSet.valueOf(arr2);
+    		BitSet resultBits = bits1;
+    		for(int i = 0; i < bits2.size(); i++)
+    		{
+    			bits1.set(bits1.size(), bits2.get(i));
+    		}
+    		int result = 0;
+    		for(int i = 0; i < resultBits.size(); i++)
+    		{
+    			if(resultBits.get(i))
+    			{
+    				result += Math.pow(2, i);
+    			}
+    		}
+    		return result;
+    	}
+	}
 }

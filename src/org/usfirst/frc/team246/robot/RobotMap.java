@@ -61,9 +61,9 @@ public class RobotMap {
 	public static final double WHEEL_kD = 0;
 	public static final double WHEEL_kF = 0;
 	
-	public static final double MODULE_kP = .035;
+	public static final double MODULE_kP = .015;
 	public static final double MODULE_kI = 0;
-	public static final double MODULE_kD = .025;
+	public static final double MODULE_kD = .011;
 	public static final double MODULE_kF = 0;
 	
     public static final double K_MODULE_ANGLE_DELTA = 1;
@@ -107,8 +107,10 @@ public class RobotMap {
 	public static final double LIFT_MAX_HEIGHT = 3;
 	public static final double LIFT_MIN_HEIGHT = 0;
 	
+	public static final double LIFT_BELOW_TOTE_HEIGHT = .9;
+	
 	public enum ArmSetpoints {
-		GROUND(-5), SCORING_PLATFORM(2), STEP(6.25);
+		GROUND(0), SCORING_PLATFORM(.2), STEP(.6);
 		
 		private double value;
 		
@@ -153,6 +155,44 @@ public class RobotMap {
 	public static AnalogPotentiometer armElbowPot;
 	public static AnalogPotentiometer armWristPot;
 	
+	//Constants
+	
+	public static final double ARM_SHOULDER_kP = 1;
+	public static final double ARM_SHOULDER_kI = 0;
+	public static final double ARM_SHOULDER_kD = 0;
+	
+	public static final double ARM_ELBOW_kP = 1;
+	public static final double ARM_ELBOW_kI = 0;
+	public static final double ARM_ELBOW_kD = 0;
+	
+	public static final double ARM_WRIST_kP = 1;
+	public static final double ARM_WRIST_kI = 0;
+	public static final double ARM_WRIST_kD = 0;
+	
+	public static final double ARM_SEGMENT_1_LENGTH = 1;
+	public static final double ARM_SEGMENT_2_LENGTH = 1;
+	
+	public static final double ARM_SHOULDER_MIN = -45;
+	public static final double ARM_SHOULDER_MAX = 135;
+	
+	public static final double ARM_ELBOW_MIN = 30;
+	public static final double ARM_ELBOW_MAX = 330;
+	
+	public static final double ARM_WRIST_MIN = 30;
+	public static final double ARM_WRIST_MAX = 330;
+	
+	public static final double ARM_SHOULDER_HEIGHT = 1.5;
+	
+	public static final double ARM_GROUND_TOLERANCE = 2;
+	public static final double ARM_CEILING_TOLERANCE = 2;
+	
+	public static final double ARM_WIDTH = .25;
+	public static final double GRABBER_WIDTH = 1;
+	public static final double GRABBER_LENGTH = 1;
+	
+	public static final double ARM_LIFT_LOCATION = -1;
+	public static final double ARM_LIFT_HEIGHT = 2;
+	
 //Grabber
 	
 	//Pneumatics
@@ -164,7 +204,26 @@ public class RobotMap {
 	
 	public static DigitalInput canDetector;
 	
-	public static void init()
+//OTS
+	
+	//Motors
+	
+	public static VictorSP otsMotor;
+	
+	//Constants
+	
+	public static final double OTS_kP = 1;
+	public static final double OTS_kI = 1;
+	public static final double OTS_kD = 1;
+	public static final double OTS_kF = 1;
+	
+	public static final double OTS_TARGET_RPM = 300;
+
+	public static final double OTS_PARTIAL_TOTE_DISTANCE = 12;
+	public static final double OTS_FULL_TOTE_DISTANCE = 4;
+	
+	
+	static void init()
 	{
 		pdp = new PowerDistributionPanel();
 		
@@ -218,7 +277,7 @@ public class RobotMap {
         int maxTries = 5;
         while(true) {
             try {
-                navX = new IMUAdvanced(new SerialPort(57600,SerialPort.Port.kUSB), (byte)50);
+                navX = new IMUAdvanced(new SerialPort(57600,SerialPort.Port.kMXP), (byte)50);
                 if(navX != null) break;
             } catch (Exception e) {
                 if (++count == maxTries)
@@ -245,10 +304,13 @@ public class RobotMap {
 		
 		//Pneumatics
 		
-		leftGetterCylinder = new DoubleSolenoid(0,1);
-		LiveWindow.addActuator("Getters", "leftGetterCylinder", leftGetterCylinder);
-		rightGetterCylinder = new DoubleSolenoid(2,3);
-		LiveWindow.addActuator("Getters", "rightGetterCylinder", rightGetterCylinder);
+		if(!Robot.trojan)
+		{
+			leftGetterCylinder = new DoubleSolenoid(0,1);
+			LiveWindow.addActuator("Getters", "leftGetterCylinder", leftGetterCylinder);
+			rightGetterCylinder = new DoubleSolenoid(2,3);
+			LiveWindow.addActuator("Getters", "rightGetterCylinder", rightGetterCylinder);
+		}
 		
 	//Forklift
 		
@@ -279,11 +341,11 @@ public class RobotMap {
 		
 		//Motors
 		
-		armShoulderMotor = new VictorSP(10);
+		armShoulderMotor = new VictorSP(14);
 		LiveWindow.addActuator("Arm", "armShoulderMotor", armShoulderMotor);
-		armElbowMotor = new VictorSP(11);
+		armElbowMotor = new VictorSP(15);
 		LiveWindow.addActuator("Arm", "armElbowMotor", armElbowMotor);
-		armWristMotor = new VictorSP(12);
+		armWristMotor = new VictorSP(16);
 		LiveWindow.addActuator("Arm", "armWristMotor", armWristMotor);
 		
 		//Sensors
@@ -297,16 +359,25 @@ public class RobotMap {
 		
 	//Grabber
 		
-		//Pneumatics
-		
-		leftGrabberCylinder = new DoubleSolenoid(4,5);
-		LiveWindow.addActuator("Grabber", "leftGrabberCylinder", leftGrabberCylinder);
-		rightGrabberCylinder = new DoubleSolenoid(6,7);
-		LiveWindow.addActuator("Grabber",  "rightGrabberCylinder", rightGrabberCylinder);
+	//Pneumatics
+			
+		if(!Robot.trojan)
+		{
+			leftGrabberCylinder = new DoubleSolenoid(4,5);
+			LiveWindow.addActuator("Grabber", "leftGrabberCylinder", leftGrabberCylinder);
+			rightGrabberCylinder = new DoubleSolenoid(6,7);
+			LiveWindow.addActuator("Grabber",  "rightGrabberCylinder", rightGrabberCylinder);
+		}
 		
 		//Sensors
 		
 		canDetector = new DigitalInput(13);
 		LiveWindow.addActuator("Grabber", "canDetector", canDetector);
+		
+	//OTS
+		
+		//Motors
+		
+		otsMotor = new VictorSP(17);
 	}
 }

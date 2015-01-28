@@ -1,4 +1,7 @@
-package org.usfirst.frc.team246.robot;
+package org.usfirst.frc.team246.robot.overclockedLibraries;
+
+import org.usfirst.frc.team246.robot.Robot;
+import org.usfirst.frc.team246.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
@@ -15,7 +18,7 @@ public class SwerveModule
     double x; //the horizontal distance between this wheel and the center of the robot
     double y; //the vertical distance between this wheel and the center of the robot
     
-    String name;
+    public String name;
     
     public Encoder wheelEncoder; //the encoder measuring wheel speed
 
