@@ -31,7 +31,7 @@ public class Drivetrain extends Subsystem {
     public Drivetrain()
     {
     	backModule = new SwerveModule(RobotMap.backWheelEncoder, RobotMap.backModuleEncoder, RobotMap.backWheelMotor, RobotMap.backModuleMotor, 0, -32.5, "backModule");
-    	leftModule = new SwerveModule(RobotMap.leftWheelEncoder, RobotMap.leftModuleEncoder, RobotMap.leftWheelMotor, RobotMap.leftModuleMotor, 17.25, 0, "leftModule");
+    	leftModule = new SwerveModule(RobotMap.leftWheelEncoder, RobotMap.leftModuleEncoder, RobotMap.leftWheelMotor, RobotMap.leftModuleMotor, -17.25, 0, "leftModule");
     	rightModule = new SwerveModule(RobotMap.rightWheelEncoder, RobotMap.rightModuleEncoder, RobotMap.rightWheelMotor, RobotMap.rightModuleMotor, 17.25, 0, "rightModule");
     	swerves = new SwerveModule[3];
     	swerves[0] = backModule;

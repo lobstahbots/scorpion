@@ -95,18 +95,16 @@ public class SwerveModule
             double setPointBackward = angle + 180; // angle setpoint if we want the wheel to move backwards
 
             //The following code ensures that our 2 potential setpoints are the ones closest to our current angle
-            while(Math.abs(setPointForward - moduleEncoder.getDistance()) > 180
-                    && Math.abs(setPointForward) < RobotMap.MAX_MODULE_ANGLE - 180) // while setPointForward is not the closest possible angle to moduleEncoder and getting closer would not bring it past MAX_MOUDLE_ROTATIONS
+            while(Math.abs(setPointForward - moduleEncoder.getDistance()) > 180)
             {
-                if(setPointForward - moduleEncoder.getDistance() < 0) setPointForward += 360; //if we need to add 360 to get closer to moduleEncoder, do so
-                else setPointForward -= 360; //else subtract 360
+                if(setPointForward - moduleEncoder.getDistance() < 0 && setPointForward < RobotMap.MAX_MODULE_ANGLE - 360) setPointForward += 360; //if we need to add 360 to get closer to moduleEncoder, do so
+                else if (setPointForward - moduleEncoder.getDistance() > 0 && setPointForward > -RobotMap.MAX_MODULE_ANGLE + 360) setPointForward -= 360; //else subtract 360
             }
 
-            while(Math.abs(setPointBackward - moduleEncoder.getDistance()) > 180
-                    && Math.abs(setPointBackward) < RobotMap.MAX_MODULE_ANGLE - 180) // while setPointBackward is not the closest possible angle to moduleEncoder and getting closer would not bring it past MAX_MOUDLE_ROTATIONS
+            while(Math.abs(setPointBackward - moduleEncoder.getDistance()) > 180)
             {
-                if(setPointBackward - moduleEncoder.getDistance() < 0) setPointBackward += 360; //if we need to add 360 to get closer to moduleEncoder, do so
-                else setPointBackward -= 360; //else subtract 360
+                if(setPointBackward - moduleEncoder.getDistance() < 0 && setPointBackward < RobotMap.MAX_MODULE_ANGLE - 360) setPointBackward += 360; //if we need to add 360 to get closer to moduleEncoder, do so
+                else if (setPointBackward - moduleEncoder.getDistance() > 0 && setPointBackward > -RobotMap.MAX_MODULE_ANGLE + 360) setPointBackward -= 360; //else subtract 360
             }
 
             //rating for how desirable each setpoint is. Higher numbers are better
@@ -156,7 +154,7 @@ public class SwerveModule
                 speedPID.setPID(SmartDashboard.getNumber("speedP", RobotMap.WHEEL_kP), SmartDashboard.getNumber("speedI", RobotMap.WHEEL_kI), SmartDashboard.getNumber("speedD", RobotMap.WHEEL_kD), SmartDashboard.getNumber("speedF", RobotMap.WHEEL_kF));
             }
             speedPID.enable();
-            speedPID.setSetpoint(speed*RobotMap.WHEEL_TOP_ABSOLUTE_SPEED);
+            speedPID.setSetpoint(RobotMap.WHEEL_TOP_ABSOLUTE_SPEED*speed);
         }
         else
         {
