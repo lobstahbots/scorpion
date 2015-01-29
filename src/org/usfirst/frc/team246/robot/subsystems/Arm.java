@@ -2,6 +2,7 @@ package org.usfirst.frc.team246.robot.subsystems;
 
 import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.RobotMap;
+import org.usfirst.frc.team246.robot.commands.ManualArm;
 import org.usfirst.frc.team246.robot.overclockedLibraries.V4BPIDController;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
 
@@ -32,14 +33,13 @@ public class Arm extends Subsystem {
     }
     
     public void initDefaultCommand() {
-        // Set the default command for a subsystem here.
-        //setDefaultCommand(new MySpecialCommand());
+        setDefaultCommand(new ManualArm());
     }
     
     //The location of the arm is described, in feet, by the vector between the shoulder joint and the wrist joint
     //wristAngle should be a number from -180 thru 180 with 0 being towards the right
     //coordinate systems are a mess in this method. I will try to document them better/standardize them in the future.
-    public void move(double x, double y, double wristAngle)
+    public void set(double x, double y, double wristAngle)
     {	
     	if(y < -RobotMap.ARM_SHOULDER_HEIGHT + RobotMap.ARM_GROUND_TOLERANCE + RobotMap.ARM_WIDTH) y = -RobotMap.ARM_SHOULDER_HEIGHT + RobotMap.ARM_GROUND_TOLERANCE + RobotMap.ARM_WIDTH;
     	if(y > 78/12 - RobotMap.ARM_SHOULDER_HEIGHT - RobotMap.ARM_CEILING_TOLERANCE + RobotMap.ARM_WIDTH) y = 78/12 - RobotMap.ARM_SHOULDER_HEIGHT - RobotMap.ARM_CEILING_TOLERANCE + RobotMap.ARM_WIDTH;
@@ -166,9 +166,45 @@ public class Arm extends Subsystem {
     	return new Vector2D(false, RobotMap.ARM_SEGMENT_2_LENGTH, RobotMap.armElbowPot.get());
     }
     
+    public Vector2D getTargetVector()
+    {
+    	return Vector2D.addVectors(getSegment1TargetVector(), getSegment2TargetVector());
+    }
+    
+    public Vector2D getSegment1TargetVector()
+    {
+    	return new Vector2D(false, RobotMap.ARM_SEGMENT_1_LENGTH, shoulder.getSetpoint());
+    }
+    
+    public Vector2D getSegment2TargetVector()
+    {
+    	return new Vector2D(false, RobotMap.ARM_SEGMENT_2_LENGTH, elbow.getSetpoint());
+    }
+    
     public double getWrist()
     {
     	return RobotMap.armWristPot.get();
+    }
+    
+    public boolean inTolerance()
+    {
+    	return Math.abs(getVector().getX() - getTargetVector().getX()) < .1 && Math.abs(getVector().getY() - getTargetVector().getY()) < .1 && Math.abs(RobotMap.armWristPot.get() - wrist.getSetpoint()) < 2;
+    }
+    
+    public void pidOn(boolean on)
+    {
+    	if(on)
+    	{
+    		shoulder.enable();
+    		elbow.enable();
+    		wrist.enable();
+    	}
+    	else
+    	{
+    		shoulder.disable();
+    		elbow.disable();
+    		wrist.disable();
+    	}
     }
     
     //returns an angle in a triangle given 3 sides

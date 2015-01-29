@@ -1,28 +1,28 @@
 package org.usfirst.frc.team246.robot.commands;
 
 import org.usfirst.frc.team246.robot.Robot;
-import org.usfirst.frc.team246.robot.subsystems.Forklift;
+import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
-public class ManualForklift extends Command {
+public class ManualArm extends Command {
 
-	Forklift f = Robot.forklift;
-    public ManualForklift() {
-        requires(f);
+    public ManualArm() {
+        requires(Robot.arm);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	f.enable();
+    	Robot.arm.pidOn(true);
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	f.setSetpoint(Robot.oi.operator.getTriggersAxis() + Robot.forklift.getPosition());
+    	Vector2D v = Robot.arm.getVector();
+    	Robot.arm.set(v.getX() + Robot.oi.operator.getRightXAxis(), v.getY() + Robot.oi.operator.getRightYAxis(), Robot.arm.getWrist() + Robot.oi.operator.getLeftYAxis());
     }
 
     // Make this return true when this Command no longer needs to run execute()
