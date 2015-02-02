@@ -208,7 +208,7 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
         if (calculated_yaw > 180) {
             calculated_yaw -= 360;
         }
-        return calculated_yaw;
+        return -calculated_yaw;
     }
 
     /**

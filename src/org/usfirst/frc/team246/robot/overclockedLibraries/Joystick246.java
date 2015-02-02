@@ -50,4 +50,10 @@ public class Joystick246 extends Joystick{
         if(Math.abs(val) <= deadband) return 0;
         else return val;
     }
+    
+    @Override
+    public double getDirectionRadians()
+    {
+    	return -super.getDirectionRadians();
+    }
 }

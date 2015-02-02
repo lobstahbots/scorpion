@@ -26,9 +26,8 @@ public abstract class DrivingCommand extends Command {
         Robot.drivetrain.setFOV(updateHeading());
         
         Vector2D crabVector = getCrabVector();
-        crabVector.setAngle(crabVector.getAngle() + Robot.drivetrain.getFOV());
+        crabVector.setAngle(crabVector.getAngle() - Robot.drivetrain.getFOV());
         Vector2D COR = getCOR();
-        COR.setAngle(COR.getAngle() + Robot.drivetrain.getFOV());
         
         Robot.drivetrain.drive(crabVector.getMagnitude(), crabVector.getAngle(), getSpinRate(), COR.getX(), COR.getY());
     }

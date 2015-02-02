@@ -99,12 +99,14 @@ public class SwerveModule
             {
                 if(setPointForward - moduleEncoder.getDistance() < 0 && setPointForward < RobotMap.MAX_MODULE_ANGLE - 360) setPointForward += 360; //if we need to add 360 to get closer to moduleEncoder, do so
                 else if (setPointForward - moduleEncoder.getDistance() > 0 && setPointForward > -RobotMap.MAX_MODULE_ANGLE + 360) setPointForward -= 360; //else subtract 360
+                else break;
             }
 
             while(Math.abs(setPointBackward - moduleEncoder.getDistance()) > 180)
             {
                 if(setPointBackward - moduleEncoder.getDistance() < 0 && setPointBackward < RobotMap.MAX_MODULE_ANGLE - 360) setPointBackward += 360; //if we need to add 360 to get closer to moduleEncoder, do so
                 else if (setPointBackward - moduleEncoder.getDistance() > 0 && setPointBackward > -RobotMap.MAX_MODULE_ANGLE + 360) setPointBackward -= 360; //else subtract 360
+                else break;
             }
 
             //rating for how desirable each setpoint is. Higher numbers are better

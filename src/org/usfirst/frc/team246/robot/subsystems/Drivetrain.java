@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.Timer;
 import org.usfirst.frc.team246.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 /**
  * This is the heart of the swerve code. All vector calculations are done here.
@@ -38,7 +39,9 @@ public class Drivetrain extends Subsystem {
     	swerves[1] = leftModule;
     	swerves[2] = rightModule;
         
-        absoluteTwistPID = new PIDController(ABSOLUTE_TWIST_kP, ABSOLUTE_TWIST_kI, ABSOLUTE_TWIST_kD, ABSOLUTE_TWIST_kF, RobotMap.navX, absoluteTwistPIDOutput, ABSOLUTE_TWIST_PERIOD);
+        absoluteTwistPID = new PIDController(RobotMap.ABSOLUTE_TWIST_kP, RobotMap.ABSOLUTE_TWIST_kI, RobotMap.ABSOLUTE_TWIST_kD, RobotMap.navX, absoluteTwistPIDOutput);
+        absoluteTwistPID.setInputRange(-180, 180);
+        absoluteTwistPID.setContinuous();
     }
 
     public void initDefaultCommand() {
@@ -87,7 +90,7 @@ public class Drivetrain extends Subsystem {
 //        rotate the moduleLocations vectors -90 degrees.
         Vector2D[] moduleSetpoints = new Vector2D[swerves.length];
         for(int i=0; i<moduleSetpoints.length; i++){
-            moduleSetpoints[i] = new Vector2D(true, -moduleLocations[i].getY(), moduleLocations[i].getX());
+            moduleSetpoints[i] = new Vector2D(true, moduleLocations[i].getY(), -moduleLocations[i].getX());
             moduleSetpoints[i].setMagnitude(rate*moduleDists[i]/moduleDists[farthestModule]); //The furthest module should move at the same speed as the rate, and all of the other ones should scale directly porportionally to it based on the ratio of their distances to the center of rotation.
         }
         return moduleSetpoints;
@@ -96,7 +99,6 @@ public class Drivetrain extends Subsystem {
     //The primary driving method. Adds the crab and snake vectors together, allowing the robot to drive in any direction while rotating at the same time.
     public void drive(double speed, double direction, double spinRate, double corX, double corY)
     {
-    	System.out.println("spinRate: " + spinRate);
         Vector2D[] moduleSetpoints = new Vector2D[swerves.length];
         Vector2D[] crab = crab(direction, speed);
         Vector2D[] snake = snake(spinRate, corX, corY);
@@ -129,14 +131,9 @@ public class Drivetrain extends Subsystem {
     
     //Code for turning the robot to a certain angle relative to the field
     
-    public static final double ABSOLUTE_TWIST_kP = 1;
-    public static final double ABSOLUTE_TWIST_kI = 0;
-    public static final double ABSOLUTE_TWIST_kD = 0;
-    public static final double ABSOLUTE_TWIST_kF = 0;
-    public static final double ABSOLUTE_TWIST_PERIOD = 20;
     public AbsoluteTwistPIDOutput absoluteTwistPIDOutput = new AbsoluteTwistPIDOutput();
     
-    PIDController absoluteTwistPID;
+    public PIDController absoluteTwistPID;
     
     /**
      *@author Paul Terrasi
@@ -148,7 +145,7 @@ public class Drivetrain extends Subsystem {
         public double direction = 0;
         
         public void pidWrite(double output) {
-            drive(speed, direction, output, 0, 0);
+            drive(speed, direction, output, 0, -11.67);
         }
 
     }
@@ -156,10 +153,11 @@ public class Drivetrain extends Subsystem {
     public void driveAbsoluteTwist(double speed, double direction, double absoluteAngle){
         absoluteTwistPIDOutput.speed = speed;
         absoluteTwistPIDOutput.direction = direction;
-        absoluteTwistPID.setSetpoint(absoluteAngle - FOV);
+        absoluteTwistPID.setSetpoint(absoluteAngle);
     }
     
     public void enableAbsoluteTwist(boolean on) {
+    	System.out.println(on);
         if(on) absoluteTwistPID.enable();
         else absoluteTwistPID.disable();
     }

@@ -2,6 +2,7 @@ package org.usfirst.frc.team246.robot;
 
 import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
 import org.usfirst.frc.team246.robot.commands.CloseGrabber;
+import org.usfirst.frc.team246.robot.commands.CrabWithAbsoluteTwist;
 import org.usfirst.frc.team246.robot.commands.DeployLeftGetter;
 import org.usfirst.frc.team246.robot.commands.DeployRightGetter;
 import org.usfirst.frc.team246.robot.commands.Intake;
@@ -17,6 +18,7 @@ import org.usfirst.frc.team246.robot.overclockedLibraries.LogitechF310;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Toggle;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.buttons.Trigger;
 
 /**
@@ -41,6 +43,9 @@ public class OI {
         operatorJoystick = new Joystick246(3);
         operatorJoystick.setDeadband(.1);
         
+        (new JoystickButton(driverLeftJoystick, 1)).whileHeld(new CrabWithAbsoluteTwist());
+        
+        (new JoystickButton(driverRightJoystick, 2)).whileHeld(new Intake());
         /*
         operator.getLeft().whenPressed(new MoveForklift(ArmSetpoints.SCORING_PLATFORM));
         operator.getRight().whenPressed(new MoveForklift(ArmSetpoints.GROUND));

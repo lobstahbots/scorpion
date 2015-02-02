@@ -10,6 +10,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.BitSet;
 
+import org.usfirst.frc.team246.nav6.IMUAdvanced;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SwerveModule;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Victor246;
 import org.usfirst.frc.team246.robot.subsystems.Arm;
@@ -20,7 +21,10 @@ import org.usfirst.frc.team246.robot.subsystems.Grabber;
 import org.usfirst.frc.team246.robot.subsystems.OTS;
 import org.usfirst.frc.team246.robot.subsystems.Pusher;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -47,8 +51,9 @@ public class Robot extends IterativeRobot {
 	
 	public static boolean test1 = false;
 	public static boolean test2 = false;
+	public static boolean test3 = true;
 	public static boolean gyroDisabled = false;
-	public static boolean gasMode = true;
+	public static boolean gasMode = false;
 	public static boolean trojan = true;
 	
 	public static Drivetrain drivetrain;
@@ -66,8 +71,6 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
         RobotMap.init();
         
-        oi = new OI();
-        
         drivetrain = new Drivetrain();
         getters = new Getters();
         forklift = new Forklift();
@@ -76,7 +79,10 @@ public class Robot extends IterativeRobot {
         grabber = new Grabber();
         ots = new OTS();
         
+        oi = new OI();
+        
         //(new Thread(new BeagleBoneCollector())).start();
+        (new Thread(new ShutDownDetector())).start();
         
         if(test1)
         {
@@ -104,6 +110,12 @@ public class Robot extends IterativeRobot {
             SmartDashboard.putNumber("leftModuleSpeedSetpoint", 0);
             SmartDashboard.putNumber("rightModuleSpeedSetpoint", 0);
             SmartDashboard.putNumber("spinRate", 0);
+        }
+        if(test3)
+        {
+        	SmartDashboard.putNumber("absoluteTwistP", 0);
+        	SmartDashboard.putNumber("absoluteTwistI", 0);
+        	SmartDashboard.putNumber("absoluteTwistD", 0);
         }
         
         SmartDashboard.putBoolean("motorKilled", false);
@@ -164,6 +176,11 @@ public class Robot extends IterativeRobot {
             SmartDashboard.putNumber("backModuleSpeedSetpoint", drivetrain.backModule.getSpeedSetpoint());
             SmartDashboard.putNumber("leftModuleSpeedSetpoint", drivetrain.leftModule.getSpeedSetpoint());
             SmartDashboard.putNumber("rightModuleSpeedSetpoint", drivetrain.rightModule.getSpeedSetpoint());
+        }
+        if(test3)
+        {
+        	drivetrain.absoluteTwistPID.setPID(SmartDashboard.getNumber("absoluteTwistP"), SmartDashboard.getNumber("absoluteTwistI"), SmartDashboard.getNumber("absoluteTwistD"));
+        	
         }
         if(test1)
         {
@@ -228,7 +245,6 @@ public class Robot extends IterativeRobot {
     {
         //This is a safety to prevent any of the modules from rotating too far and overtwisting the wires. 
         //If any module angle surpasses RobotMap.UNSAFE_MODULE_ANGLE, the motor controlling it will be automatically shut off
-        
     	for(int i=0; i<drivetrain.swerves.length; i++)
     	{
     		if(Math.abs(drivetrain.swerves[i].getModuleAngle()) > RobotMap.UNSAFE_MODULE_ANGLE)
@@ -320,4 +336,30 @@ public class Robot extends IterativeRobot {
     		return result;
     	}
 	}
+    
+    class ShutDownDetector implements Runnable
+    {
+    	double lastTime = 0;
+    	
+		@Override
+		public void run() {
+			double time = Timer.getFPGATimestamp();
+			
+			DriverStation ds = DriverStation.getInstance();
+			
+			if(time - lastTime > .01)
+			{
+				System.out.println(time - lastTime);
+				System.out.println(ds.getBatteryVoltage());
+				System.out.println(ds.isEnabled());
+				System.out.println(ds.isSysActive());
+				System.out.println(ds.isBrownedOut());
+				System.out.println(ds.isDSAttached());
+				
+			}
+			lastTime = time;
+			Timer.delay(.001);
+		}
+    	
+    }
 }

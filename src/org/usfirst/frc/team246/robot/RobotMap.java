@@ -53,18 +53,22 @@ public class RobotMap {
 	
 	//constants
 	
-	public static final double WHEEL_ENCODER_DISTANCE_PER_TICK = .0123;
+	public static final double WHEEL_ENCODER_DISTANCE_PER_TICK = .5*Math.PI/256;
 	public static final double MODULE_ENCODER_DISTANCE_PER_TICK = 360./(256.*2.);
 		
-	public static final double WHEEL_kP = 0;
-	public static final double WHEEL_kI = 1;
+	public static final double WHEEL_kP = 0.15;
+	public static final double WHEEL_kI = 0;
 	public static final double WHEEL_kD = 0;
-	public static final double WHEEL_kF = 0;
+	public static final double WHEEL_kF = 0.075;
 	
 	public static final double MODULE_kP = .015;
 	public static final double MODULE_kI = 0;
 	public static final double MODULE_kD = .011;
 	public static final double MODULE_kF = 0;
+	
+	public static final double ABSOLUTE_TWIST_kP = .01;
+    public static final double ABSOLUTE_TWIST_kI = .0001;
+    public static final double ABSOLUTE_TWIST_kD = .06;
 	
     public static final double K_MODULE_ANGLE_DELTA = 1;
     public static final double K_MODULE_ANGLE_TWIST = 0;
@@ -73,7 +77,7 @@ public class RobotMap {
     public static final double MAX_MODULE_ANGLE = 360; //the maximum angle which can be commanded to a module
     public static final double UNSAFE_MODULE_ANGLE = MAX_MODULE_ANGLE + 180; //the angle at which a module motor should be emergency stopped
     
-    public static final double WHEEL_TOP_ABSOLUTE_SPEED = 11; //the highest speed that our wheels can move
+    public static final double WHEEL_TOP_ABSOLUTE_SPEED = 12; //the highest speed that our wheels can move
 	
 //Getters
 	
