@@ -43,32 +43,29 @@ public class RobotMap {
 	public static Encoder leftWheelEncoder;
 	public static Encoder rightWheelEncoder;
 	
-	public static Encoder backModuleEncoder;
-	public static Encoder leftModuleEncoder;
-	public static Encoder rightModuleEncoder;
+	public static AnalogPotentiometer backModulePot;
+	public static AnalogPotentiometer leftModulePot;
+	public static AnalogPotentiometer rightModulePot;
 	
 	public static IMUAdvanced navX;
-	
-	public static DigitalInput encoderZeroing;
 	
 	//constants
 	
 	public static final double WHEEL_ENCODER_DISTANCE_PER_TICK = .5*Math.PI/256;
-	public static final double MODULE_ENCODER_DISTANCE_PER_TICK = 360./(256.*2.);
 		
 	public static final double WHEEL_kP = 0.15;
 	public static final double WHEEL_kI = 0;
 	public static final double WHEEL_kD = 0;
 	public static final double WHEEL_kF = 0.075;
 	
-	public static final double MODULE_kP = .015;
+	public static final double MODULE_kP = .05;
 	public static final double MODULE_kI = 0;
-	public static final double MODULE_kD = .011;
+	public static final double MODULE_kD = .08;
 	public static final double MODULE_kF = 0;
 	
 	public static final double ABSOLUTE_TWIST_kP = .01;
     public static final double ABSOLUTE_TWIST_kI = .0001;
-    public static final double ABSOLUTE_TWIST_kD = .06;
+    public static final double ABSOLUTE_TWIST_kD = .006;
 	
     public static final double K_MODULE_ANGLE_DELTA = 1;
     public static final double K_MODULE_ANGLE_TWIST = 0;
@@ -78,6 +75,8 @@ public class RobotMap {
     public static final double UNSAFE_MODULE_ANGLE = MAX_MODULE_ANGLE + 180; //the angle at which a module motor should be emergency stopped
     
     public static final double WHEEL_TOP_ABSOLUTE_SPEED = 12; //the highest speed that our wheels can move
+    
+    public static final double crabZeroZone = .1;
 	
 //Getters
 	
@@ -113,12 +112,12 @@ public class RobotMap {
 	
 	public static final double LIFT_BELOW_TOTE_HEIGHT = .9;
 	
-	public enum ArmSetpoints {
+	public enum LiftSetpoints {
 		GROUND(0), SCORING_PLATFORM(.2), STEP(.6);
 		
 		private double value;
 		
-		private ArmSetpoints(double value)
+		private LiftSetpoints(double value)
 		{
 			this.value = value;
 		}
@@ -197,6 +196,34 @@ public class RobotMap {
 	public static final double ARM_LIFT_LOCATION = -1;
 	public static final double ARM_LIFT_HEIGHT = 2;
 	
+	public enum ArmSetpoints {
+		GROUND_UPRIGHT(1, 1, 0), GROUND_FALLEN(1, 1, -90), STEP_UPRIGHT(1, 1, 0), LANDFILL_FALLEN(1, 1, -90), STORE(1, 1, 45);
+		
+		private double x;
+		private double y;
+		private double wrist;
+		
+		private ArmSetpoints(double x, double y, double wrist)
+		{
+			this.x = x;
+			this.y = y;
+			this.wrist = wrist;
+		}
+		
+		public double getX()
+		{
+			return x;
+		}
+		public double getY()
+		{
+			return y;
+		}
+		public double getWrist()
+		{
+			return wrist;
+		}
+	}
+	
 //Grabber
 	
 	//Pneumatics
@@ -254,27 +281,21 @@ public class RobotMap {
 	    backWheelEncoder.setDistancePerPulse(WHEEL_ENCODER_DISTANCE_PER_TICK);
 	    backWheelEncoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kRate); // have encoder measure rate, not distance
 	    LiveWindow.addSensor("Drivetrain", "backWheelEncoder", backWheelEncoder);
-		leftWheelEncoder = new Encoder(4,5);
+		leftWheelEncoder = new Encoder(2,3);
 	    leftWheelEncoder.setDistancePerPulse(WHEEL_ENCODER_DISTANCE_PER_TICK);
 	    leftWheelEncoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kRate); // have encoder measure rate, not distance
 	    LiveWindow.addSensor("Drivetrain", "leftWheelEncoder", leftWheelEncoder);
-		rightWheelEncoder = new Encoder(8,9);
+		rightWheelEncoder = new Encoder(4,5);
 	    rightWheelEncoder.setDistancePerPulse(WHEEL_ENCODER_DISTANCE_PER_TICK);
 	    rightWheelEncoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kRate); // have encoder measure rate, not distance
 	    LiveWindow.addSensor("Drivetrain", "rightWheelEncoder", rightWheelEncoder);
 		
-	    backModuleEncoder = new Encoder(2,3);
-	    backModuleEncoder.setDistancePerPulse(MODULE_ENCODER_DISTANCE_PER_TICK); 
-	    backModuleEncoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kDistance); // have encoder measure distance
-	    LiveWindow.addSensor("Drivetrain", "backModuleEncoder", backModuleEncoder);
-		leftModuleEncoder = new Encoder(6,7);
-	    leftModuleEncoder.setDistancePerPulse(MODULE_ENCODER_DISTANCE_PER_TICK); 
-	    leftModuleEncoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kDistance); // have encoder measure distance
-	    LiveWindow.addSensor("Drivetrain", "leftModuleEncoder", leftModuleEncoder);
-		rightModuleEncoder = new Encoder(10,11);
-	    rightModuleEncoder.setDistancePerPulse(MODULE_ENCODER_DISTANCE_PER_TICK); 
-	    rightModuleEncoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kDistance); // have encoder measure distance
-	    LiveWindow.addSensor("Drivetrain", "rightModuleEncoder", rightModuleEncoder);
+	    backModulePot = new AnalogPotentiometer(0, 1800, -901.6);
+	    LiveWindow.addSensor("Drivetrain", "backModulePot", backModulePot);
+	    leftModulePot = new AnalogPotentiometer(1, 1800, -910.2);
+	    LiveWindow.addSensor("Drivetrain", "leftModulePot", leftModulePot);
+	    rightModulePot = new AnalogPotentiometer(2, 1800, -932.6);
+	    LiveWindow.addSensor("Drivetrain", "rightModulePot", rightModulePot);
 	    
 	  //We were having occasional errors with the creation of the nav6 object, so we make 5 attempts before allowing the error to go through and being forced to redeploy.
         int count = 0;
@@ -293,9 +314,6 @@ public class RobotMap {
             }
         }
         LiveWindow.addSensor("Drivetrain", "Gyro", navX);
-	    
-	    encoderZeroing = new DigitalInput(12);
-	    LiveWindow.addSensor("Drivetrain", "encoderZeroing", encoderZeroing);
 		
 	//Getters
 		
@@ -325,7 +343,7 @@ public class RobotMap {
 		
 		//Sensors
 		
-		liftPot = new AnalogPotentiometer(0, 5); //TODO: Get this constant
+		liftPot = new AnalogPotentiometer(3, 5); //TODO: Get this constant
 		LiveWindow.addSensor("Forklift", "liftPot", liftPot);
 		 
 		
@@ -338,7 +356,7 @@ public class RobotMap {
 		
 		//Sensors
 		
-		pusherPot = new AnalogPotentiometer(1, 1); //TODO: Get this constant
+		pusherPot = new AnalogPotentiometer(4, 1); //TODO: Get this constant
 		LiveWindow.addSensor("Pusher", "pusherEncoder", pusherPot);
 		
 	//Arm
@@ -354,11 +372,11 @@ public class RobotMap {
 		
 		//Sensors
 		
-		armShoulderPot = new AnalogPotentiometer(2, 360, 0); //TODO: Get these constants
+		armShoulderPot = new AnalogPotentiometer(5, 360, 0); //TODO: Get these constants
 		LiveWindow.addActuator("Arm", "armShoulderPot", armShoulderPot);
-		armElbowPot = new AnalogPotentiometer(3, 360, 0); //TODO: Get these constants
+		armElbowPot = new AnalogPotentiometer(6, 360, 0); //TODO: Get these constants
 		LiveWindow.addActuator("Arm", "armElbowPot", armElbowPot);
-		armWristPot = new AnalogPotentiometer(4, 360, 0); //TODO: Get these constants
+		armWristPot = new AnalogPotentiometer(7, 360, 0); //TODO: Get these constants
 		LiveWindow.addActuator("Arm", "armWristPot", armWristPot);
 		
 	//Grabber

@@ -1,15 +1,25 @@
 package org.usfirst.frc.team246.robot.overclockedLibraries;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.TalonSRX;
+import edu.wpi.first.wpilibj.Victor;
 
-public class Talon246 extends Talon implements SpeedController246{
-	
-	boolean overridden = false;
-	int pdpPort;
+/**
+ *
+ * @author Paul
+ */
+public class TalonSRX246 extends TalonSRX implements SpeedController246{
+    
+    boolean overridden = false;
+    int pdpPort;
     PowerDistributionPanel pdp;
     
-    public Talon246(final int channel, int pdpPort, PowerDistributionPanel pdp)
+    public TalonSRX246(final int channel, int pdpPort, PowerDistributionPanel pdp)
     {
     	super(channel);
     	this.pdpPort = pdpPort;

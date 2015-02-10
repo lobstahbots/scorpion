@@ -3,6 +3,7 @@ package org.usfirst.frc.team246.robot.overclockedLibraries;
 import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.RobotMap;
 
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SpeedController;
@@ -22,7 +23,7 @@ public class SwerveModule
     
     public Encoder wheelEncoder; //the encoder measuring wheel speed
 
-    public Encoder moduleEncoder; //the encoder measure module angle
+    public AnalogPotentiometer modulePot; //the encoder measure module angle
 
     public SpeedController wheelMotor; //the motor controlling wheel speed
 
@@ -35,7 +36,9 @@ public class SwerveModule
     
     public boolean unwinding = false; //if true, then the wheels will return to pointing forwards with the wires completely untwisted
     
-    public SwerveModule(Encoder wheelEncoder, Encoder moduleEncoder, SpeedController wheelMotor, SpeedController moduleMotor, double x, double y, String name)
+    public double maxSpeed;
+    
+    public SwerveModule(Encoder wheelEncoder, AnalogPotentiometer modulePot, SpeedController wheelMotor, SpeedController moduleMotor, double maxSpeed, double x, double y, String name)
     {
         // set globals
         
@@ -45,14 +48,16 @@ public class SwerveModule
         this.name = name;
         
         this.wheelEncoder = wheelEncoder;
-        this.moduleEncoder = moduleEncoder;
+        this.modulePot = modulePot;
         this.wheelMotor = wheelMotor;
         this.moduleMotor = moduleMotor;
+        
+        this.maxSpeed = maxSpeed;
         
         //initialize PID controllers
         
         speedPID = new PIDController(RobotMap.WHEEL_kP, RobotMap.WHEEL_kI, RobotMap.WHEEL_kD, RobotMap.WHEEL_kF, wheelEncoder, wheelMotor);
-        anglePID = new PIDController(RobotMap.MODULE_kP, RobotMap.MODULE_kI, RobotMap.MODULE_kD, RobotMap.MODULE_kF, moduleEncoder, moduleMotor);
+        anglePID = new PIDController(RobotMap.MODULE_kP, RobotMap.MODULE_kI, RobotMap.MODULE_kD, RobotMap.MODULE_kF, modulePot, moduleMotor, .02);
         
         speedPID.setOutputRange(-1, 1);
         anglePID.setOutputRange(-1, 1);
@@ -95,17 +100,17 @@ public class SwerveModule
             double setPointBackward = angle + 180; // angle setpoint if we want the wheel to move backwards
 
             //The following code ensures that our 2 potential setpoints are the ones closest to our current angle
-            while(Math.abs(setPointForward - moduleEncoder.getDistance()) > 180)
+            while(Math.abs(setPointForward - modulePot.get()) > 180)
             {
-                if(setPointForward - moduleEncoder.getDistance() < 0 && setPointForward < RobotMap.MAX_MODULE_ANGLE - 360) setPointForward += 360; //if we need to add 360 to get closer to moduleEncoder, do so
-                else if (setPointForward - moduleEncoder.getDistance() > 0 && setPointForward > -RobotMap.MAX_MODULE_ANGLE + 360) setPointForward -= 360; //else subtract 360
+                if(setPointForward - modulePot.get() < 0 && setPointForward < RobotMap.MAX_MODULE_ANGLE - 360) setPointForward += 360; //if we need to add 360 to get closer to moduleEncoder, do so
+                else if (setPointForward - modulePot.get() > 0 && setPointForward > -RobotMap.MAX_MODULE_ANGLE + 360) setPointForward -= 360; //else subtract 360
                 else break;
             }
 
-            while(Math.abs(setPointBackward - moduleEncoder.getDistance()) > 180)
+            while(Math.abs(setPointBackward - modulePot.get()) > 180)
             {
-                if(setPointBackward - moduleEncoder.getDistance() < 0 && setPointBackward < RobotMap.MAX_MODULE_ANGLE - 360) setPointBackward += 360; //if we need to add 360 to get closer to moduleEncoder, do so
-                else if (setPointBackward - moduleEncoder.getDistance() > 0 && setPointBackward > -RobotMap.MAX_MODULE_ANGLE + 360) setPointBackward -= 360; //else subtract 360
+                if(setPointBackward - modulePot.get() < 0 && setPointBackward < RobotMap.MAX_MODULE_ANGLE - 360) setPointBackward += 360; //if we need to add 360 to get closer to moduleEncoder, do so
+                else if (setPointBackward - modulePot.get() > 0 && setPointBackward > -RobotMap.MAX_MODULE_ANGLE + 360) setPointBackward -= 360; //else subtract 360
                 else break;
             }
 
@@ -114,20 +119,20 @@ public class SwerveModule
             double backwardsRating = 0;
 
             //Rating for the distance between where the module is currently pointing and each of the setpoints
-            forwardsRating -= K_DELTA*Math.abs(setPointForward - moduleEncoder.getDistance());
-            backwardsRating -= K_DELTA*Math.abs(setPointBackward - moduleEncoder.getDistance());
+            forwardsRating -= K_DELTA*Math.abs(setPointForward - modulePot.get());
+            backwardsRating -= K_DELTA*Math.abs(setPointBackward - modulePot.get());
 
             //Rating boost if this setpoint is closer to the 0 (where the wire is completely untwisted) that the current module angle
             if(setPointForward > 0){
-                forwardsRating += (moduleEncoder.getDistance() - setPointForward)*K_TWIST; // positive => we are unwinding (moving closer to zero)
+                forwardsRating += (modulePot.get() - setPointForward)*K_TWIST; // positive => we are unwinding (moving closer to zero)
             } else {
-                forwardsRating += (setPointForward - moduleEncoder.getDistance())*K_TWIST; // negative => we are winding up (moving farther from zero)
+                forwardsRating += (setPointForward - modulePot.get())*K_TWIST; // negative => we are winding up (moving farther from zero)
             }
 
             if(setPointBackward > 0){
-                backwardsRating += (moduleEncoder.getDistance() - setPointBackward)*K_TWIST; // positive => we are unwinding (moving closer to zero)
+                backwardsRating += (modulePot.get() - setPointBackward)*K_TWIST; // positive => we are unwinding (moving closer to zero)
             } else {
-                backwardsRating += (setPointBackward - moduleEncoder.getDistance())*K_TWIST; // negative => we are winding up (moving farther from zero)
+                backwardsRating += (setPointBackward - modulePot.get())*K_TWIST; // negative => we are winding up (moving farther from zero)
             }
 
             //Rating for if the how much the velocity will need to change in order the make the wheel go further. Forwards rating gets a positive boost if wheel is already moving forwards, if the wheel is currently moving backwards it gets a deduction.
@@ -156,7 +161,7 @@ public class SwerveModule
                 speedPID.setPID(SmartDashboard.getNumber("speedP", RobotMap.WHEEL_kP), SmartDashboard.getNumber("speedI", RobotMap.WHEEL_kI), SmartDashboard.getNumber("speedD", RobotMap.WHEEL_kD), SmartDashboard.getNumber("speedF", RobotMap.WHEEL_kF));
             }
             speedPID.enable();
-            speedPID.setSetpoint(RobotMap.WHEEL_TOP_ABSOLUTE_SPEED*speed);
+            speedPID.setSetpoint(maxSpeed*speed);
         }
         else
         {
@@ -178,6 +183,11 @@ public class SwerveModule
     public void stopUnwinding()
     {
         unwinding = false;
+    }
+    
+    public void setMaxSpeed(double max)
+    {
+    	maxSpeed = max;
     }
     
     public void anglePIDOn(boolean on){
@@ -223,10 +233,6 @@ public class SwerveModule
     // Module Encoder Methods
     
     public double getModuleAngle() {
-        return moduleEncoder.getDistance();
-    }
-    
-    public void resetModuleEncoder(){
-        moduleEncoder.reset();
+        return modulePot.get();
     }
 }

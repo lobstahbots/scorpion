@@ -22,7 +22,11 @@ public class ManualForklift extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	f.setSetpoint(Robot.oi.operator.getTriggersAxis() + Robot.forklift.getPosition());
+    	double triggersVal = Robot.oi.operator.getRightTriggerAxis() - Robot.oi.operator.getLeftTriggerAxis();
+    	if(triggersVal != 0)
+    	{
+    		f.setSetpoint(triggersVal + Robot.forklift.getPosition());
+    	}
     }
 
     // Make this return true when this Command no longer needs to run execute()

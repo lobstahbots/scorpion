@@ -8,13 +8,24 @@ public abstract class Toggle extends Trigger {
 	
 	public abstract boolean getToggler();
 	
+	boolean changed = false;
+	
 	public void toggle(final Command trueCommand, final Command falseCommand)
 	{   
         new Trigger() {
 			
 			@Override
 			public boolean get() {
-				return Toggle.this.get() && Toggle.this.getToggler();
+				boolean result = Toggle.this.get() && Toggle.this.getToggler() && !changed;
+				if(Toggle.this.get() && Toggle.this.getToggler())
+				{
+					changed = true;
+				}
+				if(!Toggle.this.get())
+				{
+					changed = false;
+				}
+				return result;
 			}
 		}.whenActive(trueCommand);
 		
@@ -22,7 +33,16 @@ public abstract class Toggle extends Trigger {
 			
 			@Override
 			public boolean get() {
-				return Toggle.this.get() && !Toggle.this.getToggler();
+				boolean result = Toggle.this.get() && !Toggle.this.getToggler() && !changed;
+				if(Toggle.this.get() && !Toggle.this.getToggler())
+				{
+					changed = true;
+				}
+				if(!Toggle.this.get())
+				{
+					changed = false;
+				}
+				return result;
 			}
 		}.whenActive(falseCommand);
 	}

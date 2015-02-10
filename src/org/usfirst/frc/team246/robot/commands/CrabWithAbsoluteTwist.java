@@ -27,7 +27,7 @@ public class CrabWithAbsoluteTwist extends CrabWithTwist{
         Vector2D COR = getCOR();
         
         double header;
-        if(Robot.oi.driverLeftJoystick.getMagnitude() == 0)
+        if(Robot.oi.driver.getRightMagnitude() <= .05)
         {
         	if(defaultHeading == 181) defaultHeading = Robot.drivetrain.FOV;
         	header = defaultHeading;
@@ -35,7 +35,7 @@ public class CrabWithAbsoluteTwist extends CrabWithTwist{
         else
         {
         	defaultHeading = 181;
-        	header = Robot.oi.driverLeftJoystick.getDirectionDegrees();
+        	header = Robot.oi.driver.getRightAngle();
         }
         
         Robot.drivetrain.driveAbsoluteTwist(crabVector.getMagnitude(), crabVector.getAngle(), header);

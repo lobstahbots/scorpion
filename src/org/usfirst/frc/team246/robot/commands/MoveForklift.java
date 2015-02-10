@@ -2,6 +2,7 @@ package org.usfirst.frc.team246.robot.commands;
 
 import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
+import org.usfirst.frc.team246.robot.RobotMap.LiftSetpoints;
 import org.usfirst.frc.team246.robot.subsystems.Forklift;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -15,7 +16,7 @@ public class MoveForklift extends Command {
 	
 	double setpoint;
 	
-    public MoveForklift(ArmSetpoints setpoint) {
+    public MoveForklift(LiftSetpoints setpoint) {
         requires(f);
         this.setpoint = setpoint.getValue();
     }

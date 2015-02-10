@@ -27,13 +27,13 @@ public class Drivetrain extends Subsystem {
     public SwerveModule leftModule;
     public SwerveModule rightModule;
     
-    public double FOV = 0; //the back of the vehicle in degrees. May be used in different ways by different control schemes.
+    public double FOV = 0; //the front of the vehicle in degrees. May be used in different ways by different control schemes.
     
     public Drivetrain()
     {
-    	backModule = new SwerveModule(RobotMap.backWheelEncoder, RobotMap.backModuleEncoder, RobotMap.backWheelMotor, RobotMap.backModuleMotor, 0, -32.5, "backModule");
-    	leftModule = new SwerveModule(RobotMap.leftWheelEncoder, RobotMap.leftModuleEncoder, RobotMap.leftWheelMotor, RobotMap.leftModuleMotor, -17.25, 0, "leftModule");
-    	rightModule = new SwerveModule(RobotMap.rightWheelEncoder, RobotMap.rightModuleEncoder, RobotMap.rightWheelMotor, RobotMap.rightModuleMotor, 17.25, 0, "rightModule");
+    	backModule = new SwerveModule(RobotMap.backWheelEncoder, RobotMap.backModulePot, RobotMap.backWheelMotor, RobotMap.backModuleMotor, 2, 0, -32.5, "backModule");
+    	leftModule = new SwerveModule(RobotMap.leftWheelEncoder, RobotMap.leftModulePot, RobotMap.leftWheelMotor, RobotMap.leftModuleMotor, 2, -17.25, 0, "leftModule");
+    	rightModule = new SwerveModule(RobotMap.rightWheelEncoder, RobotMap.rightModulePot, RobotMap.rightWheelMotor, RobotMap.rightModuleMotor, 2, 17.25, 0, "rightModule");
     	swerves = new SwerveModule[3];
     	swerves[0] = backModule;
     	swerves[1] = leftModule;
@@ -129,6 +129,14 @@ public class Drivetrain extends Subsystem {
         }
     }
     
+    public void setMaxSpeed(double maxSpeed)
+    {
+    	for(int i = 0; i < swerves.length; i++)
+    	{
+    		swerves[i].setMaxSpeed(maxSpeed);
+    	}
+    }
+    
     //Code for turning the robot to a certain angle relative to the field
     
     public AbsoluteTwistPIDOutput absoluteTwistPIDOutput = new AbsoluteTwistPIDOutput();
@@ -182,7 +190,7 @@ public class Drivetrain extends Subsystem {
     double lastTimeWasMoving = Long.MAX_VALUE;
     public boolean isMoving()
     {
-    	return !Robot.oi.driverRightJoystick.getRawButton(1);
+    	return !Robot.oi.driver.getA().get();
     	/*
         if(RobotMap.navX.isMoving())
         {
@@ -229,14 +237,6 @@ public class Drivetrain extends Subsystem {
         for(int i=0; i<swerves.length; i++)
         {
             swerves[i].stopUnwinding();
-        }
-    }
-    
-    public void zeroAngles()
-    {
-        for(int i=0; i<swerves.length; i++)
-        {
-            swerves[i].resetModuleEncoder();
         }
     }
      

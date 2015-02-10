@@ -8,18 +8,21 @@ public class LogitechF310 extends Joystick{
 	
 	protected int leftXAxis = 0;
 	protected int leftYAxis = 1;
-	protected int rightXAxis = 2;
-	protected int rightYAxis = 3;
-	protected int triggersAxis = 4;
+	protected int rightXAxis = 4;
+	protected int rightYAxis = 5;
+	protected int leftTriggerAxis = 2;
+	protected int rightTriggerAxis = 3;
 	
-	protected int x = 0;
-	protected int y = 1;
-	protected int a = 2;
-	protected int b = 3;
-	protected int lb = 4;
-	protected int rb = 5;
-	protected int back = 6;
-	protected int start = 7;
+	protected int x = 4;
+	protected int y = 3;
+	protected int a = 1;
+	protected int b = 2;
+	protected int lb = 5;
+	protected int rb = 6;
+	protected int back = 7;
+	protected int start = 8;
+	protected int leftStick = 9;
+	protected int rightStick = 10;
 
 	public LogitechF310(int port) {
 		super(port);
@@ -27,23 +30,61 @@ public class LogitechF310 extends Joystick{
 	
 	public double getLeftXAxis()
 	{
-		return getRawAxis(leftXAxis);
+		if(Math.abs(getRawAxis(leftXAxis)) > .05)
+			return getRawAxis(leftXAxis);
+		else
+			return 0;
 	}
 	public double getLeftYAxis()
 	{
-		return getRawAxis(leftYAxis);
+		if(Math.abs(getRawAxis(leftYAxis)) > .05)
+			return getRawAxis(leftYAxis);
+		else
+			return 0;
 	}
 	public double getRightXAxis()
 	{
-		return getRawAxis(rightXAxis);
+		if(Math.abs(getRawAxis(rightXAxis)) > .05)
+			return getRawAxis(rightXAxis);
+		else
+			return 0;
 	}
 	public double getRightYAxis()
 	{
-		return getRawAxis(rightYAxis);
+		if(Math.abs(getRawAxis(rightYAxis)) > .05)
+			return getRawAxis(rightYAxis);
+		else
+			return 0;
 	}
-	public double getTriggersAxis()
+	public double getLeftTriggerAxis()
 	{
-		return getRawAxis(triggersAxis);
+		if(Math.abs(getRawAxis(leftTriggerAxis)) > .05)
+			return getRawAxis(leftTriggerAxis);
+		else
+			return 0;
+	}
+	public double getRightTriggerAxis()
+	{
+		if(Math.abs(getRawAxis(rightTriggerAxis)) > .05)
+			return getRawAxis(rightTriggerAxis);
+		else
+			return 0;
+	}
+	public double getLeftMagnitude()
+	{
+		return Math.sqrt(Math.pow(getLeftXAxis(), 2) + Math.pow(getLeftYAxis(), 2));
+	}
+	public double getLeftAngle()
+	{
+		return Math.toDegrees(Math.atan2(getLeftXAxis(), -getLeftYAxis()));
+	}
+	public double getRightMagnitude()
+	{
+		return Math.sqrt(Math.pow(getRightXAxis(), 2) + Math.pow(getRightYAxis(), 2));
+	}
+	public double getRightAngle()
+	{
+		return Math.toDegrees(Math.atan2(getRightXAxis(), -getRightYAxis()));
 	}
 	
 	public Button getX2()
@@ -52,31 +93,39 @@ public class LogitechF310 extends Joystick{
 	}
 	public Button getY2()
 	{
-		return new JoystickButton(this, x);
+		return new JoystickButton(this, y);
 	}
 	public Button getA()
 	{
-		return new JoystickButton(this, x);
+		return new JoystickButton(this, a);
 	}
 	public Button getB()
 	{
-		return new JoystickButton(this, x);
+		return new JoystickButton(this, b);
 	}
 	public Button getLB()
 	{
-		return new JoystickButton(this, x);
+		return new JoystickButton(this, lb);
 	}
 	public Button getRB()
 	{
-		return new JoystickButton(this, x);
+		return new JoystickButton(this, rb);
 	}
 	public Button getBack()
 	{
-		return new JoystickButton(this, x);
+		return new JoystickButton(this, back);
 	}
 	public Button getStart()
 	{
-		return new JoystickButton(this, x);
+		return new JoystickButton(this, start);
+	}
+	public Button getLeftStick()
+	{
+		return new JoystickButton(this, leftStick);
+	}
+	public Button getRightStick()
+	{
+		return new JoystickButton(this, rightStick);
 	}
 	public Button getLT()
 	{
@@ -84,7 +133,7 @@ public class LogitechF310 extends Joystick{
 			
 			@Override
 			public boolean get() {
-				return getTriggersAxis() < -.5;
+				return getLeftTriggerAxis() > .5;
 			}
 		};
 	}
@@ -94,7 +143,7 @@ public class LogitechF310 extends Joystick{
 					
 			@Override
 			public boolean get() {
-				return getTriggersAxis() < -.5;
+				return getRightTriggerAxis() > .5;
 			}
 		};
 	}
@@ -142,4 +191,10 @@ public class LogitechF310 extends Joystick{
 			}
 		};
 	}
+	
+	@Override
+    public double getDirectionRadians()
+    {
+    	return -super.getDirectionRadians();
+    }
 }

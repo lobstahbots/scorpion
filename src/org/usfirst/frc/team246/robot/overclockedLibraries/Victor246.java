@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.Victor;
  *
  * @author Paul
  */
-public class Victor246 extends Victor {
+public class Victor246 extends Victor implements SpeedController246{
     
     boolean overridden = false;
     int pdpPort;

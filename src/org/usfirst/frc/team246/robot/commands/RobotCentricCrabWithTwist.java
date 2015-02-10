@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.usfirst.frc.team246.robot.commands;
 
 import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
@@ -16,7 +11,7 @@ import org.usfirst.frc.team246.robot.Robot;
  *
  * @author michaelsilver
  */
-public class CrabWithTwist extends FieldCentricDrivingCommand{
+public class RobotCentricCrabWithTwist extends DrivingCommand{
 
 //    driverLeftJoystick is controlling "twist"
 //    driverRightJoystick is controlling "crab"
@@ -26,13 +21,9 @@ public class CrabWithTwist extends FieldCentricDrivingCommand{
     	if(v.getMagnitude() > 0)
     	{
     		if(v.getMagnitude() < RobotMap.crabZeroZone) v.setMagnitude(0.0001);
-    		else 
-    		{
-    			v.setMagnitude((v.getMagnitude() - RobotMap.crabZeroZone)*(1/(1 - RobotMap.crabZeroZone)));
-    			v.setMagnitude(Math.pow(v.getMagnitude(), 3) + .01);
-    		}
+    		else v.setMagnitude((v.getMagnitude() - RobotMap.crabZeroZone)*(1/(1 - RobotMap.crabZeroZone)));
     	}
-    	System.out.println(v.getMagnitude());
+    	v.setMagnitude(Math.pow(v.getMagnitude(), 3) + .01);
         return v;
     }
 
@@ -63,5 +54,10 @@ public class CrabWithTwist extends FieldCentricDrivingCommand{
     protected void interrupted() {
         end();
     }
+
+	@Override
+	protected double updateHeading() {
+		return 0;
+	}
     
 }

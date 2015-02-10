@@ -1,7 +1,8 @@
 package org.usfirst.frc.team246.robot.subsystems;
 
 import org.usfirst.frc.team246.robot.RobotMap;
-import org.usfirst.frc.team246.robot.commands.StopGetters;
+import org.usfirst.frc.team246.robot.commands.Intake;
+
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -20,39 +21,12 @@ public class Getters extends Subsystem {
     // here. Call these from Commands.
 
     public void initDefaultCommand() {
-        setDefaultCommand(new StopGetters());
+        setDefaultCommand(new Intake());
     }
     
-    public void forward(){
-    	leftMotor.set(1);
-    	rightMotor.set(1);
-    }
-    public void backward(){
-    	leftMotor.set(-1);
-    	rightMotor.set(-1);
-    }
-    public void stop(){
-    	leftMotor.set(0);
-    	rightMotor.set(0);	
-    }
-    public void deployLeftGetter(){
-    	leftCylinder.set(DoubleSolenoid.Value.kForward);
-    }
-    public void deployRightGetter(){
-    	rightCylinder.set(DoubleSolenoid.Value.kForward);
-    }
-    public void retractLeftGetter(){
-    	leftCylinder.set(DoubleSolenoid.Value.kReverse);
-    }
-    public void retractRightGetter(){
-    	rightCylinder.set(DoubleSolenoid.Value.kReverse);
-    }
-    public DoubleSolenoid.Value getLeftGetterPosition()
+    public void set(double left, double right)
     {
-    	return leftCylinder.get();
-    }
-    public DoubleSolenoid.Value getRightGetterPosition()
-    {
-    	return rightCylinder.get();
+    	leftMotor.set(left);
+    	rightMotor.set(right);
     }
 }

@@ -51,7 +51,7 @@ public class Robot extends IterativeRobot {
 	
 	public static boolean test1 = false;
 	public static boolean test2 = false;
-	public static boolean test3 = true;
+	public static boolean test3 = false;
 	public static boolean gyroDisabled = false;
 	public static boolean gasMode = false;
 	public static boolean trojan = true;
@@ -135,11 +135,6 @@ public class Robot extends IterativeRobot {
 		allPeriodic();
         SmartDashboard.putBoolean("encoderZeroing", false);
         
-        //Zeros the module angle encoders when the driver presses the button
-        if(/*RobotMap.encoderZeroing.get()*/ SmartDashboard.getBoolean("encoderZeroing", false))
-        {
-            drivetrain.zeroAngles();
-        }
         if(RobotMap.navX.isCalibrating()) System.out.println("Calibrating NavX");
 		Scheduler.getInstance().run();
 	}

@@ -2,6 +2,7 @@ package org.usfirst.frc.team246.robot.subsystems;
 
 import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.RobotMap;
+import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
 import org.usfirst.frc.team246.robot.commands.ManualArm;
 import org.usfirst.frc.team246.robot.overclockedLibraries.V4BPIDController;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
@@ -151,6 +152,11 @@ public class Arm extends Subsystem {
     	}
     }
     
+    public void set(ArmSetpoints setpoint)
+    {
+    	set(setpoint.getX(), setpoint.getY(), setpoint.getWrist());
+    }
+    
     public Vector2D getVector()
     {
     	return Vector2D.addVectors(getSegment1Vector(), getSegment2Vector());
@@ -184,6 +190,11 @@ public class Arm extends Subsystem {
     public double getWrist()
     {
     	return RobotMap.armWristPot.get();
+    }
+    
+    public double getTargetWrist()
+    {
+    	return wrist.getSetpoint();
     }
     
     public boolean inTolerance()

@@ -21,8 +21,16 @@ public class ManualArm extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    	/*
     	Vector2D v = Robot.arm.getVector();
-    	//Robot.arm.set(v.getX() + Robot.oi.operator.getRightXAxis(), v.getY() + Robot.oi.operator.getRightYAxis(), Robot.arm.getWrist() + Robot.oi.operator.getLeftYAxis());
+    	double x = v.getX() + Robot.oi.operator.getRightXAxis();
+    	if(Robot.oi.operator.getRightXAxis() == 0) x = Robot.arm.getTargetVector().getX();
+    	double y = v.getY() + Robot.oi.operator.getRightYAxis();
+    	if(Robot.oi.operator.getRightYAxis() == 0) y = Robot.arm.getTargetVector().getY();
+    	double w = Robot.arm.getWrist() + Robot.oi.operator.getLeftYAxis();
+    	if(Robot.oi.operator.getLeftYAxis() == 0) w = Robot.arm.getTargetWrist();
+    	Robot.arm.set(x, y, w);
+    	*/
     }
 
     // Make this return true when this Command no longer needs to run execute()

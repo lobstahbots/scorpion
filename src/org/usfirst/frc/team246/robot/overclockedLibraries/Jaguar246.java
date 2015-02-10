@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
  *
  * @author Paul
  */
-public class Jaguar246 extends Jaguar {
+public class Jaguar246 extends Jaguar implements SpeedController246 {
     
     boolean overridden = false;
     int pdpPort;
