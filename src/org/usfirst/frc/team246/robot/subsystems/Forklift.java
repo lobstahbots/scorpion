@@ -1,6 +1,8 @@
 package org.usfirst.frc.team246.robot.subsystems;
 
+import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.RobotMap;
+import org.usfirst.frc.team246.robot.commands.ManualForklift;
 
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 
@@ -8,6 +10,8 @@ import edu.wpi.first.wpilibj.command.PIDSubsystem;
  *
  */
 public class Forklift extends PIDSubsystem {
+	
+	public int totesHigh = 0;
     
     public Forklift() {
 		super(RobotMap.LIFT_kP, RobotMap.LIFT_kI, RobotMap.LIFT_kD);
@@ -18,26 +22,40 @@ public class Forklift extends PIDSubsystem {
     // here. Call these from Commands.
 
     public void initDefaultCommand() {
-        // Set the default command for a subsystem here.
-        //setDefaultCommand(new MySpecialCommand());
+        if(!Robot.trojan)
+        {
+        	setDefaultCommand(new ManualForklift());
+        }
     }
 
 	@Override
 	protected double returnPIDInput() {
-		if(getSetpoint() > RobotMap.LIFT_MAX_HEIGHT)
+		if(Robot.trojan)
 		{
-			setSetpoint(RobotMap.LIFT_MAX_HEIGHT);
+			return 0;
 		}
-		if(getSetpoint() < RobotMap.LIFT_MIN_HEIGHT)
+		else
 		{
-			setSetpoint(RobotMap.LIFT_MIN_HEIGHT);
+			if(getSetpoint() > RobotMap.LIFT_MAX_HEIGHT)
+			{
+				setSetpoint(RobotMap.LIFT_MAX_HEIGHT);
+			}
+			if(getSetpoint() < RobotMap.LIFT_MIN_HEIGHT)
+			{
+				setSetpoint(RobotMap.LIFT_MIN_HEIGHT);
+			}
+			return RobotMap.liftPot.get();
 		}
-		return RobotMap.liftPot.get();
 	}
 
 	@Override
 	protected void usePIDOutput(double output) {
 		RobotMap.liftMotor.set(output);
+	}
+	
+	public double getToteAdder()
+	{
+		return totesHigh*RobotMap.TOTE_HEIGHT;
 	}
 }
 

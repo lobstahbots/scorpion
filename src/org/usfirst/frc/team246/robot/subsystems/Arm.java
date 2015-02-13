@@ -25,16 +25,22 @@ public class Arm extends Subsystem {
 
     // Initialize your subsystem here
     public Arm() {
-        shoulder = new V4BPIDController(RobotMap.ARM_SHOULDER_kP, RobotMap.ARM_SHOULDER_kI, RobotMap.ARM_SHOULDER_kD, RobotMap.armShoulderPot, RobotMap.armShoulderMotor, null);
-        shoulder.setInputRange(RobotMap.ARM_SHOULDER_MIN, RobotMap.ARM_SHOULDER_MAX);
-        elbow = new V4BPIDController(RobotMap.ARM_ELBOW_kP, RobotMap.ARM_ELBOW_kI, RobotMap.ARM_ELBOW_kD, RobotMap.armElbowPot, RobotMap.armElbowMotor, shoulder);
-        elbow.setInputRange(RobotMap.ARM_ELBOW_MIN, RobotMap.ARM_ELBOW_MAX);
-        wrist = new V4BPIDController(RobotMap.ARM_WRIST_kP, RobotMap.ARM_WRIST_kI, RobotMap.ARM_WRIST_kD, RobotMap.armWristPot, RobotMap.armWristMotor, null);
-        wrist.setInputRange(RobotMap.ARM_WRIST_MIN, RobotMap.ARM_WRIST_MAX);
+    	if(!Robot.trojan)
+    	{
+	        shoulder = new V4BPIDController(RobotMap.ARM_SHOULDER_kP, RobotMap.ARM_SHOULDER_kI, RobotMap.ARM_SHOULDER_kD, RobotMap.armShoulderPot, RobotMap.armShoulderMotor, null);
+	        shoulder.setInputRange(RobotMap.ARM_SHOULDER_MIN, RobotMap.ARM_SHOULDER_MAX);
+	        elbow = new V4BPIDController(RobotMap.ARM_ELBOW_kP, RobotMap.ARM_ELBOW_kI, RobotMap.ARM_ELBOW_kD, RobotMap.armElbowPot, RobotMap.armElbowMotor, shoulder);
+	        elbow.setInputRange(RobotMap.ARM_ELBOW_MIN, RobotMap.ARM_ELBOW_MAX);
+	        wrist = new V4BPIDController(RobotMap.ARM_WRIST_kP, RobotMap.ARM_WRIST_kI, RobotMap.ARM_WRIST_kD, RobotMap.armWristPot, RobotMap.armWristMotor, null);
+	        wrist.setInputRange(RobotMap.ARM_WRIST_MIN, RobotMap.ARM_WRIST_MAX);
+    	}
     }
     
     public void initDefaultCommand() {
-        setDefaultCommand(new ManualArm());
+    	if(!Robot.trojan)
+    	{
+    		setDefaultCommand(new ManualArm());
+    	}
     }
     
     //The location of the arm is described, in feet, by the vector between the shoulder joint and the wrist joint

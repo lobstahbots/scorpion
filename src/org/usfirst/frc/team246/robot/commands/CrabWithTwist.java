@@ -32,7 +32,6 @@ public class CrabWithTwist extends FieldCentricDrivingCommand{
     			v.setMagnitude(Math.pow(v.getMagnitude(), 3) + .01);
     		}
     	}
-    	System.out.println(v.getMagnitude());
         return v;
     }
 

@@ -5,7 +5,9 @@ import org.usfirst.frc.team246.robot.RobotMap.LiftSetpoints;
 import org.usfirst.frc.team246.robot.commands.CloseGrabber;
 import org.usfirst.frc.team246.robot.commands.CrabWithAbsoluteTwist;
 import org.usfirst.frc.team246.robot.commands.CrabWithTwist;
+import org.usfirst.frc.team246.robot.commands.GetTote;
 import org.usfirst.frc.team246.robot.commands.GoFast;
+import org.usfirst.frc.team246.robot.commands.LiftTote;
 import org.usfirst.frc.team246.robot.commands.MoveForklift;
 import org.usfirst.frc.team246.robot.commands.MoveForkliftDown1;
 import org.usfirst.frc.team246.robot.commands.MoveForkliftUp1;
@@ -35,12 +37,38 @@ public class OI {
     	
     	driver.getLB().whileHeld(new CrabWithAbsoluteTwist());
     	driver.getLT().whileHeld(new GoFast());
+    	new Toggle() {
+			
+			@Override
+			public boolean get() {
+				return driver.getX2().get();
+			}
+			
+			@Override
+			public boolean getToggler() {
+				return Robot.drivetrain.getCurrentCommand().getName().equals("RobotCentricCrabWithTwist");
+			}
+		}.toggle(new CrabWithTwist(), new RobotCentricCrabWithTwist());
     	
-        operator.getLeft().whenPressed(new MoveForklift(LiftSetpoints.SCORING_PLATFORM));
-        operator.getRight().whenPressed(new MoveForklift(LiftSetpoints.GROUND));
-        operator.getBack().whenPressed(new MoveForklift(LiftSetpoints.STEP));
+		driver.getY2().whileHeld(new GetTote(true));
+    	driver.getB().whileHeld(new GetTote(false));
+    	
         operator.getUp().whenPressed(new MoveForkliftUp1());
         operator.getDown().whenPressed(new MoveForkliftDown1());
+        operator.getLeft().whenPressed(new MoveForklift(LiftSetpoints.GROUND, true));
+        operator.getLeft().whenReleased(new LiftTote());
+        new Toggle() {
+			
+			@Override
+			public boolean get() {
+				return operator.getRight().get();
+			}
+			
+			@Override
+			public boolean getToggler() {
+				return Robot.forklift.getCurrentCommand().getClass() == MoveForklift.class && ((MoveForklift)(Robot.forklift.getCurrentCommand())).setpointEnum == LiftSetpoints.SCORING_PLATFORM;
+			}
+		}.toggle(new MoveForklift(LiftSetpoints.STEP, false),new MoveForklift(LiftSetpoints.SCORING_PLATFORM, false));
 		
 		new Toggle() {
 			
@@ -55,18 +83,6 @@ public class OI {
 			}
 		}.toggle(new CloseGrabber(), new OpenGrabber());
 		
-		new Toggle() {
-			
-			@Override
-			public boolean get() {
-				return driver.getX2().get();
-			}
-			
-			@Override
-			public boolean getToggler() {
-				return Robot.drivetrain.getCurrentCommand().getName().equals("RobotCentricCrabWithTwist");
-			}
-		}.toggle(new CrabWithTwist(), new RobotCentricCrabWithTwist());
     }
 }
 

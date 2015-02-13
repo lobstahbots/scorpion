@@ -1,9 +1,13 @@
 package org.usfirst.frc.team246.robot.commands;
 
+import java.util.concurrent.ScheduledExecutorService;
+
 import org.usfirst.frc.team246.robot.Robot;
+import org.usfirst.frc.team246.robot.RobotMap;
 import org.usfirst.frc.team246.robot.subsystems.Forklift;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
 
 /**
  *
@@ -13,13 +17,18 @@ public class MoveForkliftDown1 extends Command {
 	Forklift f = Robot.forklift;
 	
     public MoveForkliftDown1() {
-        requires(f);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	f.enable();
-    	f.setSetpointRelative(-12);
+    	if(f.getCurrentCommand().getClass() == MoveForklift.class)
+    	{
+    		f.totesHigh--;
+    	}
+    	else
+    	{
+    		(new MoveForklift(RobotMap.LiftSetpoints.SCORING_PLATFORM, true)).start();
+    	}
     }
 
     // Called repeatedly when this Command is scheduled to run

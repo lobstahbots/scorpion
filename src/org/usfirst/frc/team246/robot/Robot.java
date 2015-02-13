@@ -82,7 +82,6 @@ public class Robot extends IterativeRobot {
         oi = new OI();
         
         //(new Thread(new BeagleBoneCollector())).start();
-        (new Thread(new ShutDownDetector())).start();
         
         if(test1)
         {
@@ -262,11 +261,7 @@ public class Robot extends IterativeRobot {
         
         gyroDisabled = !SmartDashboard.getBoolean("field-centric", true);
         
-        if(isEnabled())
-        {
-        	//Tote possession indicator
-        	SmartDashboard.putBoolean("haveTote", toteDistance <= RobotMap.OTS_FULL_TOTE_DISTANCE);
-        }
+        SmartDashboard.putBoolean("haveTote", getters.hasTote());
     }
     
     public class BeagleBoneCollector implements Runnable {
@@ -276,24 +271,16 @@ public class Robot extends IterativeRobot {
     	public void run() {
 			try {
 				beagleBone = new DatagramSocket(5800);
+				beagleBone.setSoTimeout(10000);
+				beagleBone.setReuseAddress(true);
 			} catch (SocketException e) {
 				beagleBoneConnected = false;
 				e.printStackTrace();
 			}
 			while(isEnabled())
 			{
-				byte[] data = new byte[1];
-		        InetAddress address = null;
-		        int port = 0;
-		        DatagramPacket packet = new DatagramPacket(data, data.length, address, port);
-		        try {
-					beagleBone.send(packet);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-		     
-		        data = new byte[9];
-		        packet = new DatagramPacket(data, data.length);
+				byte[] data = new byte[1000];
+		        DatagramPacket packet = new DatagramPacket(data, data.length);
 		        try {
 					beagleBone.receive(packet);
 				} catch (IOException e) {
@@ -331,30 +318,4 @@ public class Robot extends IterativeRobot {
     		return result;
     	}
 	}
-    
-    class ShutDownDetector implements Runnable
-    {
-    	double lastTime = 0;
-    	
-		@Override
-		public void run() {
-			double time = Timer.getFPGATimestamp();
-			
-			DriverStation ds = DriverStation.getInstance();
-			
-			if(time - lastTime > .01)
-			{
-				System.out.println(time - lastTime);
-				System.out.println(ds.getBatteryVoltage());
-				System.out.println(ds.isEnabled());
-				System.out.println(ds.isSysActive());
-				System.out.println(ds.isBrownedOut());
-				System.out.println(ds.isDSAttached());
-				
-			}
-			lastTime = time;
-			Timer.delay(.001);
-		}
-    	
-    }
 }

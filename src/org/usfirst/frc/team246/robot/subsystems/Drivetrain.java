@@ -165,7 +165,6 @@ public class Drivetrain extends Subsystem {
     }
     
     public void enableAbsoluteTwist(boolean on) {
-    	System.out.println(on);
         if(on) absoluteTwistPID.enable();
         else absoluteTwistPID.disable();
     }

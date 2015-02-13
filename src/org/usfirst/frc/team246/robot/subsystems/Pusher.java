@@ -1,5 +1,6 @@
 package org.usfirst.frc.team246.robot.subsystems;
 
+import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.RobotMap;
 import org.usfirst.frc.team246.robot.commands.RetractPusher;
 
@@ -17,11 +18,21 @@ public class Pusher extends PIDSubsystem {
     }
     
     public void initDefaultCommand() {
-        setDefaultCommand(new RetractPusher());
+    	if(!Robot.trojan)
+    	{
+    		setDefaultCommand(new RetractPusher());
+    	}
     }
     
     protected double returnPIDInput() {
-    	return RobotMap.pusherPot.get();
+    	if(Robot.trojan)
+    	{
+    		return 0;
+    	}
+    	else
+    	{
+    		return RobotMap.pusherPot.get();
+    	}
     }
     
     protected void usePIDOutput(double output) {

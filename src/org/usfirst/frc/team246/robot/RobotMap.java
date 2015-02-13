@@ -1,9 +1,14 @@
 package org.usfirst.frc.team246.robot;
 
 import org.usfirst.frc.team246.nav6.IMUAdvanced;
+import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogIn;
+import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogPot;
+import org.usfirst.frc.team246.robot.overclockedLibraries.SpeedController246;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Talon246;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Victor246;
+import org.usfirst.frc.team246.robot.overclockedLibraries.VictorSP246;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -14,6 +19,7 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.livewindow.LiveWindowSendable;
 
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
@@ -29,13 +35,13 @@ public class RobotMap {
 	
 	//Motors
 	
-	public static Talon246 backWheelMotor;
-	public static Talon246 leftWheelMotor;
-	public static Talon246 rightWheelMotor;
+	public static SpeedController246 backWheelMotor;
+	public static SpeedController246 leftWheelMotor;
+	public static SpeedController246 rightWheelMotor;
 	
-	public static Victor246 backModuleMotor;
-	public static Victor246 leftModuleMotor;
-	public static Victor246 rightModuleMotor;
+	public static SpeedController246 backModuleMotor;
+	public static SpeedController246 leftModuleMotor;
+	public static SpeedController246 rightModuleMotor;
 	
 	//Sensors
 	
@@ -53,19 +59,19 @@ public class RobotMap {
 	
 	public static final double WHEEL_ENCODER_DISTANCE_PER_TICK = .5*Math.PI/256;
 		
-	public static final double WHEEL_kP = 0.15;
-	public static final double WHEEL_kI = 0;
-	public static final double WHEEL_kD = 0;
-	public static final double WHEEL_kF = 0.075;
+	public static double WHEEL_kP = 0.15;
+	public static double WHEEL_kI = 0;
+	public static double WHEEL_kD = 0;
+	public static double WHEEL_kF = 0.075;
 	
-	public static final double MODULE_kP = .05;
-	public static final double MODULE_kI = 0;
-	public static final double MODULE_kD = .08;
-	public static final double MODULE_kF = 0;
+	public static double MODULE_kP = .05;
+	public static double MODULE_kI = 0;
+	public static double MODULE_kD = .08;
+	public static double MODULE_kF = 0;
 	
-	public static final double ABSOLUTE_TWIST_kP = .01;
-    public static final double ABSOLUTE_TWIST_kI = .0001;
-    public static final double ABSOLUTE_TWIST_kD = .006;
+	public static double ABSOLUTE_TWIST_kP = .01;
+    public static double ABSOLUTE_TWIST_kI = .0001;
+    public static double ABSOLUTE_TWIST_kD = .006;
 	
     public static final double K_MODULE_ANGLE_DELTA = 1;
     public static final double K_MODULE_ANGLE_TWIST = 0;
@@ -82,19 +88,29 @@ public class RobotMap {
 	
 	//Motors
 	
-	public static VictorSP leftGetterMotor;
-	public static VictorSP rightGetterMotor;
+	public static SpeedController246 leftGetterMotor;
+	public static SpeedController246 rightGetterMotor;
 	
-	//Pneumatics
+	//Sensors
 	
-	public static DoubleSolenoid leftGetterCylinder;
-	public static DoubleSolenoid rightGetterCylinder;
+	public static AnalogIn leftRangeFinder;
+	public static AnalogIn rightRangeFinder;
+	
+	public static AnalogPot leftGetterPot;
+	public static AnalogPot rightGetterPot;
+	
+	//constants
+	
+	public static final double LEFT_RANGE_FINDER_IN = 1.088;
+	public static final double RIGHT_RANGE_FINDER_IN = 1.313;
+	
+	public static final double GETTER_POTS_TOLERANCE = 3;
 	
 //Forklift
 	
 	//Motors
 	
-	public static VictorSP liftMotor;
+	public static SpeedController246 liftMotor;
 	
 	//Sensors
 	
@@ -111,6 +127,8 @@ public class RobotMap {
 	public static final double LIFT_MIN_HEIGHT = 0;
 	
 	public static final double LIFT_BELOW_TOTE_HEIGHT = .9;
+	
+	public static final double TOTE_HEIGHT = 12;
 	
 	public enum LiftSetpoints {
 		GROUND(0), SCORING_PLATFORM(.2), STEP(.6);
@@ -132,7 +150,7 @@ public class RobotMap {
 	
 	//Motors
 	
-	public static VictorSP pusherMotor;
+	public static SpeedController246 pusherMotor;
 	
 	//Sensors
 	
@@ -144,13 +162,16 @@ public class RobotMap {
 	public static final double PUSHER_kI = 0;
 	public static final double PUSHER_kD = 0;
 	
+	public static final double PUSHER_IN = 0;
+	public static final double PUSHER_OUT = 3;
+	
 //Arm
 	
 	//Motors
 	
-	public static VictorSP armShoulderMotor;
-	public static VictorSP armElbowMotor;
-	public static VictorSP armWristMotor;
+	public static SpeedController246 armShoulderMotor;
+	public static SpeedController246 armElbowMotor;
+	public static SpeedController246 armWristMotor;
 	
 	//Sensors
 	
@@ -239,7 +260,7 @@ public class RobotMap {
 	
 	//Motors
 	
-	public static VictorSP otsMotor;
+	public static SpeedController246 otsMotor;
 	
 	//Constants
 	
@@ -261,19 +282,39 @@ public class RobotMap {
 	//Drivetrain
 		
 		//Motors
-		backWheelMotor = new Talon246(0, 12, pdp);
-		LiveWindow.addActuator("Drivetrain", "backWheelMotor", backWheelMotor);
-		leftWheelMotor = new Talon246(2, 13, pdp);
-		LiveWindow.addActuator("Drivetrain", "leftWheelMotor", leftWheelMotor);
-		rightWheelMotor = new Talon246(4, 14, pdp);
-		LiveWindow.addActuator("Drivetrain", "rightWheelMotor", rightWheelMotor);
 		
-		backModuleMotor = new Victor246(1, 15, pdp);
-		LiveWindow.addActuator("Drivetrain", "backModuleMotor", backModuleMotor);
-		leftModuleMotor = new Victor246(3, 1, pdp);
-		LiveWindow.addActuator("Drivetrain", "leftModuleMotor", leftModuleMotor);
-		rightModuleMotor = new Victor246(5, 0, pdp);
-		LiveWindow.addActuator("Drivetrain", "rightModuleMotor", rightModuleMotor);
+		if(Robot.trojan)
+		{
+			backWheelMotor = new Talon246(0, 12, pdp);
+			LiveWindow.addActuator("Drivetrain", "backWheelMotor", (LiveWindowSendable) backWheelMotor);
+			leftWheelMotor = new Talon246(2, 13, pdp);
+			LiveWindow.addActuator("Drivetrain", "leftWheelMotor", (LiveWindowSendable) leftWheelMotor);
+			rightWheelMotor = new Talon246(4, 14, pdp);
+			LiveWindow.addActuator("Drivetrain", "rightWheelMotor", (LiveWindowSendable) rightWheelMotor);
+			
+			backModuleMotor = new Victor246(1, 15, pdp);
+			LiveWindow.addActuator("Drivetrain", "backModuleMotor", (LiveWindowSendable) backModuleMotor);
+			leftModuleMotor = new Victor246(3, 1, pdp);
+			LiveWindow.addActuator("Drivetrain", "leftModuleMotor", (LiveWindowSendable) leftModuleMotor);
+			rightModuleMotor = new Victor246(5, 0, pdp);
+			LiveWindow.addActuator("Drivetrain", "rightModuleMotor", (LiveWindowSendable) rightModuleMotor);
+		}
+		else
+		{
+			backWheelMotor = new VictorSP246(0, 12, pdp);
+			LiveWindow.addActuator("Drivetrain", "backWheelMotor", (LiveWindowSendable) backWheelMotor);
+			leftWheelMotor = new VictorSP246(2, 13, pdp);
+			LiveWindow.addActuator("Drivetrain", "leftWheelMotor", (LiveWindowSendable) leftWheelMotor);
+			rightWheelMotor = new VictorSP246(4, 14, pdp);
+			LiveWindow.addActuator("Drivetrain", "rightWheelMotor", (LiveWindowSendable) rightWheelMotor);
+			
+			backModuleMotor = new Victor246(1, 15, pdp);
+			LiveWindow.addActuator("Drivetrain", "backModuleMotor", (LiveWindowSendable) backModuleMotor);
+			leftModuleMotor = new Victor246(3, 1, pdp);
+			LiveWindow.addActuator("Drivetrain", "leftModuleMotor", (LiveWindowSendable) leftModuleMotor);
+			rightModuleMotor = new Victor246(5, 0, pdp);
+			LiveWindow.addActuator("Drivetrain", "rightModuleMotor", (LiveWindowSendable) rightModuleMotor);
+		}
 		
 		//Sensors
 		
@@ -314,70 +355,115 @@ public class RobotMap {
             }
         }
         LiveWindow.addSensor("Drivetrain", "Gyro", navX);
+        
+        //constants
+        
+        if(Robot.trojan)
+        {
+	        WHEEL_kP = 0.15;
+	    	WHEEL_kI = 0;
+	    	WHEEL_kD = 0;
+	    	WHEEL_kF = 0.075;
+	    	
+	    	MODULE_kP = .05;
+	    	MODULE_kI = 0;
+	    	MODULE_kD = .08;
+	    	MODULE_kF = 0;
+	    	
+	    	ABSOLUTE_TWIST_kP = .01;
+	        ABSOLUTE_TWIST_kI = .0001;
+	        ABSOLUTE_TWIST_kD = .006;
+        }
 		
 	//Getters
 		
 		//Motors
 		
-		leftGetterMotor = new VictorSP(6);
-		LiveWindow.addActuator("Getters", "leftGetterMotor", leftGetterMotor);
-		rightGetterMotor = new VictorSP(7);
-		LiveWindow.addActuator("Getters", "rightGetterMotor", rightGetterMotor);
+		leftGetterMotor = new Victor246(6, 0, pdp);
+		LiveWindow.addActuator("Getters", "leftGetterMotor", (LiveWindowSendable) leftGetterMotor);
+		rightGetterMotor = new Victor246(7, 0, pdp);
+		LiveWindow.addActuator("Getters", "rightGetterMotor", (LiveWindowSendable) rightGetterMotor);
 		
-		//Pneumatics
+		//Sensors
 		
-		if(!Robot.trojan)
+		if(Robot.trojan)
 		{
-			leftGetterCylinder = new DoubleSolenoid(0,1);
-			LiveWindow.addActuator("Getters", "leftGetterCylinder", leftGetterCylinder);
-			rightGetterCylinder = new DoubleSolenoid(2,3);
-			LiveWindow.addActuator("Getters", "rightGetterCylinder", rightGetterCylinder);
+			leftRangeFinder = new AnalogIn(3);
+			LiveWindow.addSensor("Getters", "leftRangeFinder", leftRangeFinder);
+			rightRangeFinder = new AnalogIn(4);
+			LiveWindow.addSensor("Getters", "rightRangeFinder", rightRangeFinder);
+			
+			leftGetterPot = new AnalogPot(5, 360);
+			LiveWindow.addSensor("Getters", "leftGetterPot", leftGetterPot);
+			rightGetterPot = new AnalogPot(6, 360);
+			LiveWindow.addSensor("Getters", "rightGetterPot", rightGetterPot);
+		}
+		else
+		{
+			leftRangeFinder = new AnalogIn();
+			LiveWindow.addSensor("Getters", "leftRangeFinder", leftRangeFinder);
+			rightRangeFinder = new AnalogIn();
+			LiveWindow.addSensor("Getters", "rightRangeFinder", rightRangeFinder);
+			
+			leftGetterPot = new AnalogPot(360., 113);
+			LiveWindow.addSensor("Getters", "leftGetterPot", leftGetterPot);
+			rightGetterPot = new AnalogPot(360., 125);
+			LiveWindow.addSensor("Getters", "rightGetterPot", rightGetterPot);
 		}
 		
 	//Forklift
 		
 		//Motors
 		
-		liftMotor = new VictorSP(8);
-		LiveWindow.addActuator("Forklift", "liftMotor", liftMotor);
+		liftMotor = new Victor246(8, 0, pdp);
+		LiveWindow.addActuator("Forklift", "liftMotor", (LiveWindowSendable) liftMotor);
 		
 		//Sensors
 		
-		liftPot = new AnalogPotentiometer(3, 5); //TODO: Get this constant
-		LiveWindow.addSensor("Forklift", "liftPot", liftPot);
+		if(!Robot.trojan)
+		{
+			liftPot = new AnalogPotentiometer(4, 5); //TODO: Get this constant
+			LiveWindow.addSensor("Forklift", "liftPot", liftPot);
+		}
 		 
 		
 	//Pusher
 		
 		//Motors
 		
-		pusherMotor = new VictorSP(9);
-		LiveWindow.addActuator("Pusher", "pusherMotor", pusherMotor);
+		pusherMotor = new VictorSP246(9, 0, pdp);
+		LiveWindow.addActuator("Pusher", "pusherMotor", (LiveWindowSendable) pusherMotor);
 		
 		//Sensors
 		
-		pusherPot = new AnalogPotentiometer(4, 1); //TODO: Get this constant
-		LiveWindow.addSensor("Pusher", "pusherEncoder", pusherPot);
+		if(!Robot.trojan)
+		{
+			pusherPot = new AnalogPotentiometer(5, 1); //TODO: Get this constant
+			LiveWindow.addSensor("Pusher", "pusherEncoder", pusherPot);
+		}
 		
 	//Arm
 		
 		//Motors
 		
-		armShoulderMotor = new VictorSP(14);
-		LiveWindow.addActuator("Arm", "armShoulderMotor", armShoulderMotor);
-		armElbowMotor = new VictorSP(15);
-		LiveWindow.addActuator("Arm", "armElbowMotor", armElbowMotor);
-		armWristMotor = new VictorSP(16);
-		LiveWindow.addActuator("Arm", "armWristMotor", armWristMotor);
+		armShoulderMotor = new VictorSP246(14, 0, pdp);
+		LiveWindow.addActuator("Arm", "armShoulderMotor", (LiveWindowSendable) armShoulderMotor);
+		armElbowMotor = new VictorSP246(15, 0, pdp);
+		LiveWindow.addActuator("Arm", "armElbowMotor", (LiveWindowSendable) armElbowMotor);
+		armWristMotor = new VictorSP246(16, 0, pdp);
+		LiveWindow.addActuator("Arm", "armWristMotor", (LiveWindowSendable) armWristMotor);
 		
 		//Sensors
 		
-		armShoulderPot = new AnalogPotentiometer(5, 360, 0); //TODO: Get these constants
-		LiveWindow.addActuator("Arm", "armShoulderPot", armShoulderPot);
-		armElbowPot = new AnalogPotentiometer(6, 360, 0); //TODO: Get these constants
-		LiveWindow.addActuator("Arm", "armElbowPot", armElbowPot);
-		armWristPot = new AnalogPotentiometer(7, 360, 0); //TODO: Get these constants
-		LiveWindow.addActuator("Arm", "armWristPot", armWristPot);
+		if(!Robot.trojan)
+		{
+			armShoulderPot = new AnalogPotentiometer(9, 360, 0); //TODO: Get these constants
+			LiveWindow.addActuator("Arm", "armShoulderPot", armShoulderPot);
+			armElbowPot = new AnalogPotentiometer(10, 360, 0); //TODO: Get these constants
+			LiveWindow.addActuator("Arm", "armElbowPot", armElbowPot);
+			armWristPot = new AnalogPotentiometer(11, 360, 0); //TODO: Get these constants
+			LiveWindow.addActuator("Arm", "armWristPot", armWristPot);
+		}
 		
 	//Grabber
 		
@@ -400,6 +486,7 @@ public class RobotMap {
 		
 		//Motors
 		
-		otsMotor = new VictorSP(17);
+		otsMotor = new VictorSP246(17, 0 ,pdp);
+		LiveWindow.addActuator("OTS", "otsMotor", (LiveWindowSendable) otsMotor);
 	}
 }
