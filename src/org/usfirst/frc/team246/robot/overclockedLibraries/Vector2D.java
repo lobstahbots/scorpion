@@ -87,4 +87,19 @@ public class Vector2D {
         Vector2D unitVector = new Vector2D(true, x/getMagnitude(), y/getMagnitude());
         return unitVector;
     }
+    
+    public double dotProduct(Vector2D vector1, Vector2D vector2){
+    	return vector1.getX()*vector2.getX() + vector1.getY()*vector2.getY();
+    }
+    
+//    project vector1 onto vector2
+    public Vector2D projectVector(Vector2D vector1, Vector2D vector2){
+    	Vector2D projection = new Vector2D(false, dotProduct(vector1, vector2), vector2.getAngle());
+    	return projection;
+    }
+    
+//    the other (than the projection) component of vector1 with a coordinate system relative to vector2
+    public Vector2D perpendicularProjection(Vector2D vector1, Vector2D vector2){
+    	return subtractVectors(vector1, projectVector(vector1, vector2));
+    }
 }
