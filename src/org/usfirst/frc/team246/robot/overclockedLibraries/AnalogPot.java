@@ -57,16 +57,10 @@ public class AnalogPot implements Potentiometer, LiveWindowSendable {
      * @param fullRange The scaling to multiply the fraction by to get a meaningful unit.
      * @param offset The offset to add to the scaled value for controlling the zero value
      */
-    public AnalogPot(final int channel, double fullRange, double offset) {
-    	AnalogIn input = new AnalogIn(channel);
+    public AnalogPot(final int channel, double fullRange, double offset, boolean onRIO) {
+    	AnalogIn input = new AnalogIn(channel, onRIO);
     	m_init_analog_input = true;
         initPot(input, fullRange, offset);
-    }
-    
-    public AnalogPot(double fullRange, double offset)
-    {
-    	AnalogIn input = new AnalogIn();
-    	initPot(input, fullRange, offset);
     }
 
     /**
@@ -102,13 +96,8 @@ public class AnalogPot implements Potentiometer, LiveWindowSendable {
      * @param channel The analog channel this potentiometer is plugged into.
      * @param scale The scaling to multiply the voltage by to get a meaningful unit.
      */
-    public AnalogPot(final int channel, double scale) {
-        this(channel, scale, 0);
-    }
-    
-    public AnalogPot(double scale)
-    {
-    	this(scale, 0);
+    public AnalogPot(final int channel, double scale, boolean onRIO) {
+        this(channel, scale, 0, onRIO);
     }
     
     /**
@@ -132,8 +121,8 @@ public class AnalogPot implements Potentiometer, LiveWindowSendable {
      *
      * @param channel The analog channel this potentiometer is plugged into.
      */
-    public AnalogPot(final int channel) {
-    	this(channel, 1, 0);
+    public AnalogPot(final int channel, boolean onRIO) {
+    	this(channel, 1, 0, onRIO);
     }
 
     /**

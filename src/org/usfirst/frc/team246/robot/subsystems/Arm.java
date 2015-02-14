@@ -4,12 +4,8 @@ import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.RobotMap;
 import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
 import org.usfirst.frc.team246.robot.commands.ManualArm;
-import org.usfirst.frc.team246.robot.overclockedLibraries.V4BPIDController;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
-
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.PIDOutput;
-import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -17,9 +13,9 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class Arm extends Subsystem {
 	
-	V4BPIDController shoulder;
-	V4BPIDController elbow;
-	V4BPIDController wrist;
+	public PIDController shoulder;
+	public PIDController elbow;
+	public PIDController wrist;
 	
 	boolean bendOut = false;
 
@@ -27,12 +23,10 @@ public class Arm extends Subsystem {
     public Arm() {
     	if(!Robot.trojan)
     	{
-	        shoulder = new V4BPIDController(RobotMap.ARM_SHOULDER_kP, RobotMap.ARM_SHOULDER_kI, RobotMap.ARM_SHOULDER_kD, RobotMap.armShoulderPot, RobotMap.armShoulderMotor, null);
+	        shoulder = new PIDController(RobotMap.ARM_SHOULDER_kP, RobotMap.ARM_SHOULDER_kI, RobotMap.ARM_SHOULDER_kD, RobotMap.armShoulderPot, RobotMap.armShoulderMotor);
 	        shoulder.setInputRange(RobotMap.ARM_SHOULDER_MIN, RobotMap.ARM_SHOULDER_MAX);
-	        elbow = new V4BPIDController(RobotMap.ARM_ELBOW_kP, RobotMap.ARM_ELBOW_kI, RobotMap.ARM_ELBOW_kD, RobotMap.armElbowPot, RobotMap.armElbowMotor, shoulder);
-	        elbow.setInputRange(RobotMap.ARM_ELBOW_MIN, RobotMap.ARM_ELBOW_MAX);
-	        wrist = new V4BPIDController(RobotMap.ARM_WRIST_kP, RobotMap.ARM_WRIST_kI, RobotMap.ARM_WRIST_kD, RobotMap.armWristPot, RobotMap.armWristMotor, null);
-	        wrist.setInputRange(RobotMap.ARM_WRIST_MIN, RobotMap.ARM_WRIST_MAX);
+	        elbow = new PIDController(RobotMap.ARM_ELBOW_kP, RobotMap.ARM_ELBOW_kI, RobotMap.ARM_ELBOW_kD, RobotMap.armElbowPot, RobotMap.armElbowMotor);
+	        wrist = new PIDController(RobotMap.ARM_WRIST_kP, RobotMap.ARM_WRIST_kI, RobotMap.ARM_WRIST_kD, RobotMap.armWristPot, RobotMap.armWristMotor);
     	}
     }
     
@@ -43,124 +37,72 @@ public class Arm extends Subsystem {
     	}
     }
     
-    //The location of the arm is described, in feet, by the vector between the shoulder joint and the wrist joint
-    //wristAngle should be a number from -180 thru 180 with 0 being towards the right
-    //coordinate systems are a mess in this method. I will try to document them better/standardize them in the future.
-    public void set(double x, double y, double wristAngle)
+    //The location of the arm is described, in inches, by the vector between the shoulder joint and the wrist joint
+    //All angles are defined relative to the world with 0 being up
+    public void set(double shoulderAngle, double elbowAngle, double wristAngle)
     {	
-    	if(y < -RobotMap.ARM_SHOULDER_HEIGHT + RobotMap.ARM_GROUND_TOLERANCE + RobotMap.ARM_WIDTH) y = -RobotMap.ARM_SHOULDER_HEIGHT + RobotMap.ARM_GROUND_TOLERANCE + RobotMap.ARM_WIDTH;
-    	if(y > 78/12 - RobotMap.ARM_SHOULDER_HEIGHT - RobotMap.ARM_CEILING_TOLERANCE + RobotMap.ARM_WIDTH) y = 78/12 - RobotMap.ARM_SHOULDER_HEIGHT - RobotMap.ARM_CEILING_TOLERANCE + RobotMap.ARM_WIDTH;
+    	//Define vectors for arm segments
+    	Vector2D v1 = new Vector2D(false, RobotMap.ARM_SEGMENT_1_LENGTH, shoulderAngle); //Between Shoulder and Elbow
+    	Vector2D v2 = new Vector2D(false, RobotMap.ARM_SEGMENT_2_LENGTH, elbowAngle); //Between Elbow and Wrist
+    	Vector2D v3 = new Vector2D(false, RobotMap.GRABBER_LENGTH, wristAngle); //From Wrist to the end of the arm
+    	Vector2D v12 = Vector2D.addVectors(v1, v2); //Between Shoulder and Wrist
+    	Vector2D v123 = Vector2D.addVectors(v12, v3); // From Shoulder to end of arm
     	
-    	Vector2D hypotenuse = new Vector2D(true, x, y);
+    	//Limit the angle of the shoulder
+    	if(v1.getAngle() > RobotMap.ARM_SHOULDER_MAX) return;
+    	if(v1.getAngle() < RobotMap.ARM_SHOULDER_MIN) return;
     	
-    	if(hypotenuse.getMagnitude() > RobotMap.ARM_SEGMENT_1_LENGTH + RobotMap.ARM_SEGMENT_2_LENGTH) hypotenuse.setMagnitude(RobotMap.ARM_SEGMENT_1_LENGTH + RobotMap.ARM_SEGMENT_2_LENGTH);
+    	//Stop our turnbuckles from hitting any sprockets
+    	if(v2.getAngle() - v1.getAngle() > RobotMap.ARM_TURNBUCKLE_SHOULDER_ELBOW_MAX) return;
+    	if(v1.getAngle() - v2.getAngle() < RobotMap.ARM_TURNBUCKLE_SHOULDER_ELBOW_MIN) return;
+    	if(v3.getAngle() - v1.getAngle() > RobotMap.ARM_TURNBUCKLE_SHOULDER_WRIST_MAX) return;
+    	if(v1.getAngle() - v3.getAngle() < RobotMap.ARM_TURNBUCKLE_SHOULDER_WRIST_MIN) return;
+    	if(v3.getAngle() - v2.getAngle() > RobotMap.ARM_TURNBUCKLE_ELBOW_WRIST_MAX) return;
+    	if(v2.getAngle() - v3.getAngle() < RobotMap.ARM_TURNBUCKLE_ELBOW_WRIST_MIN) return;
     	
-    	double shoulderAngle = lawOfCosines(RobotMap.ARM_SEGMENT_2_LENGTH, RobotMap.ARM_SEGMENT_1_LENGTH, hypotenuse.getMagnitude());
-    	double elbowAngle = lawOfCosines(hypotenuse.getMagnitude(), RobotMap.ARM_SEGMENT_1_LENGTH, RobotMap.ARM_SEGMENT_2_LENGTH);
+    	//Limit the arm to staying above the ground and below the ceiling
+    	if(v12.getY() < -RobotMap.ARM_SHOULDER_HEIGHT + RobotMap.ARM_GROUND_TOLERANCE) return;
+    	if(v12.getY() > 78 - RobotMap.ARM_SHOULDER_HEIGHT - RobotMap.ARM_CEILING_TOLERANCE) return;
+    	if(v123.getY() < -RobotMap.ARM_SHOULDER_HEIGHT + RobotMap.ARM_GROUND_TOLERANCE) return;
+    	if(v123.getY() > 78 - RobotMap.ARM_SHOULDER_HEIGHT - RobotMap.ARM_CEILING_TOLERANCE) return;
     	
-    	if(bendOut)
+    	//Stop the arm from hitting our lift
+    	Vector2D v2b = new Vector2D(false, -(RobotMap.ARM_LIFT_LOCATION + v1.getX())/Math.cos(v2.getAngle()), v2.getAngle());
+    	Vector2D v2c = Vector2D.addVectors(v2b, new Vector2D(false, RobotMap.ARM_WIDTH/2, v2b.getAngle() + 90));
+    	if(v2c.getY() < RobotMap.ARM_LIFT_HEIGHT) return;
+    	Vector2D v3b = new Vector2D(false, -(RobotMap.ARM_LIFT_LOCATION + v12.getX())/Math.cos(v3.getAngle()), v3.getAngle());
+    	Vector2D v3c = Vector2D.addVectors(v3b, new Vector2D(false, RobotMap.GRABBER_WIDTH/2, v3b.getAngle() + 90));
+    	if(v3c.getY() < RobotMap.ARM_LIFT_HEIGHT) return;
+    	
+    	//We passed all the tests. Go ahead and set the setpoints
+    	shoulder.setSetpoint(v1.getAngle());
+    	elbow.setSetpoint(v2.getAngle());
+    	wrist.setSetpoint(v3.getAngle());
+    }
+    
+    public void set(double x, double y, double wrist, boolean bendIn)
+    {
+    	Vector2D v = new Vector2D(true, x, y);
+    	double shoulder = lawOfCosines(RobotMap.ARM_SEGMENT_2_LENGTH, RobotMap.ARM_SEGMENT_1_LENGTH, v.getMagnitude());
+    	double elbow = lawOfCosines(v.getMagnitude(),  RobotMap.ARM_SEGMENT_1_LENGTH, RobotMap.ARM_SEGMENT_2_LENGTH);
+    	
+    	if(bendIn)
     	{
-    		shoulderAngle= hypotenuse.getAngle() + shoulderAngle;
+    		shoulder = v.getAngle() - shoulder;
+    		elbow = 90 - shoulder + elbow;
     	}
     	else
     	{
-    		shoulderAngle = hypotenuse.getAngle() - shoulderAngle;
-    		elbowAngle = 360 - elbowAngle;
+    		shoulder = v.getAngle() + shoulder;
+    		elbow = 90 - shoulder - elbow;
     	}
     	
-    	double elbowGlobalAngle = 90 + shoulderAngle + elbowAngle - 180; //normal coordinate system
-    	
-    	wristAngle += 180 - elbowGlobalAngle;
-    	
-    	Vector2D grabberVector1 = new Vector2D(true, RobotMap.GRABBER_LENGTH, RobotMap.GRABBER_WIDTH);
-    	grabberVector1.setAngle(grabberVector1.getAngle() - 180 + hypotenuse.getAngle() - 180 + wristAngle);
-    	
-    	Vector2D grabberVector2 = new Vector2D(true, RobotMap.GRABBER_LENGTH, -RobotMap.GRABBER_WIDTH);
-    	grabberVector2.setAngle(grabberVector2.getAngle() + elbowGlobalAngle + wristAngle);
-    	
-    	if(y < - RobotMap.ARM_SHOULDER_HEIGHT + RobotMap.ARM_GROUND_TOLERANCE + RobotMap.ARM_WIDTH + grabberVector1.getY()) y = - RobotMap.ARM_SHOULDER_HEIGHT + RobotMap.ARM_GROUND_TOLERANCE + RobotMap.ARM_WIDTH + grabberVector1.getY();
-    	if(y < - RobotMap.ARM_SHOULDER_HEIGHT + RobotMap.ARM_GROUND_TOLERANCE + RobotMap.ARM_WIDTH + grabberVector2.getY()) y = - RobotMap.ARM_SHOULDER_HEIGHT + RobotMap.ARM_GROUND_TOLERANCE + RobotMap.ARM_WIDTH + grabberVector2.getY();
-    	if(y > 78/12 - RobotMap.ARM_SHOULDER_HEIGHT - RobotMap.ARM_CEILING_TOLERANCE + RobotMap.ARM_WIDTH + grabberVector1.getY()) y = 78/12 - RobotMap.ARM_SHOULDER_HEIGHT - RobotMap.ARM_CEILING_TOLERANCE + RobotMap.ARM_WIDTH + grabberVector1.getY();
-    	if(y > 78/12 - RobotMap.ARM_SHOULDER_HEIGHT - RobotMap.ARM_CEILING_TOLERANCE + RobotMap.ARM_WIDTH + grabberVector2.getY()) y = 78/12 - RobotMap.ARM_SHOULDER_HEIGHT - RobotMap.ARM_CEILING_TOLERANCE + RobotMap.ARM_WIDTH + grabberVector2.getY();
-    	
-    	shoulderAngle = lawOfCosines(RobotMap.ARM_SEGMENT_2_LENGTH, RobotMap.ARM_SEGMENT_1_LENGTH, hypotenuse.getMagnitude());
-    	elbowAngle = lawOfCosines(hypotenuse.getMagnitude(), RobotMap.ARM_SEGMENT_1_LENGTH, RobotMap.ARM_SEGMENT_2_LENGTH);
-    	
-    	if(bendOut)
-    	{
-    		shoulderAngle= hypotenuse.getAngle() + shoulderAngle;
-    	}
-    	else
-    	{
-    		shoulderAngle = hypotenuse.getAngle() - shoulderAngle;
-    		elbowAngle = 360 - elbowAngle;
-    	}
-    	
-    	Vector2D segment1 = new Vector2D(false, RobotMap.ARM_SEGMENT_1_LENGTH, shoulderAngle);
-    	
-    	if(x < RobotMap.ARM_LIFT_LOCATION)
-    	{
-    		double suspectX = RobotMap.ARM_LIFT_LOCATION - segment1.getX();
-    		double suspectY = Math.tan(90 + shoulderAngle + elbowAngle - 180) * suspectX;
-    		if(suspectY + segment1.getY() < RobotMap.ARM_LIFT_HEIGHT)
-    		{
-    			Vector2D maxSegment2 = new Vector2D(true, suspectX, RobotMap.ARM_LIFT_HEIGHT - segment1.getY());
-    			elbowAngle = maxSegment2.getAngle() - 90 + shoulderAngle;
-    		}
-    	}
-    	
-    	Vector2D fullArm = Vector2D.addVectors(segment1, new Vector2D(false, RobotMap.ARM_SEGMENT_2_LENGTH, elbowGlobalAngle + 90));
-    	fullArm = Vector2D.addVectors(fullArm, grabberVector2);
-    	if(shoulderAngle < 0)
-    	{
-    		if(fullArm.getX() > RobotMap.ARM_LIFT_LOCATION)
-    		{
-    			fullArm.setX(RobotMap.ARM_LIFT_LOCATION);
-    			Vector2D segments12 = Vector2D.subtractVectors(fullArm, grabberVector2);
-    			
-    			x = segments12.getX();
-    			y = segments12.getY();
-    			
-    			shoulderAngle = lawOfCosines(RobotMap.ARM_SEGMENT_2_LENGTH, RobotMap.ARM_SEGMENT_1_LENGTH, hypotenuse.getMagnitude());
-    	    	elbowAngle = lawOfCosines(hypotenuse.getMagnitude(), RobotMap.ARM_SEGMENT_1_LENGTH, RobotMap.ARM_SEGMENT_2_LENGTH);
-    	    	
-    	    	if(bendOut)
-    	    	{
-    	    		shoulderAngle= hypotenuse.getAngle() + shoulderAngle;
-    	    	}
-    	    	else
-    	    	{
-    	    		shoulderAngle = hypotenuse.getAngle() - shoulderAngle;
-    	    		elbowAngle = 360 - elbowAngle;
-    	    	}
-    		}
-    		if(fullArm.getY() > RobotMap.ARM_LIFT_HEIGHT)
-    		{
-    			fullArm.setY(RobotMap.ARM_LIFT_HEIGHT);
-    			Vector2D segments12 = Vector2D.subtractVectors(fullArm, grabberVector2);
-    			
-    			x = segments12.getX();
-    			y = segments12.getY();
-    			
-    			shoulderAngle = lawOfCosines(RobotMap.ARM_SEGMENT_2_LENGTH, RobotMap.ARM_SEGMENT_1_LENGTH, hypotenuse.getMagnitude());
-    	    	elbowAngle = lawOfCosines(hypotenuse.getMagnitude(), RobotMap.ARM_SEGMENT_1_LENGTH, RobotMap.ARM_SEGMENT_2_LENGTH);
-    	    	
-    	    	if(bendOut)
-    	    	{
-    	    		shoulderAngle= hypotenuse.getAngle() + shoulderAngle;
-    	    	}
-    	    	else
-    	    	{
-    	    		shoulderAngle = hypotenuse.getAngle() - shoulderAngle;
-    	    		elbowAngle = 360 - elbowAngle;
-    	    	}
-    		}
-    	}
+    	set(shoulder, elbow, wrist);
     }
     
     public void set(ArmSetpoints setpoint)
     {
-    	set(setpoint.getX(), setpoint.getY(), setpoint.getWrist());
+    	set(setpoint.getX(), setpoint.getY(), setpoint.getWrist(), setpoint.getBendIn());
     }
     
     public Vector2D getVector()
@@ -225,7 +167,7 @@ public class Arm extends Subsystem {
     }
     
     //returns an angle in a triangle given 3 sides
-    public double lawOfCosines(double opp, double a, double b)
+    public static double lawOfCosines(double opp, double a, double b)
     {
     	return Math.acos((Math.pow(a, 2) + Math.pow(b, 2) - Math.pow(opp, 2))/(2*a*b));
     }

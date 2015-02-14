@@ -1,5 +1,7 @@
 package org.usfirst.frc.team246.robot.overclockedLibraries;
 
+import org.usfirst.frc.team246.robot.Robot;
+
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.SensorBase;
@@ -11,16 +13,19 @@ public class AnalogIn implements PIDSource, LiveWindowSendable {
 	public boolean onRIO;
 	public AnalogInput input;
 	public double currentVal = 0;
-
-	public AnalogIn() {
-		onRIO = false;
-	}
 	
-	public AnalogIn(int channel)
+	public AnalogIn(int channel, boolean onRIO)
 	{
-		onRIO = true;
-		input = new AnalogInput(channel);
-		input.setAverageBits(100);
+		this.onRIO = onRIO;
+		if(onRIO)
+		{
+			input = new AnalogInput(channel);
+			input.setAverageBits(100);
+		}
+		else
+		{
+			Robot.BBBAnalogs.add(channel, this);
+		}
 	}
 	
 	public double get()

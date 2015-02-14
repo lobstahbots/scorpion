@@ -8,9 +8,11 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.BitSet;
 
 import org.usfirst.frc.team246.nav6.IMUAdvanced;
+import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogIn;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SwerveModule;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Victor246;
 import org.usfirst.frc.team246.robot.subsystems.Arm;
@@ -40,7 +42,6 @@ public class Robot extends IterativeRobot {
 
 	public static OI oi;
 	
-	public static boolean beagleBoneConnected = true;
 	public static boolean requestCorner = false;
 	
 	public static double toteCornerX = 65536;
@@ -63,6 +64,8 @@ public class Robot extends IterativeRobot {
 	public static Arm arm;
 	public static Grabber grabber;
 	public static OTS ots;
+	
+	public static ArrayList<AnalogIn> BBBAnalogs;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -81,7 +84,9 @@ public class Robot extends IterativeRobot {
         
         oi = new OI();
         
-        //(new Thread(new BeagleBoneCollector())).start();
+        BBBAnalogs = new ArrayList<AnalogIn>();
+        
+        (new Thread(new AnalogInputCollector())).start();
         
         if(test1)
         {
@@ -264,58 +269,55 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putBoolean("haveTote", getters.hasTote());
     }
     
-    public class BeagleBoneCollector implements Runnable {
+    public class AnalogInputCollector implements Runnable {
 		
-    	public DatagramSocket beagleBone;
+    	DatagramSocket AIs;
     	
     	public void run() {
-			try {
-				beagleBone = new DatagramSocket(5800);
-				beagleBone.setSoTimeout(10000);
-				beagleBone.setReuseAddress(true);
+    		try{
+    			AIs = new DatagramSocket(5800);
+				AIs.setSoTimeout(10000);
+				AIs.setReuseAddress(true);
 			} catch (SocketException e) {
-				beagleBoneConnected = false;
 				e.printStackTrace();
 			}
-			while(isEnabled())
+			while(true)
 			{
 				byte[] data = new byte[1000];
 		        DatagramPacket packet = new DatagramPacket(data, data.length);
 		        try {
-					beagleBone.receive(packet);
+					AIs.receive(packet);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 		        
-		        toteCornerX = littleEndianConcatenation(data[0], data [1])/25.4;
-		        toteCornerY = littleEndianConcatenation(data[2], data[3])/25.4;
-		        toteAngle = data[4];
-		        toteDistance = littleEndianConcatenation(data[5], data[6])/25.4;
-		        otsRPM = littleEndianConcatenation(data[7], data[8]);
+		        for(int i = 1; i <= data[0]*3; i += 3)
+		        {
+		        	BBBAnalogs.get(data[i]).updateVal(littleEndianConcatenation(data[i+1], data[i+2]));
+		        }
 			}
-			beagleBone.close();
 		}
-    	
-    	public int littleEndianConcatenation(byte byte1, byte byte2)
-    	{
-    		byte[] arr1 = {byte1};
-    		BitSet bits1 = BitSet.valueOf(arr1);
-    		byte[] arr2 = {byte2};
-    		BitSet bits2 = BitSet.valueOf(arr2);
-    		BitSet resultBits = bits1;
-    		for(int i = 0; i < bits2.size(); i++)
-    		{
-    			bits1.set(bits1.size(), bits2.get(i));
-    		}
-    		int result = 0;
-    		for(int i = 0; i < resultBits.size(); i++)
-    		{
-    			if(resultBits.get(i))
-    			{
-    				result += Math.pow(2, i);
-    			}
-    		}
-    		return result;
-    	}
+	}
+    
+    public static int littleEndianConcatenation(byte byte1, byte byte2)
+	{
+		byte[] arr1 = {byte1};
+		BitSet bits1 = BitSet.valueOf(arr1);
+		byte[] arr2 = {byte2};
+		BitSet bits2 = BitSet.valueOf(arr2);
+		BitSet resultBits = bits1;
+		for(int i = 0; i < bits2.size(); i++)
+		{
+			bits1.set(bits1.size(), bits2.get(i));
+		}
+		int result = 0;
+		for(int i = 0; i < resultBits.size(); i++)
+		{
+			if(resultBits.get(i))
+			{
+				result += Math.pow(2, i);
+			}
+		}
+		return result;
 	}
 }

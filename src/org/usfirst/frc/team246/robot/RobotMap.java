@@ -193,42 +193,50 @@ public class RobotMap {
 	public static final double ARM_WRIST_kI = 0;
 	public static final double ARM_WRIST_kD = 0;
 	
-	public static final double ARM_SEGMENT_1_LENGTH = 1;
-	public static final double ARM_SEGMENT_2_LENGTH = 1;
+	public static final double ARM_SEGMENT_1_LENGTH = 24;
+	public static final double ARM_SEGMENT_2_LENGTH = 24;
 	
 	public static final double ARM_SHOULDER_MIN = -45;
 	public static final double ARM_SHOULDER_MAX = 135;
 	
-	public static final double ARM_ELBOW_MIN = 30;
-	public static final double ARM_ELBOW_MAX = 330;
+	public static final double ARM_SHOULDER_HEIGHT = 36;
 	
-	public static final double ARM_WRIST_MIN = 30;
-	public static final double ARM_WRIST_MAX = 330;
+	public static final double ARM_GROUND_TOLERANCE = 3.5;
+	public static final double ARM_CEILING_TOLERANCE = 3.5;
 	
-	public static final double ARM_SHOULDER_HEIGHT = 1.5;
-	
-	public static final double ARM_GROUND_TOLERANCE = 2;
-	public static final double ARM_CEILING_TOLERANCE = 2;
-	
-	public static final double ARM_WIDTH = .25;
-	public static final double GRABBER_WIDTH = 1;
+	public static final double ARM_WIDTH = 6;
+	public static final double GRABBER_WIDTH = 6;
 	public static final double GRABBER_LENGTH = 1;
 	
-	public static final double ARM_LIFT_LOCATION = -1;
-	public static final double ARM_LIFT_HEIGHT = 2;
+	public static final double ARM_LIFT_LOCATION = -21.5;
+	public static final double ARM_LIFT_HEIGHT = 54;
+	
+	public static final double ARM_TURNBUCKLE_SHOULDER_ELBOW_MAX = 0;
+	public static final double ARM_TURNBUCKLE_SHOULDER_ELBOW_MIN = 0;
+	public static final double ARM_TURNBUCKLE_SHOULDER_WRIST_MAX = 0;
+	public static final double ARM_TURNBUCKLE_SHOULDER_WRIST_MIN = 0;
+	public static final double ARM_TURNBUCKLE_ELBOW_WRIST_MAX = 0;
+	public static final double ARM_TURNBUCKLE_ELBOW_WRIST_MIN = 0;
 	
 	public enum ArmSetpoints {
-		GROUND_UPRIGHT(1, 1, 0), GROUND_FALLEN(1, 1, -90), STEP_UPRIGHT(1, 1, 0), LANDFILL_FALLEN(1, 1, -90), STORE(1, 1, 45);
+		
+		GROUND_UP(0,0,0,true),
+		GROUND_FALL(0,0,0,true),
+		STEP_UP(0,0,0,true),
+		STEP_FALL(0,0,0,true),
+		STORAGE(0,0,0,false);
 		
 		private double x;
 		private double y;
 		private double wrist;
+		private boolean bendIn;
 		
-		private ArmSetpoints(double x, double y, double wrist)
+		private ArmSetpoints(double x, double y, double wrist, boolean bendIn)
 		{
 			this.x = x;
 			this.y = y;
 			this.wrist = wrist;
+			this.bendIn = bendIn;
 		}
 		
 		public double getX()
@@ -242,6 +250,10 @@ public class RobotMap {
 		public double getWrist()
 		{
 			return wrist;
+		}
+		public boolean getBendIn()
+		{
+			return bendIn;
 		}
 	}
 	
@@ -261,6 +273,10 @@ public class RobotMap {
 	//Motors
 	
 	public static SpeedController246 otsMotor;
+	
+	//Sensors
+	
+	public static AnalogIn otsRPM;
 	
 	//Constants
 	
@@ -388,26 +404,26 @@ public class RobotMap {
 		
 		if(Robot.trojan)
 		{
-			leftRangeFinder = new AnalogIn(3);
+			leftRangeFinder = new AnalogIn(3, true);
 			LiveWindow.addSensor("Getters", "leftRangeFinder", leftRangeFinder);
-			rightRangeFinder = new AnalogIn(4);
+			rightRangeFinder = new AnalogIn(4, true);
 			LiveWindow.addSensor("Getters", "rightRangeFinder", rightRangeFinder);
 			
-			leftGetterPot = new AnalogPot(5, 360);
+			leftGetterPot = new AnalogPot(5, 360, .113, true);
 			LiveWindow.addSensor("Getters", "leftGetterPot", leftGetterPot);
-			rightGetterPot = new AnalogPot(6, 360);
+			rightGetterPot = new AnalogPot(6, 360, .125, true);
 			LiveWindow.addSensor("Getters", "rightGetterPot", rightGetterPot);
 		}
 		else
 		{
-			leftRangeFinder = new AnalogIn();
+			leftRangeFinder = new AnalogIn(2, false);
 			LiveWindow.addSensor("Getters", "leftRangeFinder", leftRangeFinder);
-			rightRangeFinder = new AnalogIn();
+			rightRangeFinder = new AnalogIn(3, false);
 			LiveWindow.addSensor("Getters", "rightRangeFinder", rightRangeFinder);
 			
-			leftGetterPot = new AnalogPot(360., 113);
+			leftGetterPot = new AnalogPot(4, 360., 113, false);
 			LiveWindow.addSensor("Getters", "leftGetterPot", leftGetterPot);
-			rightGetterPot = new AnalogPot(360., 125);
+			rightGetterPot = new AnalogPot(5, 360., 125, false);
 			LiveWindow.addSensor("Getters", "rightGetterPot", rightGetterPot);
 		}
 		
@@ -422,7 +438,7 @@ public class RobotMap {
 		
 		if(!Robot.trojan)
 		{
-			liftPot = new AnalogPotentiometer(4, 5); //TODO: Get this constant
+			liftPot = new AnalogPotentiometer(3, 5); //TODO: Get this constant
 			LiveWindow.addSensor("Forklift", "liftPot", liftPot);
 		}
 		 
@@ -438,7 +454,7 @@ public class RobotMap {
 		
 		if(!Robot.trojan)
 		{
-			pusherPot = new AnalogPotentiometer(5, 1); //TODO: Get this constant
+			pusherPot = new AnalogPotentiometer(4, 1); //TODO: Get this constant
 			LiveWindow.addSensor("Pusher", "pusherEncoder", pusherPot);
 		}
 		
@@ -446,28 +462,28 @@ public class RobotMap {
 		
 		//Motors
 		
-		armShoulderMotor = new VictorSP246(14, 0, pdp);
+		armShoulderMotor = new VictorSP246(10, 0, pdp);
 		LiveWindow.addActuator("Arm", "armShoulderMotor", (LiveWindowSendable) armShoulderMotor);
-		armElbowMotor = new VictorSP246(15, 0, pdp);
+		armElbowMotor = new VictorSP246(11, 0, pdp);
 		LiveWindow.addActuator("Arm", "armElbowMotor", (LiveWindowSendable) armElbowMotor);
-		armWristMotor = new VictorSP246(16, 0, pdp);
+		armWristMotor = new VictorSP246(12, 0, pdp);
 		LiveWindow.addActuator("Arm", "armWristMotor", (LiveWindowSendable) armWristMotor);
 		
 		//Sensors
 		
 		if(!Robot.trojan)
 		{
-			armShoulderPot = new AnalogPotentiometer(9, 360, 0); //TODO: Get these constants
+			armShoulderPot = new AnalogPotentiometer(5, 360, 0); //TODO: Get these constants
 			LiveWindow.addActuator("Arm", "armShoulderPot", armShoulderPot);
-			armElbowPot = new AnalogPotentiometer(10, 360, 0); //TODO: Get these constants
+			armElbowPot = new AnalogPotentiometer(6, 360, 0); //TODO: Get these constants
 			LiveWindow.addActuator("Arm", "armElbowPot", armElbowPot);
-			armWristPot = new AnalogPotentiometer(11, 360, 0); //TODO: Get these constants
+			armWristPot = new AnalogPotentiometer(7, 360, 0); //TODO: Get these constants
 			LiveWindow.addActuator("Arm", "armWristPot", armWristPot);
 		}
 		
 	//Grabber
 		
-	//Pneumatics
+		//Pneumatics
 			
 		if(!Robot.trojan)
 		{
@@ -488,5 +504,10 @@ public class RobotMap {
 		
 		otsMotor = new VictorSP246(17, 0 ,pdp);
 		LiveWindow.addActuator("OTS", "otsMotor", (LiveWindowSendable) otsMotor);
+		
+		//Sensors
+		
+		otsRPM = new AnalogIn(0, false);
+		LiveWindow.addSensor("OTS", "otsRPM", otsRPM);
 	}
 }
