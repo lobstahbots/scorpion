@@ -93,13 +93,13 @@ public class Vector2D {
     }
     
 //    project vector1 onto vector2
-    public Vector2D projectVector(Vector2D vector1, Vector2D vector2){
+    public Vector2D parallelProjection(Vector2D vector1, Vector2D vector2){
     	Vector2D projection = new Vector2D(false, dotProduct(vector1, vector2), vector2.getAngle());
     	return projection;
     }
     
 //    the other (than the projection) component of vector1 with a coordinate system relative to vector2
     public Vector2D perpendicularProjection(Vector2D vector1, Vector2D vector2){
-    	return subtractVectors(vector1, projectVector(vector1, vector2));
+    	return subtractVectors(vector1, parallelProjection(vector1, vector2));
     }
 }
