@@ -42,6 +42,8 @@ public class Drivetrain extends Subsystem {
         absoluteTwistPID = new PIDController(RobotMap.ABSOLUTE_TWIST_kP, RobotMap.ABSOLUTE_TWIST_kI, RobotMap.ABSOLUTE_TWIST_kD, RobotMap.navX, absoluteTwistPIDOutput);
         absoluteTwistPID.setInputRange(-180, 180);
         absoluteTwistPID.setContinuous();
+        
+        (new Thread(new Odometry())).start();
     }
 
     public void initDefaultCommand() {
@@ -246,5 +248,16 @@ public class Drivetrain extends Subsystem {
             if(swerves[i].getModuleAngle() > RobotMap.MAX_MODULE_ANGLE) return true;
         }
         return false;
+    }
+    
+    class Odometry implements Runnable
+    {
+
+		@Override
+		public void run() {
+			
+			Timer.delay(.001); // in seconds
+		}
+    	
     }
 }
