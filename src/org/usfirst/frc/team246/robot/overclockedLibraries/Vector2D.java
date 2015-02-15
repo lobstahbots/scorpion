@@ -32,6 +32,10 @@ public class Vector2D {
         return cartCoords;
     }
     
+    public Vector2D cloneVector(){
+    	return new Vector2D(true, x, y);
+    }
+    
 //    GETTERS
     public double getX(){
         return x;
@@ -88,18 +92,18 @@ public class Vector2D {
         return unitVector;
     }
     
-    public double dotProduct(Vector2D vector1, Vector2D vector2){
+    public static double dotProduct(Vector2D vector1, Vector2D vector2){
     	return vector1.getX()*vector2.getX() + vector1.getY()*vector2.getY();
     }
     
 //    project vector1 onto vector2
-    public Vector2D parallelProjection(Vector2D vector1, Vector2D vector2){
+    public static Vector2D parallelProjection(Vector2D vector1, Vector2D vector2){
     	Vector2D projection = new Vector2D(false, dotProduct(vector1, vector2), vector2.getAngle());
     	return projection;
     }
     
 //    the other (than the projection) component of vector1 with a coordinate system relative to vector2
-    public Vector2D perpendicularProjection(Vector2D vector1, Vector2D vector2){
+    public static Vector2D perpendicularProjection(Vector2D vector1, Vector2D vector2){
     	return subtractVectors(vector1, parallelProjection(vector1, vector2));
     }
 }
