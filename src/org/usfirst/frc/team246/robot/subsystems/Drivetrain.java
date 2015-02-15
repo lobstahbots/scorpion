@@ -252,12 +252,50 @@ public class Drivetrain extends Subsystem {
     
     class Odometry implements Runnable
     {
-
-		@Override
-		public void run() {
-			
-			Timer.delay(.001); // in seconds
-		}
+    	private Vector2D robotCentricLinearDisplacement = new Vector2D(true, 0, 0);
+    	private double robotCentricAngularDisplacement = 0;
     	
+    	@Override
+		public void run() {
+			while(true){
+				getLinearDisplacement();
+//				getAngularDisplacement(); // TODO:implement
+				Timer.delay(.001); // in seconds	
+			}
+		}
+		
+    	public Vector2D getRobotCentricLinearDisplacement(){
+    		return robotCentricLinearDisplacement;
+    	}
+    	
+    	public double getRobotCentricAngularDisplacement(){
+    		return robotCentricAngularDisplacement;
+    	}
+    	
+    	public Vector2D getFieldCentricLinearDisplacement(){
+    		Vector2D fieldCentricLinearDisplacement = robotCentricLinearDisplacement.cloneVector();
+    		fieldCentricLinearDisplacement.setAngle(robotCentricLinearDisplacement.getAngle() + RobotMap.navX.getYaw());
+    		return fieldCentricLinearDisplacement;
+    	}
+    	
+    	public double getFieldCentricAngularDisplacement(){
+			return robotCentricAngularDisplacement + RobotMap.navX.getYaw();
+		}
+		
+    	private void getLinearDisplacement(){
+    		Vector2D[] swervesDisplacementVectors = new Vector2D[swerves.length];
+    		for(int i=0; i<swerves.length; i++){
+    			swervesDisplacementVectors[i] = new Vector2D(false, swerves[i].wheelEncoder.getDistance(), swerves[i].modulePot.get());
+    		}
+    		robotCentricLinearDisplacement = Vector2D.addVectors(robotCentricLinearDisplacement, sumOfVectors(swervesDisplacementVectors));    		
+    	}
+    	
+    	private Vector2D sumOfVectors(Vector2D[] vectorArray){
+    		Vector2D sum = new Vector2D(true, 0, 0);
+    		for(int i=0; i<vectorArray.length; i++){
+    			sum = Vector2D.addVectors(sum, vectorArray[i]);
+    		}
+    		return sum;
+    	}
     }
 }
