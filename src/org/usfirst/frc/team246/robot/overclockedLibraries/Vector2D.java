@@ -12,8 +12,8 @@ package org.usfirst.frc.team246.robot.overclockedLibraries;
  */
 public class Vector2D {
     
-    double x;
-    double y;
+    private double x;
+    private double y;
     
     public Vector2D(boolean cartesian, double abscissa, double ordinate){
         if(cartesian){
