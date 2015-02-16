@@ -122,7 +122,6 @@ public class Arm extends Subsystem {
     		return;
 		}
     	
-    	/*
     	//Stop the arm from hitting our lift
     	Vector2D v2b = new Vector2D(false, -(RobotMap.ARM_LIFT_LOCATION + v1.getX())/Math.cos(v2.getAngle()), v2.getAngle());
     	Vector2D v2c = Vector2D.addVectors(v2b, new Vector2D(false, RobotMap.ARM_WIDTH/2, v2b.getAngle() + 90));
@@ -138,7 +137,6 @@ public class Arm extends Subsystem {
     		System.out.println("Grabber Lift");
     		return;
 		}
-    	*/
     	
     	//We passed all the tests. Go ahead and set the setpoints
     	shoulder.setSetpoint(v1.getAngle());

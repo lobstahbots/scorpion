@@ -25,11 +25,11 @@ public class ManualArm extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
     	
-    	double s = RobotMap.armShoulderPot.get() + Robot.oi.operator.getRightYAxis() * SmartDashboard.getNumber("ARM_SHOULDER_MANUAL_SPEED", 0);
+    	double s = RobotMap.armShoulderPot.get() - Robot.oi.operator.getRightYAxis() * SmartDashboard.getNumber("ARM_SHOULDER_MANUAL_SPEED", 0);
     	if(Robot.oi.operator.getRightYAxis() == 0) s = Robot.arm.shoulder.getSetpoint();
-    	double e = RobotMap.armElbowPot.get() - Robot.oi.operator.getRightXAxis() * SmartDashboard.getNumber("ARM_ELBOW_MANUAL_SPEED", 0);
+    	double e = RobotMap.armElbowPot.get() + Robot.oi.operator.getRightXAxis() * SmartDashboard.getNumber("ARM_ELBOW_MANUAL_SPEED", 0);
     	if(Robot.oi.operator.getRightXAxis() == 0) e = Robot.arm.elbow.getSetpoint();
-    	double w = Robot.arm.getWrist() + Robot.oi.operator.getLeftYAxis() * SmartDashboard.getNumber("ARM_WRIST_MANUAL_SPEED", 0);
+    	double w = Robot.arm.getWrist() - Robot.oi.operator.getLeftYAxis() * SmartDashboard.getNumber("ARM_WRIST_MANUAL_SPEED", 0);
     	if(Robot.oi.operator.getLeftYAxis() == 0) w = Robot.arm.getTargetWrist();
     	Robot.arm.set(s, e, w);
     }

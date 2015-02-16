@@ -46,7 +46,10 @@ public class Vector2D {
     }
     
     public double getAngle(){
-        return Math.toDegrees(Math.atan2(y, x)) - 90;
+        double angle = Math.toDegrees(Math.atan2(y, x)) - 90;
+        if(angle < -180) return angle + 360;
+        else if(angle > 180) return angle - 360;
+        else return angle;
     }
     
     public double getMagnitude() {
