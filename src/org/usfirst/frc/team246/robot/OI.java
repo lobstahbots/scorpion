@@ -8,10 +8,12 @@ import org.usfirst.frc.team246.robot.commands.CrabWithTwist;
 import org.usfirst.frc.team246.robot.commands.GetTote;
 import org.usfirst.frc.team246.robot.commands.GoFast;
 import org.usfirst.frc.team246.robot.commands.LiftTote;
+import org.usfirst.frc.team246.robot.commands.MoveArm;
 import org.usfirst.frc.team246.robot.commands.MoveForklift;
 import org.usfirst.frc.team246.robot.commands.MoveForkliftDown1;
 import org.usfirst.frc.team246.robot.commands.MoveForkliftUp1;
 import org.usfirst.frc.team246.robot.commands.OpenGrabber;
+import org.usfirst.frc.team246.robot.commands.PushTotes;
 import org.usfirst.frc.team246.robot.commands.RobotCentricCrabWithTwist;
 import org.usfirst.frc.team246.robot.commands.SwerveTank;
 import org.usfirst.frc.team246.robot.overclockedLibraries.LogitechF310;
@@ -70,18 +72,11 @@ public class OI {
 			}
 		}.toggle(new MoveForklift(LiftSetpoints.STEP, false),new MoveForklift(LiftSetpoints.SCORING_PLATFORM, false));
 		
-		new Toggle() {
-			
-			@Override
-			public boolean get() {
-				return operator.getRB().get();
-			}
-			
-			@Override
-			public boolean getToggler() {
-				return Robot.grabber.getPosition() == DoubleSolenoid.Value.kForward;
-			}
-		}.toggle(new CloseGrabber(), new OpenGrabber());
+		operator.getLB().whileHeld(new PushTotes());
+		
+		operator.getBack().whenPressed(new MoveArm(ArmSetpoints.STORAGE));
+		
+		operator.getRB().whileHeld(new OpenGrabber());
 		
     }
 }

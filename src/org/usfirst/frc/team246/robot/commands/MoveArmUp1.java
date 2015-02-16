@@ -2,38 +2,31 @@ package org.usfirst.frc.team246.robot.commands;
 
 import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.RobotMap;
-import org.usfirst.frc.team246.robot.subsystems.Forklift;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
-public class ManualForklift extends Command {
+public class MoveArmUp1 extends Command {
 
-	Forklift f = Robot.forklift;
-    public ManualForklift() {
-        requires(f);
+    public MoveArmUp1() {
+        requires(Robot.arm);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	f.enable();
-    	f.totesHigh = 0;
+    	Robot.arm.pidOn(true);
+    	Robot.arm.set(Robot.arm.getVector().getX(), Robot.arm.getVector().getY() + RobotMap.TOTE_HEIGHT, Robot.arm.getWrist());
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	double triggersVal = Robot.oi.operator.getRightTriggerAxis() - Robot.oi.operator.getLeftTriggerAxis();
-    	if(triggersVal != 0)
-    	{
-    		f.setSetpoint((triggersVal + Robot.forklift.getPosition())*RobotMap.LIFT_MANUAL_SPEED);
-    	}
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+        return true;
     }
 
     // Called once after isFinished returns true

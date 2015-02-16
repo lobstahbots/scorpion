@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.livewindow.LiveWindowSendable;
@@ -128,6 +129,8 @@ public class RobotMap {
 	
 	public static final double LIFT_BELOW_TOTE_HEIGHT = .9;
 	
+	public static final double LIFT_MANUAL_SPEED = 6;
+	
 	public static final double TOTE_HEIGHT = 12;
 	
 	public enum LiftSetpoints {
@@ -181,23 +184,27 @@ public class RobotMap {
 	
 	//Constants
 	
-	public static final double ARM_SHOULDER_kP = 1;
-	public static final double ARM_SHOULDER_kI = 0;
-	public static final double ARM_SHOULDER_kD = 0;
+	public static final double ARM_SHOULDER_kP = 0.120;
+	public static final double ARM_SHOULDER_kI = 0.000;
+	public static final double ARM_SHOULDER_kD = 0.450;
 	
-	public static final double ARM_ELBOW_kP = 1;
-	public static final double ARM_ELBOW_kI = 0;
-	public static final double ARM_ELBOW_kD = 0;
+	public static final double ARM_ELBOW_kP = 0.120;
+	public static final double ARM_ELBOW_kI = 0.000;
+	public static final double ARM_ELBOW_kD = 0.400;
 	
-	public static final double ARM_WRIST_kP = 1;
-	public static final double ARM_WRIST_kI = 0;
-	public static final double ARM_WRIST_kD = 0;
+	public static final double ARM_WRIST_kP = 0.100;
+	public static final double ARM_WRIST_kI = 0.000;
+	public static final double ARM_WRIST_kD = 0.400;
+	
+	public static final double ARM_SHOULDER_MANUAL_SPEED = 30;
+	public static final double ARM_ELBOW_MANUAL_SPEED = 30;
+	public static final double ARM_WRIST_MANUAL_SPEED = 30;
 	
 	public static final double ARM_SEGMENT_1_LENGTH = 24;
 	public static final double ARM_SEGMENT_2_LENGTH = 24;
 	
-	public static final double ARM_SHOULDER_MIN = -45;
-	public static final double ARM_SHOULDER_MAX = 135;
+	public static final double ARM_SHOULDER_MIN = -28;
+	public static final double ARM_SHOULDER_MAX = 125;
 	
 	public static final double ARM_SHOULDER_HEIGHT = 36;
 	
@@ -211,12 +218,13 @@ public class RobotMap {
 	public static final double ARM_LIFT_LOCATION = -21.5;
 	public static final double ARM_LIFT_HEIGHT = 54;
 	
-	public static final double ARM_TURNBUCKLE_SHOULDER_ELBOW_MAX = 0;
-	public static final double ARM_TURNBUCKLE_SHOULDER_ELBOW_MIN = 0;
-	public static final double ARM_TURNBUCKLE_SHOULDER_WRIST_MAX = 0;
-	public static final double ARM_TURNBUCKLE_SHOULDER_WRIST_MIN = 0;
-	public static final double ARM_TURNBUCKLE_ELBOW_WRIST_MAX = 0;
-	public static final double ARM_TURNBUCKLE_ELBOW_WRIST_MIN = 0;
+	public static final double ARM_TURNBUCKLE_SHOULDER_ELBOW_MAX = 154;//too_generous
+	public static final double ARM_TURNBUCKLE_SHOULDER_ELBOW_MIN = -130;//good
+	public static final double ARM_TURNBUCKLE_SHOULDER_WRIST_MAX = 127;
+	public static final double ARM_TURNBUCKLE_SHOULDER_WRIST_MIN = -174;//way_too_generous
+	public static final double ARM_TURNBUCKLE_ELBOW_WRIST_MAX = 124;//good
+	public static final double ARM_TURNBUCKLE_ELBOW_WRIST_MIN = -125;//too_generous
+
 	
 	public enum ArmSetpoints {
 		
@@ -224,7 +232,8 @@ public class RobotMap {
 		GROUND_FALL(0,0,0,true),
 		STEP_UP(0,0,0,true),
 		STEP_FALL(0,0,0,true),
-		STORAGE(0,0,0,false);
+		STORAGE(0,0,0,true),
+		ON_LIFT(0,0,0,true);
 		
 		private double x;
 		private double y;
@@ -259,14 +268,23 @@ public class RobotMap {
 	
 //Grabber
 	
-	//Pneumatics
+	//Motors
 	
-	public static DoubleSolenoid leftGrabberCylinder;
-	public static DoubleSolenoid rightGrabberCylinder;
+	public static Victor246 grabberMotor;
 	
 	//Sensors
 	
 	public static DigitalInput canDetector;
+	public static AnalogPot grabberPot;
+	
+	//Constants
+	
+	public static final double GRABBER_kP = 1;
+	public static final double GRABBER_kI = 0;
+	public static final double GRABBER_kD = 0;
+	
+	public static final double GRABBER_CLOSED_POSITION = 0;
+	public static final double GRABBER_OPEN_POSITION = .5;
 	
 //OTS
 	
@@ -473,12 +491,12 @@ public class RobotMap {
 		
 		if(!Robot.trojan)
 		{
-			armShoulderPot = new AnalogPotentiometer(5, 360, 0); //TODO: Get these constants
-			LiveWindow.addActuator("Arm", "armShoulderPot", armShoulderPot);
-			armElbowPot = new AnalogPotentiometer(6, 360, 0); //TODO: Get these constants
-			LiveWindow.addActuator("Arm", "armElbowPot", armElbowPot);
-			armWristPot = new AnalogPotentiometer(7, 360, 0); //TODO: Get these constants
-			LiveWindow.addActuator("Arm", "armWristPot", armWristPot);
+			armShoulderPot = new AnalogPotentiometer(5, 391.83673469387755102040816326531, -204.2); //TODO: Get these constants
+			LiveWindow.addSensor("Arm", "armShoulderPot", armShoulderPot);
+			armElbowPot = new AnalogPotentiometer(6, 391.83673469387755102040816326531, -173.4); //TODO: Get these constants
+			LiveWindow.addSensor("Arm", "armElbowPot", armElbowPot);
+			armWristPot = new AnalogPotentiometer(7, 391.83673469387755102040816326531, -188.8); //TODO: Get these constants
+			LiveWindow.addSensor("Arm", "armWristPot", armWristPot);
 		}
 		
 	//Grabber
@@ -487,27 +505,27 @@ public class RobotMap {
 			
 		if(!Robot.trojan)
 		{
-			leftGrabberCylinder = new DoubleSolenoid(4,5);
-			LiveWindow.addActuator("Grabber", "leftGrabberCylinder", leftGrabberCylinder);
-			rightGrabberCylinder = new DoubleSolenoid(6,7);
-			LiveWindow.addActuator("Grabber",  "rightGrabberCylinder", rightGrabberCylinder);
+			grabberMotor = new Victor246(13, 0, pdp);
+			LiveWindow.addActuator("Grabber", "grabberMotor", grabberMotor);
 		}
 		
 		//Sensors
 		
-		canDetector = new DigitalInput(13);
+		canDetector = new DigitalInput(6);
 		LiveWindow.addActuator("Grabber", "canDetector", canDetector);
+		grabberPot = new AnalogPot(1, 1, -.5, false);
+		LiveWindow.addSensor("Grabber", "grabberPot", grabberPot);
 		
 	//OTS
 		
 		//Motors
 		
-		otsMotor = new VictorSP246(17, 0 ,pdp);
+		otsMotor = new VictorSP246(14, 0 ,pdp);
 		LiveWindow.addActuator("OTS", "otsMotor", (LiveWindowSendable) otsMotor);
 		
 		//Sensors
 		
 		otsRPM = new AnalogIn(0, false);
-		LiveWindow.addSensor("OTS", "otsRPM", otsRPM);
+		LiveWindow.addSensor("OTS", "otsRPM", otsRPM);		
 	}
 }

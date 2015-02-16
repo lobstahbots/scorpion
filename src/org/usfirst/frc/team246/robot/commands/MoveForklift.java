@@ -37,15 +37,22 @@ public class MoveForklift extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	if(getGroup() == null)
+    	if(Robot.oi.operator.getLeftTriggerAxis() != 0 || Robot.oi.operator.getRightTriggerAxis() != 0)
     	{
-    		return false;
+    		return true;
     	}
     	else
     	{
-    		return f.onTarget();
+    		if(getGroup() == null)
+    		{
+    			return false;
+    		}
+    		else
+    		{
+    			return f.onTarget();
+    		}
     	}
-    }
+	}
 
     // Called once after isFinished returns true
     protected void end() {

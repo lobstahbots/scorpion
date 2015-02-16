@@ -1,38 +1,44 @@
 package org.usfirst.frc.team246.robot.subsystems;
 
 import org.usfirst.frc.team246.robot.RobotMap;
+import org.usfirst.frc.team246.robot.commands.CloseGrabber;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
  *
  */
-public class Grabber extends Subsystem {
-	DoubleSolenoid leftCylinder= RobotMap.leftGrabberCylinder;
-	DoubleSolenoid rightCylinder= RobotMap.rightGrabberCylinder;
+public class Grabber extends PIDSubsystem {
     
-    // Put methods for controlling this subsystem
-    // here. Call these from Commands.
+    public Grabber()
+    {
+    	super(RobotMap.GRABBER_kP, RobotMap.GRABBER_kI, RobotMap.GRABBER_kD);
+    }
 
     public void initDefaultCommand() {
-        // Set the default command for a subsystem here.
-        //setDefaultCommand(new MySpecialCommand());
+        setDefaultCommand(new CloseGrabber());
     }
     
     public void open()
     {
-    	leftCylinder.set(DoubleSolenoid.Value.kReverse);
-    	rightCylinder.set(DoubleSolenoid.Value.kReverse);
+    	this.setSetpoint(RobotMap.GRABBER_OPEN_POSITION);
     }
     public void close()
     {
-    	leftCylinder.set(DoubleSolenoid.Value.kForward);
-    	rightCylinder.set(DoubleSolenoid.Value.kForward);
+    	this.setSetpoint(RobotMap.GRABBER_CLOSED_POSITION);
     }
-    public DoubleSolenoid.Value getPosition()
-    {
-    	return leftCylinder.get();
-    }
+
+	@Override
+	protected double returnPIDInput() {
+		// TODO Auto-generated method stub
+		return RobotMap.grabberPot.get(); 
+	}
+
+	@Override
+	protected void usePIDOutput(double output) {
+		RobotMap.grabberMotor.set(output);
+	}
 }
 

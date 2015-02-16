@@ -55,7 +55,7 @@ public class Robot extends IterativeRobot {
 	public static boolean test3 = false;
 	public static boolean gyroDisabled = false;
 	public static boolean gasMode = false;
-	public static boolean trojan = true;
+	public static boolean trojan = false;
 	
 	public static Drivetrain drivetrain;
 	public static Getters getters;
@@ -72,6 +72,12 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
+    	BBBAnalogs = new ArrayList<AnalogIn>();
+    	for(int i = 0; i < 9; i++)
+    	{
+    		BBBAnalogs.add(null);
+    	}
+    	
         RobotMap.init();
         
         drivetrain = new Drivetrain();
@@ -83,8 +89,6 @@ public class Robot extends IterativeRobot {
         ots = new OTS();
         
         oi = new OI();
-        
-        BBBAnalogs = new ArrayList<AnalogIn>();
         
         (new Thread(new AnalogInputCollector())).start();
         
@@ -124,6 +128,9 @@ public class Robot extends IterativeRobot {
         
         SmartDashboard.putBoolean("motorKilled", false);
         SmartDashboard.putBoolean("field-centric", true);
+        SmartDashboard.putNumber("ARM_SHOULDER_MANUAL_SPEED", 5);
+        SmartDashboard.putNumber("ARM_ELBOW_MANUAL_SPEED", 5);
+        SmartDashboard.putNumber("ARM_WRIST_MANUAL_SPEED", 5);
     }
     
     /**
@@ -276,13 +283,15 @@ public class Robot extends IterativeRobot {
     	public void run() {
     		try{
     			AIs = new DatagramSocket(5800);
-				AIs.setSoTimeout(10000);
+				//AIs.setSoTimeout(10000);
 				AIs.setReuseAddress(true);
 			} catch (SocketException e) {
 				e.printStackTrace();
 			}
+    		System.out.println("AIs initialized");
 			while(true)
 			{
+				System.out.println("loopin'");
 				byte[] data = new byte[1000];
 		        DatagramPacket packet = new DatagramPacket(data, data.length);
 		        try {
@@ -290,10 +299,17 @@ public class Robot extends IterativeRobot {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-		        
+		        System.out.println("0: " + data[0]);
+		        System.out.println("1: " + data[1]);
+		        System.out.println("2: " + data[2]);
+		        System.out.println("3: " + data[3]);
 		        for(int i = 1; i <= data[0]*3; i += 3)
 		        {
-		        	BBBAnalogs.get(data[i]).updateVal(littleEndianConcatenation(data[i+1], data[i+2]));
+		        	try
+		        	{
+		        		BBBAnalogs.get(data[i]).updateVal(littleEndianConcatenation(data[i+1], data[i+2]));
+		        	}
+		        	catch(NullPointerException e) {}
 		        }
 			}
 		}
