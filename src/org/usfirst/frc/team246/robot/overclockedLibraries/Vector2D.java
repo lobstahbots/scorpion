@@ -12,8 +12,8 @@ package org.usfirst.frc.team246.robot.overclockedLibraries;
  */
 public class Vector2D {
     
-    double x;
-    double y;
+    private double x;
+    private double y;
     
     public Vector2D(boolean cartesian, double abscissa, double ordinate){
         if(cartesian){
@@ -30,6 +30,10 @@ public class Vector2D {
     	theta += 90;
         double[] cartCoords = {r*Math.cos(Math.toRadians(theta)), r*Math.sin(Math.toRadians(theta))};
         return cartCoords;
+    }
+    
+    public Vector2D cloneVector(){
+    	return new Vector2D(true, x, y);
     }
     
 //    GETTERS
@@ -86,5 +90,20 @@ public class Vector2D {
     public Vector2D unitVector(){
         Vector2D unitVector = new Vector2D(true, x/getMagnitude(), y/getMagnitude());
         return unitVector;
+    }
+    
+    public static double dotProduct(Vector2D vector1, Vector2D vector2){
+    	return vector1.getX()*vector2.getX() + vector1.getY()*vector2.getY();
+    }
+    
+//    project vector1 onto vector2
+    public static Vector2D parallelProjection(Vector2D vector1, Vector2D vector2){
+    	Vector2D projection = new Vector2D(false, dotProduct(vector1, vector2), vector2.getAngle());
+    	return projection;
+    }
+    
+//    the other (than the projection) component of vector1 with a coordinate system relative to vector2
+    public static Vector2D perpendicularProjection(Vector2D vector1, Vector2D vector2){
+    	return subtractVectors(vector1, parallelProjection(vector1, vector2));
     }
 }
