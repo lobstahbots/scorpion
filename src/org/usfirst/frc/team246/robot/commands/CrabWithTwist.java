@@ -22,7 +22,7 @@ public class CrabWithTwist extends FieldCentricDrivingCommand{
 //    driverRightJoystick is controlling "crab"
     
     protected Vector2D getCrabVector() {
-    	Vector2D v = new Vector2D(true, -Robot.oi.driver.getLeftXAxis(), Robot.oi.driver.getLeftYAxis());
+    	Vector2D v = new Vector2D(true, Robot.oi.driver.getLeftXAxis(), -Robot.oi.driver.getLeftYAxis());
     	if(v.getMagnitude() > 0)
     	{
     		if(v.getMagnitude() < RobotMap.crabZeroZone) v.setMagnitude(0.0001);

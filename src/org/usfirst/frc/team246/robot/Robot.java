@@ -255,7 +255,7 @@ public class Robot extends IterativeRobot {
     	{
     		if(Math.abs(drivetrain.swerves[i].getModuleAngle()) > RobotMap.UNSAFE_MODULE_ANGLE)
             {
-                System.out.println("Stopping " + drivetrain.swerves[i].name);
+                //System.out.println("Stopping " + drivetrain.swerves[i].name);
                 ((Victor246)drivetrain.swerves[i].moduleMotor).overridingSet(0);
                 SmartDashboard.putBoolean("motorKilled", true);
             }

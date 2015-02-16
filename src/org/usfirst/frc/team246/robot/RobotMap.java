@@ -213,7 +213,7 @@ public class RobotMap {
 	
 	public static final double ARM_WIDTH = 6;
 	public static final double GRABBER_WIDTH = 6;
-	public static final double GRABBER_LENGTH = 1;
+	public static final double GRABBER_LENGTH = 24;
 	
 	public static final double ARM_LIFT_LOCATION = -21.5;
 	public static final double ARM_LIFT_HEIGHT = 54;
