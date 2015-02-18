@@ -155,11 +155,12 @@ public class Drivetrain extends Subsystem {
         public double direction = 0;
         
         public void pidWrite(double output) {
-        	DrivetrainPID drivetrainPID = new DrivetrainPID();
-        	drivetrainPID.setTwist(output);
-        	drivetrainPID.setCrab(new Vector2D(false, speed, direction));
-        	drivetrainPID.setCOR(new Vector2D(true, 0, -11.67));
-        	//            drive(speed, direction, output, 0, -11.67);
+//        	DrivetrainPID drivetrainPID = new DrivetrainPID();        	
+//        	drivetrainPID.setCrab(new Vector2D(false, speed, direction));
+//        	drivetrainPID.setCOR(RobotMap.ROBOT_CIRCLE_CENTER);
+//        	drivetrainPID.setTwist(output);
+//        	drivetrainPID.deploy();
+        	drive(speed, direction, output, RobotMap.ROBOT_CIRCLE_CENTER.getX(), RobotMap.ROBOT_CIRCLE_CENTER.getY());
         }
 
     }
@@ -184,16 +185,17 @@ public class Drivetrain extends Subsystem {
     	
     	public void setCrab(Vector2D crab){
     		this.crab = crab;
-    		drive(crab.getMagnitude(), crab.getAngle(), spinRate, COR.getX(), COR.getY());
     	}
     	
     	public void setTwist(double spinRate){
     		this.spinRate = spinRate;
-    		drive(crab.getMagnitude(), crab.getAngle(), spinRate, COR.getX(), COR.getY());
     	}
     	
     	public void setCOR(Vector2D COR){
     		this.COR = COR;
+    	}
+    	
+    	public void deploy(){
     		drive(crab.getMagnitude(), crab.getAngle(), spinRate, COR.getX(), COR.getY());
     	}
     }
