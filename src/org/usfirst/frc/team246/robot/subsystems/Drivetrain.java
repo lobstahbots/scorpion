@@ -170,6 +170,28 @@ public class Drivetrain extends Subsystem {
         else absoluteTwistPID.disable();
     }
     
+    
+    public class DrivetrainPID
+    {
+    	private Vector2D crab = new Vector2D(true, 0, 0);
+    	private Vector2D COR = new Vector2D(true, 0, 0);
+    	private double spinRate = 0;
+    	
+    	public void setCrab(Vector2D crab){
+    		this.crab = crab;
+    		drive(crab.getMagnitude(), crab.getAngle(), spinRate, COR.getX(), COR.getY());
+    	}
+    	
+    	public void setTwist(double spinRate){
+    		this.spinRate = spinRate;
+    		drive(crab.getMagnitude(), crab.getAngle(), spinRate, COR.getX(), COR.getY());
+    	}
+    	
+    	public void setCOR(Vector2D COR){
+    		this.COR = COR;
+    		drive(crab.getMagnitude(), crab.getAngle(), spinRate, COR.getX(), COR.getY());
+    	}
+    }
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- congratulations you did it, your prize is the smiley face just to the right----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:( hahaha
     
     public void setFOV(double fov)
