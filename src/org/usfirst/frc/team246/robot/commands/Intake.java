@@ -23,7 +23,7 @@ public class Intake extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
     	if(Robot.oi.driver.getRB().get()) Robot.getters.set(-1, -1);
-    	else if(Robot.getters.hasTote()) Robot.getters.set(0,  0);
+    	else if(/*Robot.getters.hasTote()*/ false) Robot.getters.set(0,  0);
     	else Robot.getters.set( Robot.oi.driver.getRightTriggerAxis(),  Robot.oi.driver.getRightTriggerAxis());
     }
 

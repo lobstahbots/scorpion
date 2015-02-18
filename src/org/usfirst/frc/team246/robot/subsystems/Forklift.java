@@ -5,6 +5,7 @@ import org.usfirst.frc.team246.robot.RobotMap;
 import org.usfirst.frc.team246.robot.commands.ManualForklift;
 
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 /**
  *
@@ -15,6 +16,7 @@ public class Forklift extends PIDSubsystem {
     
     public Forklift() {
 		super(RobotMap.LIFT_kP, RobotMap.LIFT_kI, RobotMap.LIFT_kD);
+		LiveWindow.addActuator("Forklift", "liftPID", this.getPIDController());
 		setAbsoluteTolerance(RobotMap.LIFT_TOLERANCE);
 	}
 

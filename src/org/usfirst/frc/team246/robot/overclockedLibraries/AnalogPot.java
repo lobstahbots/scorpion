@@ -140,7 +140,14 @@ public class AnalogPot implements Potentiometer, LiveWindowSendable {
      * @return The current position of the potentiometer.
      */
     public double get() {
-        return (m_analog_input.get() / ControllerPower.getVoltage5V()) * m_fullRange + m_offset;
+    	if(m_analog_input.onRIO)
+    	{
+    		return (m_analog_input.get() / ControllerPower.getVoltage5V()) * m_fullRange + m_offset;
+    	}
+    	else
+    	{
+    		return m_analog_input.get() * m_fullRange + m_offset;
+    	}
     }
 
     /**

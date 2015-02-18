@@ -102,8 +102,8 @@ public class RobotMap {
 	
 	//constants
 	
-	public static final double LEFT_RANGE_FINDER_IN = 1.088;
-	public static final double RIGHT_RANGE_FINDER_IN = 1.313;
+	public static final double LEFT_RANGE_FINDER_IN = 1061;
+	public static final double RIGHT_RANGE_FINDER_IN = 653;
 	
 	public static final double GETTER_POTS_TOLERANCE = 3;
 	
@@ -124,17 +124,15 @@ public class RobotMap {
 	public static final double LIFT_kD = 0;
 	public static final double LIFT_TOLERANCE = .5;
 	
-	public static final double LIFT_MAX_HEIGHT = 3;
+	public static final double LIFT_MAX_HEIGHT = 38.31;
 	public static final double LIFT_MIN_HEIGHT = 0;
-	
-	public static final double LIFT_BELOW_TOTE_HEIGHT = .9;
 	
 	public static final double LIFT_MANUAL_SPEED = 6;
 	
 	public static final double TOTE_HEIGHT = 12;
 	
 	public enum LiftSetpoints {
-		GROUND(0), SCORING_PLATFORM(.2), STEP(.6);
+		GROUND(1), SCORING_PLATFORM(4), STEP(9);
 		
 		private double value;
 		
@@ -161,9 +159,10 @@ public class RobotMap {
 	
 	//Constants
 	
-	public static final double PUSHER_kP = 1;
+	public static final double PUSHER_kP = 6;
 	public static final double PUSHER_kI = 0;
 	public static final double PUSHER_kD = 0;
+	public static final double PUSHER_kF = .25;
 	
 	public static final double PUSHER_IN = 0;
 	public static final double PUSHER_OUT = 3;
@@ -210,6 +209,7 @@ public class RobotMap {
 	
 	public static final double ARM_GROUND_TOLERANCE = 3.5;
 	public static final double ARM_CEILING_TOLERANCE = 3.5;
+	public static final double ARM_LIFT_TOLERANCE = 1;
 	
 	public static final double ARM_WIDTH = 6;
 	public static final double GRABBER_WIDTH = 6;
@@ -230,10 +230,9 @@ public class RobotMap {
 		
 		GROUND_UP(0,0,0,true),
 		GROUND_FALL(0,0,0,true),
-		STEP_UP(0,0,0,true),
-		STEP_FALL(0,0,0,true),
+		STEP(0,0,0,true),
 		STORAGE(0,0,0,true),
-		ON_LIFT(0,0,0,true);
+		ON_LIFT(0,0,0,false);
 		
 		private double x;
 		private double y;
@@ -266,6 +265,25 @@ public class RobotMap {
 		}
 	}
 	
+	public static class ArmWaypoints
+	{
+		public double shoulder;
+		public double elbow;
+		public double wrist;
+		
+		public ArmWaypoints(double shoulder, double elbow, double wrist)
+		{
+			this.shoulder = shoulder;
+			this.elbow = elbow;
+			this.wrist = wrist;
+		}
+	}
+	
+	public static ArmWaypoints[] armWaypoints =
+	{
+			new ArmWaypoints(0,0,0)
+	};
+	
 //Grabber
 	
 	//Motors
@@ -275,16 +293,16 @@ public class RobotMap {
 	//Sensors
 	
 	public static DigitalInput canDetector;
-	public static AnalogPot grabberPot;
+	public static Encoder grabberEncoder;
 	
 	//Constants
 	
-	public static final double GRABBER_kP = 1;
-	public static final double GRABBER_kI = 0;
-	public static final double GRABBER_kD = 0;
+	public static final double GRABBER_CLOSED = 0;
+	public static final double GRABBER_OPEN = 120;
 	
-	public static final double GRABBER_CLOSED_POSITION = 0;
-	public static final double GRABBER_OPEN_POSITION = .5;
+	public static final double GRABBER_OPEN_SPEED = .5;
+	public static final double GRABBER_HOLD_SPEED = .1;
+	public static final double GRABBER_CLOSE_SPEED = -.25;
 	
 //OTS
 	
@@ -365,12 +383,24 @@ public class RobotMap {
 	    rightWheelEncoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kRate); // have encoder measure rate, not distance
 	    LiveWindow.addSensor("Drivetrain", "rightWheelEncoder", rightWheelEncoder);
 		
-	    backModulePot = new AnalogPotentiometer(0, 1800, -901.6);
-	    LiveWindow.addSensor("Drivetrain", "backModulePot", backModulePot);
-	    leftModulePot = new AnalogPotentiometer(1, 1800, -910.2);
-	    LiveWindow.addSensor("Drivetrain", "leftModulePot", leftModulePot);
-	    rightModulePot = new AnalogPotentiometer(2, 1800, -932.6);
-	    LiveWindow.addSensor("Drivetrain", "rightModulePot", rightModulePot);
+	    if(Robot.trojan)
+	    {
+		    backModulePot = new AnalogPotentiometer(0, 1800, -901.6);
+		    LiveWindow.addSensor("Drivetrain", "backModulePot", backModulePot);
+		    leftModulePot = new AnalogPotentiometer(1, 1800, -910.2);
+		    LiveWindow.addSensor("Drivetrain", "leftModulePot", leftModulePot);
+		    rightModulePot = new AnalogPotentiometer(2, 1800, -932.6);
+		    LiveWindow.addSensor("Drivetrain", "rightModulePot", rightModulePot);
+	    }
+	    else
+	    {
+	    	backModulePot = new AnalogPotentiometer(0, 1800, -897.0);
+		    LiveWindow.addSensor("Drivetrain", "backModulePot", backModulePot);
+		    leftModulePot = new AnalogPotentiometer(1, 1800, -894.8);
+		    LiveWindow.addSensor("Drivetrain", "leftModulePot", leftModulePot);
+		    rightModulePot = new AnalogPotentiometer(2, 1800, -900.2);
+		    LiveWindow.addSensor("Drivetrain", "rightModulePot", rightModulePot);
+	    }
 	    
 	  //We were having occasional errors with the creation of the nav6 object, so we make 5 attempts before allowing the error to go through and being forced to redeploy.
         int count = 0;
@@ -402,6 +432,22 @@ public class RobotMap {
 	    	MODULE_kP = .05;
 	    	MODULE_kI = 0;
 	    	MODULE_kD = .08;
+	    	MODULE_kF = 0;
+	    	
+	    	ABSOLUTE_TWIST_kP = .01;
+	        ABSOLUTE_TWIST_kI = .0001;
+	        ABSOLUTE_TWIST_kD = .006;
+        }
+        else
+        {
+        	WHEEL_kP = 0.15;
+	    	WHEEL_kI = 0;
+	    	WHEEL_kD = 0;
+	    	WHEEL_kF = 0.075;
+	    	
+	    	MODULE_kP = .055;
+	    	MODULE_kI = 0;
+	    	MODULE_kD = .050;
 	    	MODULE_kF = 0;
 	    	
 	    	ABSOLUTE_TWIST_kP = .01;
@@ -456,7 +502,7 @@ public class RobotMap {
 		
 		if(!Robot.trojan)
 		{
-			liftPot = new AnalogPotentiometer(3, 5); //TODO: Get this constant
+			liftPot = new AnalogPotentiometer(3, 54.8, -9.79); //TODO: Get this constant
 			LiveWindow.addSensor("Forklift", "liftPot", liftPot);
 		}
 		 
@@ -472,7 +518,7 @@ public class RobotMap {
 		
 		if(!Robot.trojan)
 		{
-			pusherPot = new AnalogPotentiometer(4, 1); //TODO: Get this constant
+			pusherPot = new AnalogPotentiometer(4, 5.15, -1.97); //TODO: Get this constant
 			LiveWindow.addSensor("Pusher", "pusherEncoder", pusherPot);
 		}
 		
@@ -511,10 +557,10 @@ public class RobotMap {
 		
 		//Sensors
 		
-		canDetector = new DigitalInput(6);
+		canDetector = new DigitalInput(8);
 		LiveWindow.addActuator("Grabber", "canDetector", canDetector);
-		grabberPot = new AnalogPot(1, 1, -.5, false);
-		LiveWindow.addSensor("Grabber", "grabberPot", grabberPot);
+		grabberEncoder = new Encoder(6, 7);
+		LiveWindow.addSensor("Grabber", "grabberEncoder", grabberEncoder);
 		
 	//OTS
 		

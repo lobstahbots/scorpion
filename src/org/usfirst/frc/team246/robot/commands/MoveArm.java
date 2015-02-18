@@ -16,6 +16,8 @@ public class MoveArm extends Command {
 	Arm a = Robot.arm;
 
 	ArmSetpoints setpoint;
+	MoveArmToBack toBackCommand;
+	MoveArmToFront toFrontCommand;
 	
     public MoveArm(ArmSetpoints setpoint) {
         requires(a);
@@ -25,6 +27,20 @@ public class MoveArm extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
     	a.pidOn(true);
+    	/*
+    	if(setpoint == ArmSetpoints.ON_LIFT)
+    	{
+    		if(Robot.arm.getVector().getX() > 0 || Robot.arm.getWrist() > 0)
+    		{
+    			toFrontCommand = new MoveArmToFront();
+    			toFrontCommand.start();
+    		}
+    	}
+    	else
+    	{
+    		if(Robot.arm.getVector().getX < 0 )
+    	}
+    	*/
     	a.set(setpoint);
     }
 

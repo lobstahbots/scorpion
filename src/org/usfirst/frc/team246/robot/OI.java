@@ -9,6 +9,8 @@ import org.usfirst.frc.team246.robot.commands.GetTote;
 import org.usfirst.frc.team246.robot.commands.GoFast;
 import org.usfirst.frc.team246.robot.commands.LiftTote;
 import org.usfirst.frc.team246.robot.commands.MoveArm;
+import org.usfirst.frc.team246.robot.commands.MoveArmDown1;
+import org.usfirst.frc.team246.robot.commands.MoveArmUp1;
 import org.usfirst.frc.team246.robot.commands.MoveForklift;
 import org.usfirst.frc.team246.robot.commands.MoveForkliftDown1;
 import org.usfirst.frc.team246.robot.commands.MoveForkliftUp1;
@@ -37,7 +39,7 @@ public class OI {
     	driver = new LogitechF310(0);
     	operator = new LogitechF310(1);
     	
-    	driver.getLB().whileHeld(new CrabWithAbsoluteTwist());
+    	//driver.getLB().whileHeld(new CrabWithAbsoluteTwist());
     	driver.getLT().whileHeld(new GoFast());
     	new Toggle() {
 			
@@ -75,6 +77,19 @@ public class OI {
 		operator.getLB().whileHeld(new PushTotes());
 		
 		operator.getBack().whenPressed(new MoveArm(ArmSetpoints.STORAGE));
+		operator.getStart().whenPressed(new MoveArm(ArmSetpoints.STEP));
+		operator.getX2().whenPressed(new MoveArm(ArmSetpoints.ON_LIFT));
+		operator.getB().whenPressed(new MoveArm(ArmSetpoints.GROUND_UP));
+		operator.getA().whenPressed(new MoveArmUp1());
+		operator.getY2().whenPressed(new MoveArmDown1());
+		new Trigger() {
+			
+			@Override
+			public boolean get()
+			{
+				return Math.abs(operator.getLeftXAxis()) > .25;
+			}
+		}.whenActive(new MoveArm(ArmSetpoints.GROUND_FALL));
 		
 		operator.getRB().whileHeld(new OpenGrabber());
 		

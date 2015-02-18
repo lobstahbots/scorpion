@@ -8,6 +8,8 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.BitSet;
 
@@ -27,6 +29,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -65,18 +68,14 @@ public class Robot extends IterativeRobot {
 	public static Grabber grabber;
 	public static OTS ots;
 	
-	public static ArrayList<AnalogIn> BBBAnalogs;
+	public static AnalogIn[] BBBAnalogs;
 
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
     public void robotInit() {
-    	BBBAnalogs = new ArrayList<AnalogIn>();
-    	for(int i = 0; i < 9; i++)
-    	{
-    		BBBAnalogs.add(null);
-    	}
+    	BBBAnalogs = new AnalogIn[6];
     	
         RobotMap.init();
         
@@ -148,8 +147,10 @@ public class Robot extends IterativeRobot {
         
         if(RobotMap.navX.isCalibrating()) System.out.println("Calibrating NavX");
 		Scheduler.getInstance().run();
+		
+		RobotMap.grabberEncoder.reset();
 	}
-
+	
     public void autonomousInit() {
     	RobotMap.navX.zeroYaw();
     	drivetrain.PIDOn(true);
@@ -166,6 +167,7 @@ public class Robot extends IterativeRobot {
 
     public void teleopInit() {
     	drivetrain.PIDOn(true);
+    	
     }
 
     /**
@@ -234,6 +236,8 @@ public class Robot extends IterativeRobot {
             
             SmartDashboard.putBoolean("Forklift On Target", forklift.onTarget());
             
+            SmartDashboard.putBoolean("hasTote?", getters.hasTote());
+            
             Scheduler.getInstance().run();
         }
     }
@@ -291,7 +295,7 @@ public class Robot extends IterativeRobot {
     		System.out.println("AIs initialized");
 			while(true)
 			{
-				System.out.println("loopin'");
+//				System.out.println("loopin'");
 				byte[] data = new byte[1000];
 		        DatagramPacket packet = new DatagramPacket(data, data.length);
 		        try {
@@ -299,24 +303,39 @@ public class Robot extends IterativeRobot {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-		        System.out.println("0: " + data[0]);
-		        System.out.println("1: " + data[1]);
-		        System.out.println("2: " + data[2]);
-		        System.out.println("3: " + data[3]);
+//		        System.out.println("0: " + Integer.toHexString(data[0]&0xff));
+//		        System.out.println("1: " + Integer.toHexString(data[1]&0xff));
+//		        System.out.println("2: " + Integer.toHexString(data[2]&0xff));
+//		        System.out.println("3: " + Integer.toHexString(data[3]&0xff));
 		        for(int i = 1; i <= data[0]*3; i += 3)
 		        {
 		        	try
 		        	{
-		        		BBBAnalogs.get(data[i]).updateVal(littleEndianConcatenation(data[i+1], data[i+2]));
+		        		BBBAnalogs[data[i]].updateVal(getShort(data, i + 1));
 		        	}
 		        	catch(NullPointerException e) {}
 		        }
+//		        System.out.println("Grabber Pot value" + getShort(data, 2));
+//		        System.out.println("Grabber Pot value hex" + Integer.toHexString(getShort(data, 2)&0xffff));
+		        //BBBAnalogs.get(1).updateVal(getShort(data, 2));
 			}
 		}
 	}
     
+    public static int getShort(byte[] input, int offset)
+    {
+    	ByteBuffer buff = ByteBuffer.wrap(input);
+    	buff.order(ByteOrder.LITTLE_ENDIAN);
+    	return buff.getShort(offset);
+    }
+    
     public static int littleEndianConcatenation(byte byte1, byte byte2)
 	{
+    	
+    	
+    	return 0;
+    	
+    	/*
 		byte[] arr1 = {byte1};
 		BitSet bits1 = BitSet.valueOf(arr1);
 		byte[] arr2 = {byte2};
@@ -335,5 +354,6 @@ public class Robot extends IterativeRobot {
 			}
 		}
 		return result;
+		*/
 	}
 }

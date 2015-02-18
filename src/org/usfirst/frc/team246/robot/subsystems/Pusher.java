@@ -5,6 +5,7 @@ import org.usfirst.frc.team246.robot.RobotMap;
 import org.usfirst.frc.team246.robot.commands.RetractPusher;
 
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 /**
  *
@@ -13,8 +14,9 @@ public class Pusher extends PIDSubsystem {
 
     // Initialize your subsystem here
     public Pusher() {
-        super(RobotMap.PUSHER_kP, RobotMap.PUSHER_kI, RobotMap.PUSHER_kD);
+        super(RobotMap.PUSHER_kP, RobotMap.PUSHER_kI, RobotMap.PUSHER_kD, RobotMap.PUSHER_kF, .02);
         this.setAbsoluteTolerance(.05);
+        LiveWindow.addActuator("Pusher", "pusherPID", this.getPIDController());
     }
     
     public void initDefaultCommand() {

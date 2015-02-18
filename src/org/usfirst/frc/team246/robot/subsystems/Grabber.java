@@ -6,16 +6,12 @@ import org.usfirst.frc.team246.robot.commands.CloseGrabber;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 /**
  *
  */
-public class Grabber extends PIDSubsystem {
-    
-    public Grabber()
-    {
-    	super(RobotMap.GRABBER_kP, RobotMap.GRABBER_kI, RobotMap.GRABBER_kD);
-    }
+public class Grabber extends Subsystem {
 
     public void initDefaultCommand() {
         setDefaultCommand(new CloseGrabber());
@@ -23,22 +19,13 @@ public class Grabber extends PIDSubsystem {
     
     public void open()
     {
-    	this.setSetpoint(RobotMap.GRABBER_OPEN_POSITION);
+    	if(RobotMap.grabberEncoder.getDistance() < RobotMap.GRABBER_OPEN) RobotMap.grabberMotor.set(RobotMap.GRABBER_OPEN_SPEED);
+    	else RobotMap.grabberMotor.set(RobotMap.GRABBER_HOLD_SPEED);
     }
     public void close()
     {
-    	this.setSetpoint(RobotMap.GRABBER_CLOSED_POSITION);
+    	if(RobotMap.grabberEncoder.getDistance() > RobotMap.GRABBER_OPEN) RobotMap.grabberMotor.set(RobotMap.GRABBER_CLOSE_SPEED);
+    	else RobotMap.grabberMotor.set(0);
     }
-
-	@Override
-	protected double returnPIDInput() {
-		// TODO Auto-generated method stub
-		return RobotMap.grabberPot.get(); 
-	}
-
-	@Override
-	protected void usePIDOutput(double output) {
-		RobotMap.grabberMotor.set(output);
-	}
 }
 

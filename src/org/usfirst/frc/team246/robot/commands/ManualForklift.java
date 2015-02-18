@@ -19,6 +19,7 @@ public class ManualForklift extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
     	f.enable();
+    	f.setSetpoint(Robot.forklift.getPosition());
     	f.totesHigh = 0;
     }
 
@@ -27,7 +28,7 @@ public class ManualForklift extends Command {
     	double triggersVal = Robot.oi.operator.getRightTriggerAxis() - Robot.oi.operator.getLeftTriggerAxis();
     	if(triggersVal != 0)
     	{
-    		f.setSetpoint((triggersVal + Robot.forklift.getPosition())*RobotMap.LIFT_MANUAL_SPEED);
+    		f.setSetpoint(Robot.forklift.getPosition() + triggersVal*RobotMap.LIFT_MANUAL_SPEED);
     	}
     }
 

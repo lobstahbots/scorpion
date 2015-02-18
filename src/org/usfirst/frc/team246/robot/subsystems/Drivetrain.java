@@ -157,7 +157,6 @@ public class Drivetrain extends Subsystem {
         public void pidWrite(double output) {
             drive(speed, direction, output, 0, -11.67);
         }
-
     }
     
     public void driveAbsoluteTwist(double speed, double direction, double absoluteAngle){

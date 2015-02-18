@@ -20,6 +20,8 @@ public class Arm extends Subsystem {
 	public PIDController wrist;
 	
 	public boolean fallenCanMode = false;
+	
+	public ArmSetpoints currentSetpoint;
 
     // Initialize your subsystem here
     public Arm() {
@@ -27,10 +29,13 @@ public class Arm extends Subsystem {
     	{
 	        shoulder = new PIDController(RobotMap.ARM_SHOULDER_kP, RobotMap.ARM_SHOULDER_kI, RobotMap.ARM_SHOULDER_kD, RobotMap.armShoulderPot, RobotMap.armShoulderMotor, .02);
 	        shoulder.setInputRange(RobotMap.ARM_SHOULDER_MIN, RobotMap.ARM_SHOULDER_MAX);
+	        shoulder.setAbsoluteTolerance(5);
 	        elbow = new PIDController(RobotMap.ARM_ELBOW_kP, RobotMap.ARM_ELBOW_kI, RobotMap.ARM_ELBOW_kD, RobotMap.armElbowPot, RobotMap.armElbowMotor, .02);
 	        elbow.setInputRange(-180, 180);
+	        shoulder.setAbsoluteTolerance(5);
 	        wrist = new PIDController(RobotMap.ARM_WRIST_kP, RobotMap.ARM_WRIST_kI, RobotMap.ARM_WRIST_kD, RobotMap.armWristPot, RobotMap.armWristMotor, .02);
 	        wrist.setInputRange(-180, 180);
+	        shoulder.setAbsoluteTolerance(5);
 	        
 	        LiveWindow.addActuator("Arm", "shoulder", shoulder);
 	        LiveWindow.addActuator("Arm", "elbow", elbow);
@@ -108,7 +113,7 @@ public class Arm extends Subsystem {
 		}
     	if(v12.getY() > 78 - RobotMap.ARM_SHOULDER_HEIGHT - RobotMap.ARM_CEILING_TOLERANCE) 
 		{
-    		System.out.println("Wrist Ceiling");
+    		System.out.println("Wrist Ceiling: " + v12.getY());
     		return;
 		}
     	if(v123.getY() < -RobotMap.ARM_SHOULDER_HEIGHT + RobotMap.ARM_GROUND_TOLERANCE) 
@@ -118,30 +123,35 @@ public class Arm extends Subsystem {
 		}
     	if(v123.getY() > 78 - RobotMap.ARM_SHOULDER_HEIGHT - RobotMap.ARM_CEILING_TOLERANCE) 
 		{
-    		System.out.println("Grabber Ceiling");
+    		System.out.println("Grabber Ceiling: " + v123.getY());
     		return;
 		}
     	
     	//Stop the arm from hitting our lift
-    	Vector2D v2b = new Vector2D(false, -(RobotMap.ARM_LIFT_LOCATION + v1.getX())/Math.cos(v2.getAngle()), v2.getAngle());
-    	Vector2D v2c = Vector2D.addVectors(v2b, new Vector2D(false, RobotMap.ARM_WIDTH/2, v2b.getAngle() + 90));
-    	if(v2c.getY() < RobotMap.ARM_LIFT_HEIGHT) 
+//    	Vector2D liftVector = new Vector2D(true, RobotMap.ARM_LIFT_LOCATION, RobotMap.ARM_LIFT_HEIGHT - RobotMap.ARM_SHOULDER_HEIGHT); //Vector from the shoulder to the lift
+//    	Vector2D v2b = Vector2D.subtractVectors(liftVector, v1); //Vector from elbow to lift corner
+//    	Vector2D v2c = Vector2D.addVectors(v2b, new Vector2D(false, RobotMap.ARM_WIDTH/2, v2b.getAngle() + 90)); //Vector accounting for the width of the arm
+    	/*
+    	if(v12.getX() < RobotMap.ARM_LIFT_LOCATION + RobotMap.ARM_LIFT_TOLERANCE && v12.getY() - RobotMap.ARM_WIDTH < RobotMap.ARM_LIFT_HEIGHT - RobotMap.ARM_SHOULDER_HEIGHT + RobotMap.ARM_LIFT_TOLERANCE) 
 		{
     		System.out.println("Forearm lift");
     		return;
 		}
-    	Vector2D v3b = new Vector2D(false, -(RobotMap.ARM_LIFT_LOCATION + v12.getX())/Math.cos(v3.getAngle()), v3.getAngle());
-    	Vector2D v3c = Vector2D.addVectors(v3b, new Vector2D(false, RobotMap.GRABBER_WIDTH/2, v3b.getAngle() + 90));
-    	if(v3c.getY() < RobotMap.ARM_LIFT_HEIGHT) 
-		{
-    		System.out.println("Grabber Lift");
-    		return;
-		}
+		*/
+//    	Vector2D v3b = new Vector2D(false, -(RobotMap.ARM_LIFT_LOCATION + v12.getX())/Math.cos(v3.getAngle()), v3.getAngle());
+//    	Vector2D v3c = Vector2D.addVectors(v3b, new Vector2D(false, RobotMap.GRABBER_WIDTH/2, v3b.getAngle() + 90));
+//    	Vector2D v3b = Vector2D.addVectors(v3, new Vector2D(false, RobotMap.GRABBER_WIDTH/2, v3.getAngle() + 90));
+//    	Vector2D v123b = Vector2D.addVectors(v3b, v12);
+//    	if(v12.getX() < RobotMap.ARM_LIFT_LOCATION && v123b.getY() < RobotMap.ARM_LIFT_HEIGHT - RobotMap.ARM_SHOULDER_HEIGHT + RobotMap.ARM_LIFT_TOLERANCE && v123b.getX() > RobotMap.ARM_LIFT_LOCATION - RobotMap.ARM_LIFT_TOLERANCE) 
+//		{
+//    		System.out.println("Grabber Lift");
+//    		return;
+//		}
     	
     	//We passed all the tests. Go ahead and set the setpoints
-    	shoulder.setSetpoint(v1.getAngle());
-    	elbow.setSetpoint(v2.getAngle());
-    	wrist.setSetpoint(v3.getAngle());
+    	shoulder.setSetpoint(shoulderAngle);
+    	elbow.setSetpoint(elbowAngle);
+    	wrist.setSetpoint(wristAngle);
     }
     
     public void set(double x, double y, double wrist, boolean bendIn)
@@ -166,6 +176,7 @@ public class Arm extends Subsystem {
     
     public void set(ArmSetpoints setpoint)
     {
+    	currentSetpoint = setpoint;
     	set(setpoint.getX(), setpoint.getY(), setpoint.getWrist(), setpoint.getBendIn());
     }
     

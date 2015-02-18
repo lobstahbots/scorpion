@@ -24,7 +24,7 @@ public class AnalogIn implements PIDSource, LiveWindowSendable {
 		}
 		else
 		{
-			Robot.BBBAnalogs.add(channel, this);
+			Robot.BBBAnalogs[channel] = this;
 		}
 	}
 	
