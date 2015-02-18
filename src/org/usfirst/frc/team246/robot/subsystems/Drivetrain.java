@@ -155,7 +155,11 @@ public class Drivetrain extends Subsystem {
         public double direction = 0;
         
         public void pidWrite(double output) {
-            drive(speed, direction, output, 0, -11.67);
+        	DrivetrainPID drivetrainPID = new DrivetrainPID();
+        	drivetrainPID.setTwist(output);
+        	drivetrainPID.setCrab(new Vector2D(false, speed, direction));
+        	drivetrainPID.setCOR(new Vector2D(true, 0, -11.67));
+        	//            drive(speed, direction, output, 0, -11.67);
         }
 
     }
