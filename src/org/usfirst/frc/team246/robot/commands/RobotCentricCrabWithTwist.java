@@ -32,7 +32,7 @@ public class RobotCentricCrabWithTwist extends DrivingCommand{
         {
             return SmartDashboard.getNumber("spinRate", 0) / RobotMap.WHEEL_TOP_ABSOLUTE_SPEED;
         } 
-        return -Math.pow(Robot.oi.driver.getRightXAxis(), 3);
+        return Math.pow(Robot.oi.driver.getRightXAxis(), 3);
     }
 
     protected Vector2D getCOR() {

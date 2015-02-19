@@ -111,7 +111,7 @@ public class Arm extends Subsystem {
     		System.out.println("Wrist Ground");
     		return;
 		}
-    	if(v12.getY() > 78 - RobotMap.ARM_SHOULDER_HEIGHT - RobotMap.ARM_CEILING_TOLERANCE) 
+    	if(v12.getY() > 86 - RobotMap.ARM_SHOULDER_HEIGHT - RobotMap.ARM_CEILING_TOLERANCE) 
 		{
     		System.out.println("Wrist Ceiling: " + v12.getY());
     		return;
@@ -121,7 +121,7 @@ public class Arm extends Subsystem {
     		System.out.println("Grabber Ground");
     		return;
 		}
-    	if(v123.getY() > 78 - RobotMap.ARM_SHOULDER_HEIGHT - RobotMap.ARM_CEILING_TOLERANCE) 
+    	if(v123.getY() > 86 - RobotMap.ARM_SHOULDER_HEIGHT - RobotMap.ARM_CEILING_TOLERANCE) 
 		{
     		System.out.println("Grabber Ceiling: " + v123.getY());
     		return;
