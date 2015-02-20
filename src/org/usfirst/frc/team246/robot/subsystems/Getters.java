@@ -5,9 +5,6 @@ import org.usfirst.frc.team246.robot.commands.Intake;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AlertMessage;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SpeedController246;
 import org.usfirst.frc.team246.robot.overclockedLibraries.UdpAlertService;
-
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**

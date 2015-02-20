@@ -7,7 +7,6 @@ package org.usfirst.frc.team246.robot.overclockedLibraries;
 
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TalonSRX;
-import edu.wpi.first.wpilibj.Victor;
 
 /**
  *

@@ -2,10 +2,7 @@ package org.usfirst.frc.team246.robot;
 
 import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
 import org.usfirst.frc.team246.robot.RobotMap.LiftSetpoints;
-import org.usfirst.frc.team246.robot.commands.CloseGrabber;
-import org.usfirst.frc.team246.robot.commands.CrabWithAbsoluteTwist;
 import org.usfirst.frc.team246.robot.commands.CrabWithTwist;
-import org.usfirst.frc.team246.robot.commands.GetTote;
 import org.usfirst.frc.team246.robot.commands.GoFast;
 import org.usfirst.frc.team246.robot.commands.Intake;
 import org.usfirst.frc.team246.robot.commands.LiftTote;
@@ -20,12 +17,8 @@ import org.usfirst.frc.team246.robot.commands.Outgest;
 import org.usfirst.frc.team246.robot.commands.PushTotes;
 import org.usfirst.frc.team246.robot.commands.RobotCentricCrabWithTwist;
 import org.usfirst.frc.team246.robot.commands.StopGetters;
-import org.usfirst.frc.team246.robot.commands.SwerveTank;
 import org.usfirst.frc.team246.robot.overclockedLibraries.LogitechF310;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Toggle;
-
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.buttons.Trigger;
 
 /**

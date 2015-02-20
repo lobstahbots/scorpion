@@ -7,18 +7,13 @@ import org.usfirst.frc.team246.robot.overclockedLibraries.SpeedController246;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Talon246;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Victor246;
 import org.usfirst.frc.team246.robot.overclockedLibraries.VictorSP246;
-
-import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.Victor;
-import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.livewindow.LiveWindowSendable;
 

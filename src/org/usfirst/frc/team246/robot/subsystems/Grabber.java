@@ -2,11 +2,7 @@ package org.usfirst.frc.team246.robot.subsystems;
 
 import org.usfirst.frc.team246.robot.RobotMap;
 import org.usfirst.frc.team246.robot.commands.CloseGrabber;
-
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 /**
  *

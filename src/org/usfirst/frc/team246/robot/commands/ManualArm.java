@@ -3,8 +3,6 @@ package org.usfirst.frc.team246.robot.commands;
 import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.RobotMap;
 import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
-import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
-
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 

@@ -4,15 +4,11 @@ import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.commands.CrabWithTwist;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SwerveModule;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
-
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.Timer;
-
 import org.usfirst.frc.team246.robot.RobotMap;
-
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 /**
  * This is the heart of the swerve code. All vector calculations are done here.

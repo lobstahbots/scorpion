@@ -5,12 +5,8 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 package org.usfirst.frc.team246.robot.overclockedLibraries;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 
 import edu.wpi.first.wpilibj.ControllerPower;
-import edu.wpi.first.wpilibj.hal.HALUtil;
-import edu.wpi.first.wpilibj.hal.PowerJNI;
 import edu.wpi.first.wpilibj.interfaces.Potentiometer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindowSendable;
 import edu.wpi.first.wpilibj.tables.ITable;

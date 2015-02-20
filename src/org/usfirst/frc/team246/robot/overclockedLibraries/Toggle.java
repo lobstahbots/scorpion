@@ -1,7 +1,6 @@
 package org.usfirst.frc.team246.robot.overclockedLibraries;
 
 import edu.wpi.first.wpilibj.buttons.Trigger;
-import edu.wpi.first.wpilibj.buttons.Trigger.ButtonScheduler;
 import edu.wpi.first.wpilibj.command.Command;
 
 public abstract class Toggle extends Trigger {

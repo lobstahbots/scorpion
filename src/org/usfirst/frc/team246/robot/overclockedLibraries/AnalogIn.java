@@ -4,7 +4,6 @@ import org.usfirst.frc.team246.robot.Robot;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.PIDSource;
-import edu.wpi.first.wpilibj.SensorBase;
 import edu.wpi.first.wpilibj.livewindow.LiveWindowSendable;
 import edu.wpi.first.wpilibj.tables.ITable;
 
