@@ -7,6 +7,7 @@ import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
 
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
+import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.Timer;
 
 import org.usfirst.frc.team246.robot.RobotMap;
@@ -27,6 +28,8 @@ public class Drivetrain extends Subsystem {
     public SwerveModule leftModule;
     public SwerveModule rightModule;
     
+    public Odometry odometry = new Odometry();
+    
     public double FOV = 0; //the front of the vehicle in degrees. May be used in different ways by different control schemes.
     
     public Drivetrain()
@@ -43,7 +46,9 @@ public class Drivetrain extends Subsystem {
         absoluteTwistPID.setInputRange(-180, 180);
         absoluteTwistPID.setContinuous();
         
-        (new Thread(new Odometry())).start();
+        absoluteCrabPID = new PIDController(RobotMap.ABSOLUTE_CRAB_kP, RobotMap.ABSOLUTE_CRAB_kI, RobotMap.ABSOLUTE_CRAB_kD, odometry, absoluteCrabPIDOutput);
+        
+        (new Thread(odometry)).start();
     }
 
     public void initDefaultCommand() {
@@ -141,61 +146,75 @@ public class Drivetrain extends Subsystem {
     
     //Code for turning the robot to a certain angle relative to the field
     
-    public AbsoluteTwistPIDOutput absoluteTwistPIDOutput = new AbsoluteTwistPIDOutput();
+    public DrivetrainPID drivetrainPID = new DrivetrainPID();
     
+    private AbsoluteTwistPIDOutput absoluteTwistPIDOutput = new AbsoluteTwistPIDOutput();
     public PIDController absoluteTwistPID;
     
     /**
      *@author Paul Terrasi
      */
      
-    public class AbsoluteTwistPIDOutput implements PIDOutput
-    {
-        public double speed = 0;
-        public double direction = 0;
-        
+    private class AbsoluteTwistPIDOutput implements PIDOutput
+    {   
         public void pidWrite(double output) {
-//        	DrivetrainPID drivetrainPID = new DrivetrainPID();        	
-//        	drivetrainPID.setCrab(new Vector2D(false, speed, direction));
-//        	drivetrainPID.setCOR(RobotMap.ROBOT_CIRCLE_CENTER);
-//        	drivetrainPID.setTwist(output);
-//        	drivetrainPID.deploy();
-        	drive(speed, direction, output, RobotMap.ROBOT_CIRCLE_CENTER.getX(), RobotMap.ROBOT_CIRCLE_CENTER.getY());
+        	drivetrainPID.setTwist(output);
         }
+    }
 
-    }
-    
-    public void driveAbsoluteTwist(double speed, double direction, double absoluteAngle){
-        absoluteTwistPIDOutput.speed = speed;
-        absoluteTwistPIDOutput.direction = direction;
-        absoluteTwistPID.setSetpoint(absoluteAngle);
-    }
-    
     public void enableAbsoluteTwist(boolean on) {
         if(on) absoluteTwistPID.enable();
         else absoluteTwistPID.disable();
     }
+
+    private AbsoluteCrabPIDOutput absoluteCrabPIDOutput = new AbsoluteCrabPIDOutput();
+    public PIDController absoluteCrabPID;
     
+    /**
+     *@author Michael Silver
+     */
+     
+    private class AbsoluteCrabPIDOutput implements PIDOutput
+    {   
+        public void pidWrite(double output) {
+        	drivetrainPID.setCrabSpeed(output);
+        }
+    }
+    
+    public void enableCrabTwist(boolean on) {
+        if(on) absoluteCrabPID.enable();
+        else absoluteCrabPID.disable();
+    }
     
     public class DrivetrainPID
     {
-    	private Vector2D crab = new Vector2D(true, 0, 0);
+    	private double speed;
+    	private double direction;
+    	private Vector2D crab = new Vector2D(false, speed, direction);
     	private Vector2D COR = new Vector2D(true, 0, 0);
     	private double spinRate = 0;
     	
-    	public void setCrab(Vector2D crab){
-    		this.crab = crab;
+    	public void setCrabSpeed(double speed){
+    		this.speed = speed;
+    		deploy();
+    	}
+    	
+    	public void setCrabDirection(double direction){
+    		this.direction = direction;
+    		deploy();
     	}
     	
     	public void setTwist(double spinRate){
     		this.spinRate = spinRate;
+    		deploy();
     	}
     	
     	public void setCOR(Vector2D COR){
     		this.COR = COR;
+    		deploy();
     	}
     	
-    	public void deploy(){
+    	private void deploy(){
     		drive(crab.getMagnitude(), crab.getAngle(), spinRate, COR.getX(), COR.getY());
     	}
     }
@@ -278,7 +297,7 @@ public class Drivetrain extends Subsystem {
         return false;
     }
     
-    class Odometry implements Runnable
+    class Odometry implements Runnable, PIDSource
     {
     	private Vector2D robotCentricLinearDisplacement = new Vector2D(true, 0, 0);
     	private double robotCentricAngularDisplacement = 0;
@@ -294,7 +313,7 @@ public class Drivetrain extends Subsystem {
 				Timer.delay(.001); // in seconds	
 			}
 		}
-		
+    	
 //    	GETTERS:
     	public Vector2D getRobotCentricLinearDisplacement(){
     		return robotCentricLinearDisplacement;
@@ -315,6 +334,11 @@ public class Drivetrain extends Subsystem {
 		}
     	
 //    	RESET ODOMETRY:
+    	public void resetAll(){
+    		resetNetLinearDiplacement();
+    		resetNetAngularDiplacement();
+    	}
+    	
     	public void resetNetLinearDiplacement() {
     		robotCentricLinearDisplacement = new Vector2D(true, 0, 0);
 		}
@@ -363,6 +387,11 @@ public class Drivetrain extends Subsystem {
 				sum = sum + doubleArray[i];
 			}
 			return sum;
+		}
+
+		@Override
+		public double pidGet() {
+			return getRobotCentricLinearDisplacement().getMagnitude();
 		}
     }
 }
