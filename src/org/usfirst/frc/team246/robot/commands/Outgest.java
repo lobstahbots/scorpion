@@ -9,28 +9,25 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class Intake extends Command {
-	
-	
-	public Intake() {
-		requires(Robot.getters);
-        // Use requires() here to declare subsystem dependencies
-        // eg. requires(chassis);
+public class Outgest extends Command {
+
+    public Outgest() {
+        requires(Robot.getters);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	UdpAlertService.sendAlert(new AlertMessage("Intaking"));
+    	UdpAlertService.sendAlert(new AlertMessage("Outgesting"));
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.getters.set(1, 1);
+    	Robot.getters.set(-1, -1);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	return false;
+        return false;
     }
 
     // Called once after isFinished returns true

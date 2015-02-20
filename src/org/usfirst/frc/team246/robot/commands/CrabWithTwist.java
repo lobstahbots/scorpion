@@ -5,6 +5,8 @@
  */
 package org.usfirst.frc.team246.robot.commands;
 
+import org.usfirst.frc.team246.robot.overclockedLibraries.AlertMessage;
+import org.usfirst.frc.team246.robot.overclockedLibraries.UdpAlertService;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -48,7 +50,7 @@ public class CrabWithTwist extends FieldCentricDrivingCommand{
     }
 
     protected void initialize() {
-        
+        UdpAlertService.sendAlert(new AlertMessage("Entered Field-Centric Mode"));
     }
 
     protected boolean isFinished() {
@@ -62,5 +64,4 @@ public class CrabWithTwist extends FieldCentricDrivingCommand{
     protected void interrupted() {
         end();
     }
-    
 }

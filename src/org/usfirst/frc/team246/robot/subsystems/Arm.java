@@ -4,6 +4,8 @@ import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.RobotMap;
 import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
 import org.usfirst.frc.team246.robot.commands.ManualArm;
+import org.usfirst.frc.team246.robot.overclockedLibraries.AlertMessage;
+import org.usfirst.frc.team246.robot.overclockedLibraries.UdpAlertService;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
 
 import edu.wpi.first.wpilibj.PIDController;
@@ -64,66 +66,66 @@ public class Arm extends Subsystem {
     	//Limit the angle of the shoulder
     	if(v1.getAngle() > RobotMap.ARM_SHOULDER_MAX)       
 		{
-    		System.out.println("Shoulder Max");
+    		UdpAlertService.sendAlert(new AlertMessage("Arm Constraint: Shoulder Max Angle"));
     		return;
 		}
     	if(v1.getAngle() < RobotMap.ARM_SHOULDER_MIN)
 		{
-    		System.out.println("Shoulder Min");
+    		UdpAlertService.sendAlert(new AlertMessage("Arm Constraint: Shoulder Min Angle"));
     		return;
 		}
     	
     	//Stop our turnbuckles from hitting any sprockets
     	if(v2.getAngle() - v1.getAngle() < RobotMap.ARM_TURNBUCKLE_SHOULDER_ELBOW_MIN) 
 		{
-    		System.out.println("Shoulder Elbow Min");
+    		UdpAlertService.sendAlert(new AlertMessage("Arm Constraint: Shoulder Elbow Min"));
     		return;
 		}
     	if(v2.getAngle() - v1.getAngle() > RobotMap.ARM_TURNBUCKLE_SHOULDER_ELBOW_MAX)  // Too generous
 		{
-    		System.out.println("Shoulder Elbow Max");
+    		UdpAlertService.sendAlert(new AlertMessage("Arm Constraint: Shoulder Elbow Max"));
     		return;
 		}
     	if(v3.getAngle() - v1.getAngle() < RobotMap.ARM_TURNBUCKLE_SHOULDER_WRIST_MIN) 
 		{
-    		System.out.println("Shoulder Wrist Min");
+    		UdpAlertService.sendAlert(new AlertMessage("Arm Constraint: Shoulder Wrist Min"));
     		return;
 		}
     	if(v3.getAngle() - v1.getAngle() > RobotMap.ARM_TURNBUCKLE_SHOULDER_WRIST_MAX) 
 		{
-    		System.out.println("Shoulder Wrist Max");
+    		UdpAlertService.sendAlert(new AlertMessage("Arm Constraint: Shoulder Wrist Max"));
     		return;
 		}
     	if(v3.getAngle() - v2.getAngle() < RobotMap.ARM_TURNBUCKLE_ELBOW_WRIST_MIN) 
 		{
-    		System.out.println("Elbow Wrist Min");
+    		UdpAlertService.sendAlert(new AlertMessage("Arm Constraint: Elbow Wrist Min"));
     		return;
 		}
     	if(v3.getAngle() - v2.getAngle() > RobotMap.ARM_TURNBUCKLE_ELBOW_WRIST_MAX) 
 		{
-    		System.out.println("Elbow Wrist Max");
+    		UdpAlertService.sendAlert(new AlertMessage("Arm Constraint: Elbow Wrist Max"));
     		return;
 		}
     	
     	//Limit the arm to staying above the ground and below the ceiling
     	if(v12.getY() < -RobotMap.ARM_SHOULDER_HEIGHT + RobotMap.ARM_GROUND_TOLERANCE) 
 		{
-    		System.out.println("Wrist Ground");
+    		UdpAlertService.sendAlert(new AlertMessage("Arm Constraint: Wrist Ground"));
     		return;
 		}
     	if(v12.getY() > 86 - RobotMap.ARM_SHOULDER_HEIGHT - RobotMap.ARM_CEILING_TOLERANCE) 
 		{
-    		System.out.println("Wrist Ceiling: " + v12.getY());
+    		UdpAlertService.sendAlert(new AlertMessage("Arm Constraint: Wrist Ceiling"));
     		return;
 		}
     	if(v123.getY() < -RobotMap.ARM_SHOULDER_HEIGHT + RobotMap.ARM_GROUND_TOLERANCE) 
 		{
-    		System.out.println("Grabber Ground");
+    		UdpAlertService.sendAlert(new AlertMessage("Arm Constraint: Grabber Ground"));
     		return;
 		}
     	if(v123.getY() > 86 - RobotMap.ARM_SHOULDER_HEIGHT - RobotMap.ARM_CEILING_TOLERANCE) 
 		{
-    		System.out.println("Grabber Ceiling: " + v123.getY());
+    		UdpAlertService.sendAlert(new AlertMessage("Arm Constraint: Grabber Ceiling"));
     		return;
 		}
     	

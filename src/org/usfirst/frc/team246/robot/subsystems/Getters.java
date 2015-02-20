@@ -2,7 +2,9 @@ package org.usfirst.frc.team246.robot.subsystems;
 
 import org.usfirst.frc.team246.robot.RobotMap;
 import org.usfirst.frc.team246.robot.commands.Intake;
+import org.usfirst.frc.team246.robot.overclockedLibraries.AlertMessage;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SpeedController246;
+import org.usfirst.frc.team246.robot.overclockedLibraries.UdpAlertService;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.VictorSP;
@@ -29,9 +31,19 @@ public class Getters extends Subsystem {
     	rightMotor.set(right);
     }
     
+    boolean hadTote = false;
     public boolean hasTote()
     {
-    	return RobotMap.leftRangeFinder.get() > RobotMap.LEFT_RANGE_FINDER_IN && RobotMap.rightRangeFinder.get() > RobotMap.RIGHT_RANGE_FINDER_IN;
+    	if(RobotMap.leftRangeFinder.get() > RobotMap.LEFT_RANGE_FINDER_IN && RobotMap.rightRangeFinder.get() > RobotMap.RIGHT_RANGE_FINDER_IN)
+    	{
+    		UdpAlertService.sendAlert(new AlertMessage("Tote obtained"));
+    		return true;
+    	}
+    	else
+    	{
+    		UdpAlertService.sendAlert(new AlertMessage("Tote lost"));
+    		return false;
+    	}
     }
     
     public boolean leftInTolerance()

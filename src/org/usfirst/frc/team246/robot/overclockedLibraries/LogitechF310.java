@@ -13,8 +13,8 @@ public class LogitechF310 extends Joystick{
 	protected int leftTriggerAxis = 2;
 	protected int rightTriggerAxis = 3;
 	
-	protected int x = 4;
-	protected int y = 3;
+	protected int x = 3;
+	protected int y = 4;
 	protected int a = 1;
 	protected int b = 2;
 	protected int lb = 5;

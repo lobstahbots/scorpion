@@ -14,8 +14,10 @@ import java.util.ArrayList;
 import java.util.BitSet;
 
 import org.usfirst.frc.team246.nav6.IMUAdvanced;
+import org.usfirst.frc.team246.robot.overclockedLibraries.AlertMessage;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogIn;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SwerveModule;
+import org.usfirst.frc.team246.robot.overclockedLibraries.UdpAlertService;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Victor246;
 import org.usfirst.frc.team246.robot.subsystems.Arm;
 import org.usfirst.frc.team246.robot.subsystems.Drivetrain;
@@ -58,7 +60,7 @@ public class Robot extends IterativeRobot {
 	public static boolean test3 = false;
 	public static boolean gyroDisabled = false;
 	public static boolean gasMode = false;
-	public static boolean trojan = false;
+	public static boolean trojan = true;
 	
 	public static Drivetrain drivetrain;
 	public static Getters getters;
@@ -90,6 +92,11 @@ public class Robot extends IterativeRobot {
         oi = new OI();
         
         (new Thread(new AnalogInputCollector())).start();
+        try {
+			UdpAlertService.initialize("paulasus.local", 5801);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
         
         if(test1)
         {
@@ -167,7 +174,6 @@ public class Robot extends IterativeRobot {
 
     public void teleopInit() {
     	drivetrain.PIDOn(true);
-    	
     }
 
     /**
@@ -231,6 +237,7 @@ public class Robot extends IterativeRobot {
             }
             else
             {
+            	UdpAlertService.sendAlert(new AlertMessage("Unwinding"));
                 drivetrain.unwind();
             }
             

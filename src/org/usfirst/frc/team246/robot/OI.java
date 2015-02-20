@@ -7,6 +7,7 @@ import org.usfirst.frc.team246.robot.commands.CrabWithAbsoluteTwist;
 import org.usfirst.frc.team246.robot.commands.CrabWithTwist;
 import org.usfirst.frc.team246.robot.commands.GetTote;
 import org.usfirst.frc.team246.robot.commands.GoFast;
+import org.usfirst.frc.team246.robot.commands.Intake;
 import org.usfirst.frc.team246.robot.commands.LiftTote;
 import org.usfirst.frc.team246.robot.commands.MoveArm;
 import org.usfirst.frc.team246.robot.commands.MoveArmDown1;
@@ -15,8 +16,10 @@ import org.usfirst.frc.team246.robot.commands.MoveForklift;
 import org.usfirst.frc.team246.robot.commands.MoveForkliftDown1;
 import org.usfirst.frc.team246.robot.commands.MoveForkliftUp1;
 import org.usfirst.frc.team246.robot.commands.OpenGrabber;
+import org.usfirst.frc.team246.robot.commands.Outgest;
 import org.usfirst.frc.team246.robot.commands.PushTotes;
 import org.usfirst.frc.team246.robot.commands.RobotCentricCrabWithTwist;
+import org.usfirst.frc.team246.robot.commands.StopGetters;
 import org.usfirst.frc.team246.robot.commands.SwerveTank;
 import org.usfirst.frc.team246.robot.overclockedLibraries.LogitechF310;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Toggle;
@@ -54,8 +57,31 @@ public class OI {
 			}
 		}.toggle(new CrabWithTwist(), new RobotCentricCrabWithTwist());
     	
-		driver.getY2().whileHeld(new GetTote(true));
-    	driver.getB().whileHeld(new GetTote(false));
+		new Toggle() {
+			
+			@Override
+			public boolean get()
+			{
+				return driver.getRT().get();
+			}
+			public boolean getToggler()
+			{
+				return Robot.getters.getCurrentCommand().getClass() == Intake.class;
+			}
+		}.toggle(new StopGetters(), new Intake());
+		
+		new Toggle() {
+			
+			@Override
+			public boolean get()
+			{
+				return driver.getRB().get();
+			}
+			public boolean getToggler()
+			{
+				return Robot.getters.getCurrentCommand().getClass() == Outgest.class;
+			}
+		}.toggle(new StopGetters(), new Outgest());
     	
         operator.getUp().whenPressed(new MoveForkliftUp1());
         operator.getDown().whenPressed(new MoveForkliftDown1());
