@@ -179,7 +179,7 @@ public class Arm extends Subsystem {
     public void set(ArmSetpoints setpoint)
     {
     	currentSetpoint = setpoint;
-    	set(setpoint.getX(), setpoint.getY(), setpoint.getWrist(), setpoint.getBendIn());
+    	set(setpoint.getShoulder(), setpoint.getElbow(), setpoint.getWrist());
     }
     
     public Vector2D getVector()

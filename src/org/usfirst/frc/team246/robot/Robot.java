@@ -7,6 +7,7 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+
 import org.usfirst.frc.team246.robot.overclockedLibraries.AlertMessage;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogIn;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SwerveModule;
@@ -19,6 +20,8 @@ import org.usfirst.frc.team246.robot.subsystems.Getters;
 import org.usfirst.frc.team246.robot.subsystems.Grabber;
 import org.usfirst.frc.team246.robot.subsystems.OTS;
 import org.usfirst.frc.team246.robot.subsystems.Pusher;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -80,11 +83,6 @@ public class Robot extends IterativeRobot {
         oi = new OI();
         
         (new Thread(new AnalogInputCollector())).start();
-        try {
-			UdpAlertService.initialize("paulasus.local", 5801);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
         
         if(test1)
         {
@@ -135,12 +133,19 @@ public class Robot extends IterativeRobot {
     	drivetrain.PIDOn(false);
     }
     
+    boolean wasConnected = false;
 	public void disabledPeriodic() {
 		
 		allPeriodic();
-        SmartDashboard.putBoolean("encoderZeroing", false);
+		
+		if(DriverStation.getInstance().isDSAttached() && !wasConnected)
+		{
+			UdpAlertService.initialize("PaulAsus.local", 5801);
+			wasConnected = true;
+		}
         
         if(RobotMap.navX.isCalibrating()) System.out.println("Calibrating NavX");
+
 		Scheduler.getInstance().run();
 		
 		RobotMap.grabberEncoder.reset();

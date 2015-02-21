@@ -223,40 +223,34 @@ public class RobotMap {
 	
 	public enum ArmSetpoints {
 		
-		GROUND_UP(0,0,0,true),
-		GROUND_FALL(0,0,0,true),
-		STEP(0,0,0,true),
-		STORAGE(0,0,0,true),
-		ON_LIFT(0,0,0,false);
+		GROUND_UP(0,0,0),
+		GROUND_FALL(0,0,0),
+		STEP(0,0,0),
+		STORAGE(0,0,0),
+		ON_LIFT(0,0,0);
 		
-		private double x;
-		private double y;
+		private double shoulder;
+		private double elbow;
 		private double wrist;
-		private boolean bendIn;
 		
-		private ArmSetpoints(double x, double y, double wrist, boolean bendIn)
+		private ArmSetpoints(double x, double y, double wrist)
 		{
-			this.x = x;
-			this.y = y;
+			this.shoulder = x;
+			this.elbow = y;
 			this.wrist = wrist;
-			this.bendIn = bendIn;
 		}
 		
-		public double getX()
+		public double getShoulder()
 		{
-			return x;
+			return shoulder;
 		}
-		public double getY()
+		public double getElbow()
 		{
-			return y;
+			return elbow;
 		}
 		public double getWrist()
 		{
 			return wrist;
-		}
-		public boolean getBendIn()
-		{
-			return bendIn;
 		}
 	}
 	
