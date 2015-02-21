@@ -16,21 +16,36 @@ import java.net.DatagramPacket;
  */
 public class UdpAlertService {
 
-    public static void initialize(String hostname, int port) throws Exception
+    public static void initialize(String hostname, int port)
     {
-        alertServerAddress = InetAddress.getByName(hostname);
-        alertServicePort = port;
-        transmitSocket = new DatagramSocket();
-        transmitSocket.setBroadcast(false);
-        transmitSocket.setReuseAddress(true);
+    	UdpAlertService.alertServiceHost = hostname; 
+    	UdpAlertService.alertServicePort = port;
+    	initialize();
+    }
+    
+    private static void initialize()
+    {
+    	try
+    	{
+	        alertServerAddress = InetAddress.getByName(alertServiceHost);
+	        transmitSocket = new DatagramSocket();
+	        transmitSocket.setBroadcast(false);
+	        transmitSocket.setReuseAddress(true);
+	        isInitialized = true;
+    	}
+    	catch (Exception e){}
     }
     
     private static InetAddress alertServerAddress;
     private static int alertServicePort;
     private static DatagramSocket transmitSocket;
+    private static String alertServiceHost;
+    private static boolean isInitialized = false;
     
     public static void sendAlert(AlertMessage alertMessage)
     {
+    	if (!isInitialized) initialize();
+    	if (!isInitialized) return;
         String xmlString = alertMessage.toXml();
         DatagramPacket packet = new DatagramPacket(xmlString.getBytes(), xmlString.length(), alertServerAddress, alertServicePort);
         try {
@@ -42,6 +57,6 @@ public class UdpAlertService {
     
     public static void close()
     {
-        transmitSocket.close();
+    	if (!isInitialized) transmitSocket.close();
     }
 }
