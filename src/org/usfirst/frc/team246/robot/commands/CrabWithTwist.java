@@ -50,7 +50,7 @@ public class CrabWithTwist extends FieldCentricDrivingCommand{
     }
 
     protected void initialize() {
-        UdpAlertService.sendAlert(new AlertMessage("Entered Field-Centric Mode"));
+        UdpAlertService.sendAlert(new AlertMessage("Entered Field-Centric Mode").playSound("sonarping.wav"));
     }
 
     protected boolean isFinished() {

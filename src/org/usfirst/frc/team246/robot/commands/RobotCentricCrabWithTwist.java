@@ -42,7 +42,7 @@ public class RobotCentricCrabWithTwist extends DrivingCommand{
     }
 
     protected void initialize() {
-        UdpAlertService.sendAlert(new AlertMessage("Entering Robot-Centric Mode"));
+        UdpAlertService.sendAlert(new AlertMessage("Entering Robot-Centric Mode").playSound("r2d2.wav"));
     }
 
     protected boolean isFinished() {

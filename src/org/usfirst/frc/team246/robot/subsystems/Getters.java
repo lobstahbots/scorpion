@@ -2,9 +2,11 @@ package org.usfirst.frc.team246.robot.subsystems;
 
 import org.usfirst.frc.team246.robot.RobotMap;
 import org.usfirst.frc.team246.robot.commands.Intake;
+import org.usfirst.frc.team246.robot.commands.StopGetters;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AlertMessage;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SpeedController246;
 import org.usfirst.frc.team246.robot.overclockedLibraries.UdpAlertService;
+
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -19,7 +21,7 @@ public class Getters extends Subsystem {
     // here. Call these from Commands.
 
     public void initDefaultCommand() {
-        setDefaultCommand(new Intake());
+        setDefaultCommand(new StopGetters());
     }
     
     public void set(double left, double right)
@@ -33,12 +35,14 @@ public class Getters extends Subsystem {
     {
     	if(RobotMap.leftRangeFinder.get() > RobotMap.LEFT_RANGE_FINDER_IN && RobotMap.rightRangeFinder.get() > RobotMap.RIGHT_RANGE_FINDER_IN)
     	{
-    		UdpAlertService.sendAlert(new AlertMessage("Tote obtained"));
+    		if(!hadTote) UdpAlertService.sendAlert(new AlertMessage("Tote obtained"));
+    		hadTote = true;
     		return true;
     	}
     	else
     	{
-    		UdpAlertService.sendAlert(new AlertMessage("Tote lost"));
+    		if(hadTote) UdpAlertService.sendAlert(new AlertMessage("Tote lost"));
+    		hadTote = false;
     		return false;
     	}
     }

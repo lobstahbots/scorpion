@@ -1,5 +1,6 @@
 package org.usfirst.frc.team246.robot.subsystems;
 
+import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.RobotMap;
 import org.usfirst.frc.team246.robot.commands.CloseGrabber;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -10,6 +11,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class Grabber extends Subsystem {
 
     public void initDefaultCommand() {
+    	if(!Robot.trojan)
         setDefaultCommand(new CloseGrabber());
     }
     

@@ -380,11 +380,11 @@ public class RobotMap {
 		
 	    if(Robot.trojan)
 	    {
-		    backModulePot = new AnalogPotentiometer(0, 1800, -901.6);
+		    backModulePot = new AnalogPotentiometer(0, 1800, -900);
 		    LiveWindow.addSensor("Drivetrain", "backModulePot", backModulePot);
-		    leftModulePot = new AnalogPotentiometer(1, 1800, -910.2);
+		    leftModulePot = new AnalogPotentiometer(1, 1800, -900);
 		    LiveWindow.addSensor("Drivetrain", "leftModulePot", leftModulePot);
-		    rightModulePot = new AnalogPotentiometer(2, 1800, -932.6);
+		    rightModulePot = new AnalogPotentiometer(2, 1800, -900);
 		    LiveWindow.addSensor("Drivetrain", "rightModulePot", rightModulePot);
 	    }
 	    else

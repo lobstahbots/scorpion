@@ -17,7 +17,7 @@ public class Outgest extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	UdpAlertService.sendAlert(new AlertMessage("Outgesting"));
+    	UdpAlertService.sendAlert(new AlertMessage("Outgesting").playSound("burp.wav"));
     }
 
     // Called repeatedly when this Command is scheduled to run

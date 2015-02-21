@@ -17,7 +17,7 @@ public class StopGetters extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	UdpAlertService.sendAlert(new AlertMessage("Stopping Getters"));
+    	UdpAlertService.sendAlert(new AlertMessage("Stopping Getters").playSound("tire_screech.wav"));
     }
 
     // Called repeatedly when this Command is scheduled to run
