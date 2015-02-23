@@ -5,21 +5,23 @@ import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
 
 public class AutoDrive extends FieldCentricDrivingCommand{
 	
-	double x;
-	double y;
-	double heading;
+//	RESET ODOMETRY DATA
 	
-	public AutoDrive(double x, double y, double heading)
+	private Vector2D targetLocation; // x,y relative to robot, angle field centric
+	private double heading; // field centric
+	
+	public AutoDrive(Vector2D targetLocation, double heading)
 	{
-		this.x = x;
-		this.y = y;
+		this.targetLocation = targetLocation;
 		this.heading = heading;
 	}
 	
 	protected void initialize() {
+		Robot.drivetrain.odometry.resetAll(); // BUG: need odometry object
 		
 		execute();
         
+		Robot.drivetrain.enableCrabTwist(true);
         Robot.drivetrain.enableAbsoluteTwist(true);
     }
     
@@ -30,7 +32,7 @@ public class AutoDrive extends FieldCentricDrivingCommand{
         crabVector.setAngle(crabVector.getAngle() - Robot.drivetrain.getFOV());
         Vector2D COR = getCOR();
         
-        Robot.drivetrain.driveAbsoluteTwist(crabVector.getMagnitude(), crabVector.getAngle(), heading);
+//        Robot.drivetrain.driveAbsoluteTwist(crabVector.getMagnitude(), crabVector.getAngle(), heading);
     }
     
     protected void end()
