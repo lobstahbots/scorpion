@@ -177,7 +177,7 @@ public class Drivetrain extends Subsystem {
         }
     }
     
-    public void enableCrabTwist(boolean on) {
+    public void enableAbsoluteCrab(boolean on) {
         if(on) absoluteCrabPID.enable();
         else absoluteCrabPID.disable();
     }
@@ -293,7 +293,7 @@ public class Drivetrain extends Subsystem {
         return false;
     }
     
-    class Odometry implements Runnable, PIDSource
+    public class Odometry implements Runnable, PIDSource
     {
     	private Vector2D robotCentricLinearDisplacement = new Vector2D(true, 0, 0);
     	private double robotCentricAngularDisplacement = 0;

@@ -21,7 +21,7 @@ public class AutoDrive extends FieldCentricDrivingCommand{
 		
 		execute();
         
-		Robot.drivetrain.enableCrabTwist(true);
+		Robot.drivetrain.enableAbsoluteCrab(true);
         Robot.drivetrain.enableAbsoluteTwist(true);
     }
     
@@ -35,14 +35,14 @@ public class AutoDrive extends FieldCentricDrivingCommand{
 //        Robot.drivetrain.driveAbsoluteTwist(crabVector.getMagnitude(), crabVector.getAngle(), heading);
     }
     
-    protected void end()
-    {
+    protected void end() {
+    	Robot.drivetrain.enableAbsoluteCrab(false);
     	Robot.drivetrain.enableAbsoluteTwist(false);
     }
 
 	@Override
 	protected Vector2D getCrabVector() {
-		return new Vector2D(true, x ,y);
+		return targetLocation;
 	}
 
 	@Override
