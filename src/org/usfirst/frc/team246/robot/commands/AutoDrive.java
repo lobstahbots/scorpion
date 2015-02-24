@@ -58,11 +58,11 @@ public class AutoDrive extends FieldCentricDrivingCommand{
 
 	@Override
 	protected boolean isFinished() {
-		// TODO Auto-generated method stub
-		return false;
+		return Robot.drivetrain.absoluteCrabPID.onTarget() && Robot.drivetrain.absoluteTwistPID.onTarget();
 	}
 
 	@Override
 	protected void interrupted() {	
+		end();
 	}
 }
