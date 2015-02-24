@@ -5,6 +5,7 @@ import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogIn;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogPot;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SpeedController246;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Talon246;
+import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Victor246;
 import org.usfirst.frc.team246.robot.overclockedLibraries.VictorSP246;
 
@@ -71,6 +72,10 @@ public class RobotMap {
     public static double ABSOLUTE_TWIST_kI = .0001;
     public static double ABSOLUTE_TWIST_kD = .006;
 	
+    public static double ABSOLUTE_CRAB_kP = .001;
+    public static double ABSOLUTE_CRAB_kI = 0;
+    public static double ABSOLUTE_CRAB_kD = 0;
+    
     public static final double K_MODULE_ANGLE_DELTA = 1;
     public static final double K_MODULE_ANGLE_TWIST = 0;
     public static final double K_MODULE_ANGLE_REVERSE = 0;
@@ -81,6 +86,8 @@ public class RobotMap {
     public static final double WHEEL_TOP_ABSOLUTE_SPEED = 12; //the highest speed that our wheels can move
     
     public static final double crabZeroZone = .1;
+    
+    public static final Vector2D ROBOT_CIRCLE_CENTER = new Vector2D(true, 0, -11.67);
 	
 //Getters
 	

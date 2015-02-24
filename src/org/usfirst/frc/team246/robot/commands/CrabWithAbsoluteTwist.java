@@ -1,6 +1,7 @@
 package org.usfirst.frc.team246.robot.commands;
 
 import org.usfirst.frc.team246.robot.Robot;
+import org.usfirst.frc.team246.robot.RobotMap;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
 
 /**
@@ -38,7 +39,10 @@ public class CrabWithAbsoluteTwist extends CrabWithTwist{
         	header = Robot.oi.driver.getRightAngle();
         }
         
-        Robot.drivetrain.driveAbsoluteTwist(crabVector.getMagnitude(), crabVector.getAngle(), header);
+        Robot.drivetrain.absoluteTwistPID.setSetpoint(header);
+        Robot.drivetrain.drivetrainPID.setCrabSpeed(crabVector.getMagnitude());
+        Robot.drivetrain.drivetrainPID.setCrabDirection(crabVector.getAngle());
+        Robot.drivetrain.drivetrainPID.setCOR(RobotMap.ROBOT_CIRCLE_CENTER);
     }
     
     protected void end()
