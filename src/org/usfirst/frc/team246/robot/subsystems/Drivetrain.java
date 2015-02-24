@@ -30,7 +30,7 @@ public class Drivetrain extends Subsystem {
     
     public Odometry odometry = new Odometry();
     
-    public double FOV = 0; //the front of the vehicle in degrees. May be used in different ways by different control schemes.
+    private double FOV = 0; //the front of the vehicle in degrees. May be used in different ways by different control schemes.
     
     public Drivetrain()
     {
