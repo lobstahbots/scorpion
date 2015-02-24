@@ -8,6 +8,8 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import org.usfirst.frc.team246.robot.commands.AutoDrive;
+import org.usfirst.frc.team246.robot.commands.AutoLogoTest;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AlertMessage;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogIn;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SwerveModule;
@@ -23,6 +25,7 @@ import org.usfirst.frc.team246.robot.subsystems.Pusher;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -62,6 +65,8 @@ public class Robot extends IterativeRobot {
 	public static OTS ots;
 	
 	public static AnalogIn[] BBBAnalogs;
+	
+	Command autoLogoTest;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -123,6 +128,8 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("ARM_SHOULDER_MANUAL_SPEED", 5);
         SmartDashboard.putNumber("ARM_ELBOW_MANUAL_SPEED", 5);
         SmartDashboard.putNumber("ARM_WRIST_MANUAL_SPEED", 5);
+        
+        autoLogoTest = new AutoLogoTest();
     }
     
     /**
@@ -154,6 +161,7 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {
     	RobotMap.navX.zeroYaw();
     	drivetrain.PIDOn(true);
+    	autoLogoTest.start();
     }
 
     /**
