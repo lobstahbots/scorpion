@@ -19,11 +19,9 @@ public class AutoDrive extends FieldCentricDrivingCommand{
 	
 	protected void initialize() {
 		Robot.drivetrain.odometry.resetAll();
-		
-		execute();
-        
 		Robot.drivetrain.enableAbsoluteCrab(true);
         Robot.drivetrain.enableAbsoluteTwist(true);
+		execute();
     }
     
 	@Override
