@@ -19,7 +19,7 @@ public class AnalogIn implements PIDSource, LiveWindowSendable {
 		if(onRIO)
 		{
 			input = new AnalogInput(channel);
-			input.setAverageBits(100);
+			input.setAverageBits(3);
 		}
 		else
 		{

@@ -23,33 +23,31 @@ public class Arm extends Subsystem {
 	
 	public boolean fallenCanMode = false;
 	
+	public boolean bendUp = true;
+	
 	public ArmSetpoints currentSetpoint;
+	
+	public double ceilingHeight = 78;
 
     // Initialize your subsystem here
     public Arm() {
-    	if(!Robot.trojan)
-    	{
-	        shoulder = new PIDController(RobotMap.ARM_SHOULDER_kP, RobotMap.ARM_SHOULDER_kI, RobotMap.ARM_SHOULDER_kD, RobotMap.armShoulderPot, RobotMap.armShoulderMotor, .02);
-	        shoulder.setInputRange(RobotMap.ARM_SHOULDER_MIN, RobotMap.ARM_SHOULDER_MAX);
-	        shoulder.setAbsoluteTolerance(5);
-	        elbow = new PIDController(RobotMap.ARM_ELBOW_kP, RobotMap.ARM_ELBOW_kI, RobotMap.ARM_ELBOW_kD, RobotMap.armElbowPot, RobotMap.armElbowMotor, .02);
-	        elbow.setInputRange(-180, 180);
-	        shoulder.setAbsoluteTolerance(5);
-	        wrist = new PIDController(RobotMap.ARM_WRIST_kP, RobotMap.ARM_WRIST_kI, RobotMap.ARM_WRIST_kD, RobotMap.armWristPot, RobotMap.armWristMotor, .02);
-	        wrist.setInputRange(-180, 180);
-	        shoulder.setAbsoluteTolerance(5);
-	        
-	        LiveWindow.addActuator("Arm", "shoulder", shoulder);
-	        LiveWindow.addActuator("Arm", "elbow", elbow);
-	        LiveWindow.addActuator("Arm", "wrist", wrist);
-    	}
+        shoulder = new PIDController(RobotMap.ARM_SHOULDER_kP, RobotMap.ARM_SHOULDER_kI, RobotMap.ARM_SHOULDER_kD, RobotMap.armShoulderPot, RobotMap.armShoulderMotor, .02);
+        shoulder.setInputRange(RobotMap.ARM_SHOULDER_MIN, RobotMap.ARM_SHOULDER_MAX);
+        shoulder.setAbsoluteTolerance(5);
+        elbow = new PIDController(RobotMap.ARM_ELBOW_kP, RobotMap.ARM_ELBOW_kI, RobotMap.ARM_ELBOW_kD, RobotMap.armElbowPot, RobotMap.armElbowMotor, .02);
+        elbow.setInputRange(-180, 180);
+        elbow.setAbsoluteTolerance(5);
+        wrist = new PIDController(RobotMap.ARM_WRIST_kP, RobotMap.ARM_WRIST_kI, RobotMap.ARM_WRIST_kD, RobotMap.armWristPot, RobotMap.armWristMotor, .02);
+        wrist.setInputRange(-180, 180);
+        wrist.setAbsoluteTolerance(5);
+        
+        LiveWindow.addActuator("Arm", "shoulder", shoulder);
+        LiveWindow.addActuator("Arm", "elbow", elbow);
+        LiveWindow.addActuator("Arm", "wrist", wrist);
     }
     
     public void initDefaultCommand() {
-    	if(!Robot.trojan)
-    	{
-    		setDefaultCommand(new ManualArm());
-    	}
+    	setDefaultCommand(new ManualArm());
     }
     
     //The location of the arm is described, in inches, by the vector between the shoulder joint and the wrist joint
@@ -107,23 +105,32 @@ public class Arm extends Subsystem {
     		return;
 		}
     	
+    	
     	//Limit the arm to staying above the ground and below the ceiling
-    	if(v12.getY() < -RobotMap.ARM_SHOULDER_HEIGHT + RobotMap.ARM_GROUND_TOLERANCE) 
+    	System.out.println(v12.getY() + "+" +  RobotMap.ARM_SHOULDER_HEIGHT + "+" + RobotMap.ARM_WIDTH/2 + "<" + RobotMap.ARM_GROUND_TOLERANCE);
+    	if(v12.getY() + RobotMap.ARM_SHOULDER_HEIGHT - RobotMap.ARM_WIDTH/2 < RobotMap.ARM_GROUND_TOLERANCE) 
 		{
     		UdpAlertService.sendAlert(new AlertMessage("Arm Constraint: Wrist Ground"));
     		return;
 		}
-    	if(v12.getY() > 86 - RobotMap.ARM_SHOULDER_HEIGHT - RobotMap.ARM_CEILING_TOLERANCE) 
+    	if(v12.getY() + RobotMap.ARM_SHOULDER_HEIGHT + RobotMap.ARM_WIDTH/2 > ceilingHeight - RobotMap.ARM_CEILING_TOLERANCE) 
 		{
     		UdpAlertService.sendAlert(new AlertMessage("Arm Constraint: Wrist Ceiling"));
     		return;
 		}
-    	if(v123.getY() < -RobotMap.ARM_SHOULDER_HEIGHT + RobotMap.ARM_GROUND_TOLERANCE) 
+    	
+    	//Limit the grabber to staying above the ground and below the ceiling
+    	//4 points of the rectangle of the grabber
+    	double p0 = v12.getY() + RobotMap.ARM_SHOULDER_HEIGHT + Vector2D.addVectors(new Vector2D(false, RobotMap.GRABBER_SMALL_LENGTH, v3.getAngle()), new Vector2D(false, RobotMap.GRABBER_WIDTH/2, v3.getAngle() + 90)).getY();
+    	double p1 = v12.getY() + RobotMap.ARM_SHOULDER_HEIGHT + Vector2D.addVectors(new Vector2D(false, RobotMap.GRABBER_SMALL_LENGTH, v3.getAngle()), new Vector2D(false, RobotMap.GRABBER_WIDTH/2, v3.getAngle() - 90)).getY();
+    	double p2 = v12.getY() + RobotMap.ARM_SHOULDER_HEIGHT + Vector2D.addVectors(v3, new Vector2D(false, RobotMap.GRABBER_WIDTH/2, v3.getAngle() + 90)).getY();
+    	double p3 = v12.getY() + RobotMap.ARM_SHOULDER_HEIGHT + Vector2D.addVectors(v3, new Vector2D(false, RobotMap.GRABBER_WIDTH/2, v3.getAngle() - 90)).getY();
+    	if(p0 < RobotMap.ARM_GROUND_TOLERANCE || p1 < RobotMap.ARM_GROUND_TOLERANCE || p2 < RobotMap.ARM_GROUND_TOLERANCE || p3 < RobotMap.ARM_GROUND_TOLERANCE) 
 		{
     		UdpAlertService.sendAlert(new AlertMessage("Arm Constraint: Grabber Ground"));
     		return;
 		}
-    	if(v123.getY() > 86 - RobotMap.ARM_SHOULDER_HEIGHT - RobotMap.ARM_CEILING_TOLERANCE) 
+    	if(p0 > ceilingHeight || p1 > ceilingHeight || p2 > ceilingHeight || p3 > ceilingHeight) 
 		{
     		UdpAlertService.sendAlert(new AlertMessage("Arm Constraint: Grabber Ceiling"));
     		return;
@@ -156,21 +163,21 @@ public class Arm extends Subsystem {
     	wrist.setSetpoint(wristAngle);
     }
     
-    public void set(double x, double y, double wrist, boolean bendIn)
+    public void setCartesian(double x, double y, double wrist)
     {
     	Vector2D v = new Vector2D(true, x, y);
     	double shoulder = lawOfCosines(RobotMap.ARM_SEGMENT_2_LENGTH, RobotMap.ARM_SEGMENT_1_LENGTH, v.getMagnitude());
     	double elbow = lawOfCosines(v.getMagnitude(),  RobotMap.ARM_SEGMENT_1_LENGTH, RobotMap.ARM_SEGMENT_2_LENGTH);
     	
-    	if(bendIn)
+    	if(bendUp)
     	{
     		shoulder = v.getAngle() - shoulder;
-    		elbow = 90 - shoulder + elbow;
+    		elbow = shoulder + elbow;
     	}
     	else
     	{
     		shoulder = v.getAngle() + shoulder;
-    		elbow = 90 - shoulder - elbow;
+    		elbow = shoulder - elbow;
     	}
     	
     	set(shoulder, elbow, wrist);
@@ -246,6 +253,6 @@ public class Arm extends Subsystem {
     //returns an angle in a triangle given 3 sides
     public static double lawOfCosines(double opp, double a, double b)
     {
-    	return Math.acos((Math.pow(a, 2) + Math.pow(b, 2) - Math.pow(opp, 2))/(2*a*b));
+    	return Math.toDegrees(Math.acos((Math.pow(a, 2) + Math.pow(b, 2) - Math.pow(opp, 2))/(2*a*b)));
     }
 }

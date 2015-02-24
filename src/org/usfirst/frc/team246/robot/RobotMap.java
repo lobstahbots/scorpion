@@ -7,6 +7,7 @@ import org.usfirst.frc.team246.robot.overclockedLibraries.SpeedController246;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Talon246;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Victor246;
 import org.usfirst.frc.team246.robot.overclockedLibraries.VictorSP246;
+
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.livewindow.LiveWindowSendable;
 
@@ -92,13 +94,12 @@ public class RobotMap {
 	public static AnalogIn leftRangeFinder;
 	public static AnalogIn rightRangeFinder;
 	
-	public static AnalogPot leftGetterPot;
-	public static AnalogPot rightGetterPot;
-	
 	//constants
 	
-	public static final double LEFT_RANGE_FINDER_IN = 1061;
-	public static final double RIGHT_RANGE_FINDER_IN = 653;
+	public static double LEFT_RANGE_FINDER_IN;
+	public static double RIGHT_RANGE_FINDER_IN;
+	public static double LEFT_RANGE_FINDER_OUT;
+	public static double RIGHT_RANGE_FINDER_OUT;
 	
 	public static final double GETTER_POTS_TOLERANCE = 3;
 	
@@ -190,9 +191,11 @@ public class RobotMap {
 	public static final double ARM_WRIST_kI = 0.000;
 	public static final double ARM_WRIST_kD = 0.400;
 	
-	public static final double ARM_SHOULDER_MANUAL_SPEED = 30;
-	public static final double ARM_ELBOW_MANUAL_SPEED = 30;
-	public static final double ARM_WRIST_MANUAL_SPEED = 30;
+	public static final double ARM_X_MANUAL_SPEED = 5;
+	public static final double ARM_Y_MANUAL_SPEED = 5;
+	public static final double ARM_SHOULDER_MANUAL_SPEED = 15;
+	public static final double ARM_ELBOW_MANUAL_SPEED = 15;
+	public static final double ARM_WRIST_MANUAL_SPEED = 15;
 	
 	public static final double ARM_SEGMENT_1_LENGTH = 24;
 	public static final double ARM_SEGMENT_2_LENGTH = 24;
@@ -202,13 +205,14 @@ public class RobotMap {
 	
 	public static final double ARM_SHOULDER_HEIGHT = 36;
 	
-	public static final double ARM_GROUND_TOLERANCE = 3.5;
-	public static final double ARM_CEILING_TOLERANCE = 3.5;
+	public static final double ARM_GROUND_TOLERANCE = .5;
+	public static final double ARM_CEILING_TOLERANCE = 0;
 	public static final double ARM_LIFT_TOLERANCE = 1;
 	
 	public static final double ARM_WIDTH = 6;
 	public static final double GRABBER_WIDTH = 6;
 	public static final double GRABBER_LENGTH = 24;
+	public static final double GRABBER_SMALL_LENGTH = 10.5;
 	
 	public static final double ARM_LIFT_LOCATION = -21.5;
 	public static final double ARM_LIFT_HEIGHT = 54;
@@ -223,14 +227,17 @@ public class RobotMap {
 	
 	public enum ArmSetpoints {
 		
-		GROUND_UP(0,0,0),
-		GROUND_FALL(0,0,0),
-		STEP(0,0,0),
-		STORAGE(0,0,0),
+		GROUND_UP(101,175,90),
+		GROUND_FALL(43,143,178),
+		STEP(97,108,90),
+		TOP_OF_STACK(3,69,90),
+		STORAGE(23,170,80),
+		CURLED_TAIL(0,0,0),
 		ON_LIFT(0,0,0);
 		
 		private double shoulder;
 		private double elbow;
+		
 		private double wrist;
 		
 		private ArmSetpoints(double x, double y, double wrist)
@@ -253,25 +260,6 @@ public class RobotMap {
 			return wrist;
 		}
 	}
-	
-	public static class ArmWaypoints
-	{
-		public double shoulder;
-		public double elbow;
-		public double wrist;
-		
-		public ArmWaypoints(double shoulder, double elbow, double wrist)
-		{
-			this.shoulder = shoulder;
-			this.elbow = elbow;
-			this.wrist = wrist;
-		}
-	}
-	
-	public static ArmWaypoints[] armWaypoints =
-	{
-			new ArmWaypoints(0,0,0)
-	};
 	
 //Grabber
 	
@@ -383,11 +371,11 @@ public class RobotMap {
 	    }
 	    else
 	    {
-	    	backModulePot = new AnalogPotentiometer(0, 1800, -897.0);
+	    	backModulePot = new AnalogPotentiometer(0, 1800, -900);
 		    LiveWindow.addSensor("Drivetrain", "backModulePot", backModulePot);
-		    leftModulePot = new AnalogPotentiometer(1, 1800, -894.8);
+		    leftModulePot = new AnalogPotentiometer(1, 1800, -900);
 		    LiveWindow.addSensor("Drivetrain", "leftModulePot", leftModulePot);
-		    rightModulePot = new AnalogPotentiometer(2, 1800, -900.2);
+		    rightModulePot = new AnalogPotentiometer(2, 1800, -900);
 		    LiveWindow.addSensor("Drivetrain", "rightModulePot", rightModulePot);
 	    }
 	    
@@ -461,11 +449,6 @@ public class RobotMap {
 			LiveWindow.addSensor("Getters", "leftRangeFinder", leftRangeFinder);
 			rightRangeFinder = new AnalogIn(4, true);
 			LiveWindow.addSensor("Getters", "rightRangeFinder", rightRangeFinder);
-			
-			leftGetterPot = new AnalogPot(5, 360, .113, true);
-			LiveWindow.addSensor("Getters", "leftGetterPot", leftGetterPot);
-			rightGetterPot = new AnalogPot(6, 360, .125, true);
-			LiveWindow.addSensor("Getters", "rightGetterPot", rightGetterPot);
 		}
 		else
 		{
@@ -473,11 +456,23 @@ public class RobotMap {
 			LiveWindow.addSensor("Getters", "leftRangeFinder", leftRangeFinder);
 			rightRangeFinder = new AnalogIn(3, false);
 			LiveWindow.addSensor("Getters", "rightRangeFinder", rightRangeFinder);
-			
-			leftGetterPot = new AnalogPot(4, 360., 113, false);
-			LiveWindow.addSensor("Getters", "leftGetterPot", leftGetterPot);
-			rightGetterPot = new AnalogPot(5, 360., 125, false);
-			LiveWindow.addSensor("Getters", "rightGetterPot", rightGetterPot);
+		}
+		
+		//Constants
+		
+		if(Robot.trojan)
+		{
+			LEFT_RANGE_FINDER_IN = 1.635;
+			RIGHT_RANGE_FINDER_IN = 1.615;
+			LEFT_RANGE_FINDER_OUT = 1.565;
+			RIGHT_RANGE_FINDER_OUT = 1.545;
+		}
+		else
+		{
+			LEFT_RANGE_FINDER_IN = 0;
+			RIGHT_RANGE_FINDER_IN = 0;
+			LEFT_RANGE_FINDER_OUT = 0;
+			RIGHT_RANGE_FINDER_OUT = 0;
 		}
 		
 	//Forklift
@@ -524,15 +519,12 @@ public class RobotMap {
 		
 		//Sensors
 		
-		if(!Robot.trojan)
-		{
-			armShoulderPot = new AnalogPotentiometer(5, 391.83673469387755102040816326531, -204.2); //TODO: Get these constants
-			LiveWindow.addSensor("Arm", "armShoulderPot", armShoulderPot);
-			armElbowPot = new AnalogPotentiometer(6, 391.83673469387755102040816326531, -173.4); //TODO: Get these constants
-			LiveWindow.addSensor("Arm", "armElbowPot", armElbowPot);
-			armWristPot = new AnalogPotentiometer(7, 391.83673469387755102040816326531, -188.8); //TODO: Get these constants
-			LiveWindow.addSensor("Arm", "armWristPot", armWristPot);
-		}
+		armShoulderPot = new AnalogPotentiometer(5, 391.83673469387755102040816326531, -204.2); //TODO: Get these constants
+		LiveWindow.addSensor("Arm", "armShoulderPot", armShoulderPot);
+		armElbowPot = new AnalogPotentiometer(6, 391.83673469387755102040816326531, -173.4); //TODO: Get these constants
+		LiveWindow.addSensor("Arm", "armElbowPot", armElbowPot);
+		armWristPot = new AnalogPotentiometer(7, 391.83673469387755102040816326531, -188.8); //TODO: Get these constants
+		LiveWindow.addSensor("Arm", "armWristPot", armWristPot);
 		
 	//Grabber
 		

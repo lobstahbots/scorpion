@@ -1,12 +1,10 @@
 package org.usfirst.frc.team246.robot.subsystems;
 
 import org.usfirst.frc.team246.robot.RobotMap;
-import org.usfirst.frc.team246.robot.commands.Intake;
 import org.usfirst.frc.team246.robot.commands.StopGetters;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AlertMessage;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SpeedController246;
 import org.usfirst.frc.team246.robot.overclockedLibraries.UdpAlertService;
-
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -35,24 +33,19 @@ public class Getters extends Subsystem {
     {
     	if(RobotMap.leftRangeFinder.get() > RobotMap.LEFT_RANGE_FINDER_IN && RobotMap.rightRangeFinder.get() > RobotMap.RIGHT_RANGE_FINDER_IN)
     	{
-    		if(!hadTote) UdpAlertService.sendAlert(new AlertMessage("Tote obtained"));
+    		if(!hadTote) UdpAlertService.sendAlert(new AlertMessage("Tote obtained").playSound("woohoo.wav"));
     		hadTote = true;
     		return true;
     	}
-    	else
+    	else if(RobotMap.leftRangeFinder.get() < RobotMap.LEFT_RANGE_FINDER_OUT || RobotMap.rightRangeFinder.get() < RobotMap.RIGHT_RANGE_FINDER_OUT)
     	{
-    		if(hadTote) UdpAlertService.sendAlert(new AlertMessage("Tote lost"));
+    		if(hadTote) UdpAlertService.sendAlert(new AlertMessage("Tote lost").playSound("doh.wav"));
     		hadTote = false;
     		return false;
     	}
-    }
-    
-    public boolean leftInTolerance()
-    {
-    	return Math.abs(RobotMap.leftGetterPot.get()) < RobotMap.GETTER_POTS_TOLERANCE;
-    }
-    public boolean rightInTolerance()
-    {
-    	return Math.abs(RobotMap.rightGetterPot.get()) < RobotMap.GETTER_POTS_TOLERANCE;
+    	else
+    	{
+    		return hadTote;
+    	}
     }
 }

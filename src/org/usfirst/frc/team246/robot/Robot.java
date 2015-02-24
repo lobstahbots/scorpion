@@ -51,7 +51,7 @@ public class Robot extends IterativeRobot {
 	public static boolean test3 = false;
 	public static boolean gyroDisabled = false;
 	public static boolean gasMode = false;
-	public static boolean trojan = true;
+	public static boolean trojan = false;
 	
 	public static Drivetrain drivetrain;
 	public static Getters getters;
@@ -230,7 +230,7 @@ public class Robot extends IterativeRobot {
             }
             else
             {
-            	UdpAlertService.sendAlert(new AlertMessage("Unwinding"));
+            	if(!drivetrain.swerves[0].unwinding) UdpAlertService.sendAlert(new AlertMessage("Unwinding"));
                 drivetrain.unwind();
             }
             
@@ -259,7 +259,7 @@ public class Robot extends IterativeRobot {
     	{
     		if(Math.abs(drivetrain.swerves[i].getModuleAngle()) > RobotMap.UNSAFE_MODULE_ANGLE)
             {
-                //System.out.println("Stopping " + drivetrain.swerves[i].name);
+                if(!SmartDashboard.getBoolean("motorKilled")) UdpAlertService.sendAlert(new AlertMessage("Steering Motor Killed").playSound("malfunction.wav"));
                 ((Victor246)drivetrain.swerves[i].moduleMotor).overridingSet(0);
                 SmartDashboard.putBoolean("motorKilled", true);
             }
@@ -274,6 +274,8 @@ public class Robot extends IterativeRobot {
         }
         
         SmartDashboard.putNumber("Heading", RobotMap.navX.getYaw());
+        
+        if(DriverStation.getInstance().isBrownedOut()) UdpAlertService.sendAlert(new AlertMessage("Brownout").playSound("low_power.wav"));
         
         gyroDisabled = !SmartDashboard.getBoolean("field-centric", true);
         

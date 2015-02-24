@@ -2,6 +2,7 @@ package org.usfirst.frc.team246.robot;
 
 import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
 import org.usfirst.frc.team246.robot.RobotMap.LiftSetpoints;
+import org.usfirst.frc.team246.robot.commands.ChangeArmBend;
 import org.usfirst.frc.team246.robot.commands.CrabWithTwist;
 import org.usfirst.frc.team246.robot.commands.GoFast;
 import org.usfirst.frc.team246.robot.commands.Intake;
@@ -19,6 +20,7 @@ import org.usfirst.frc.team246.robot.commands.RobotCentricCrabWithTwist;
 import org.usfirst.frc.team246.robot.commands.StopGetters;
 import org.usfirst.frc.team246.robot.overclockedLibraries.LogitechF310;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Toggle;
+
 import edu.wpi.first.wpilibj.buttons.Trigger;
 
 /**
@@ -95,20 +97,23 @@ public class OI {
 		
 		operator.getLB().whileHeld(new PushTotes());
 		
-		operator.getBack().whenPressed(new MoveArm(ArmSetpoints.STORAGE));
-		operator.getStart().whenPressed(new MoveArm(ArmSetpoints.STEP));
-		operator.getX2().whenPressed(new MoveArm(ArmSetpoints.ON_LIFT));
-		operator.getB().whenPressed(new MoveArm(ArmSetpoints.GROUND_UP));
-		operator.getA().whenPressed(new MoveArmUp1());
-		operator.getY2().whenPressed(new MoveArmDown1());
-		new Trigger() {
+		operator.getA().whenPressed(new MoveArm(ArmSetpoints.GROUND_FALL));
+		operator.getB().whenPressed(new MoveArm(ArmSetpoints.STEP));
+		operator.getX2().whenPressed(new MoveArm(ArmSetpoints.GROUND_UP));
+		operator.getY2().whenPressed(new MoveArm(ArmSetpoints.TOP_OF_STACK));
+		operator.getStart().whenPressed(new MoveArm(ArmSetpoints.STORAGE));
+		new Toggle() {
 			
 			@Override
-			public boolean get()
-			{
-				return Math.abs(operator.getLeftXAxis()) > .25;
+			public boolean get() {
+				return operator.getDown().get();
 			}
-		}.whenActive(new MoveArm(ArmSetpoints.GROUND_FALL));
+			
+			@Override
+			public boolean getToggler() {
+				return Robot.arm.bendUp;
+			}
+		}.toggle(new ChangeArmBend(false), new ChangeArmBend(true));
 		
 		operator.getRB().whileHeld(new OpenGrabber());
 		
