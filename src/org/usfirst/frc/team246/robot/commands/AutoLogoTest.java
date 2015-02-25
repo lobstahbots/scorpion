@@ -16,9 +16,9 @@ public class AutoLogoTest extends CommandGroup {
         Vector2D GO_LEFT = new Vector2D(false, 1, RobotMap.WEST);
         Vector2D GO_RIGHT = new Vector2D(false, 1, RobotMap.EAST);
     	
-        addSequential(new AutoDrive(GO_FORWARD, RobotMap.NORTH));
-        addSequential(new AutoDrive(GO_RIGHT, RobotMap.EAST));
-        addSequential(new AutoDrive(GO_BACK, RobotMap.SOUTH));
-        addSequential(new AutoDrive(GO_LEFT, RobotMap.WEST));
+        addSequential(new AutoDrive(GO_FORWARD, RobotMap.NORTH, true));
+        addSequential(new AutoDrive(GO_RIGHT, RobotMap.EAST, true));
+        addSequential(new AutoDrive(GO_BACK, RobotMap.SOUTH, true));
+        addSequential(new AutoDrive(GO_LEFT, RobotMap.WEST, true));
     }
 }
