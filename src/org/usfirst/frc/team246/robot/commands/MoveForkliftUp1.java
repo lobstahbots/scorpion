@@ -19,7 +19,7 @@ public class MoveForkliftUp1 extends Command {
     protected void initialize() {
     	if(f.getCurrentCommand().getClass() == MoveForklift.class)
     	{
-    		f.totesHigh--;
+    		f.totesHigh++;
     	}
     	else
     	{

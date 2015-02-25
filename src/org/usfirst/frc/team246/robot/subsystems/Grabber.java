@@ -22,7 +22,7 @@ public class Grabber extends Subsystem {
     }
     public void close()
     {
-    	if(RobotMap.grabberEncoder.getDistance() > RobotMap.GRABBER_OPEN) RobotMap.grabberMotor.set(RobotMap.GRABBER_CLOSE_SPEED);
+    	if(RobotMap.grabberEncoder.getDistance() > RobotMap.GRABBER_CLOSED) RobotMap.grabberMotor.set(RobotMap.GRABBER_CLOSE_SPEED);
     	else RobotMap.grabberMotor.set(0);
     }
 }

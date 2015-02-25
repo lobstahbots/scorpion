@@ -33,12 +33,15 @@ public class Arm extends Subsystem {
     public Arm() {
         shoulder = new PIDController(RobotMap.ARM_SHOULDER_kP, RobotMap.ARM_SHOULDER_kI, RobotMap.ARM_SHOULDER_kD, RobotMap.armShoulderPot, RobotMap.armShoulderMotor, .02);
         shoulder.setInputRange(RobotMap.ARM_SHOULDER_MIN, RobotMap.ARM_SHOULDER_MAX);
+        shoulder.setOutputRange(-.8, .8);
         shoulder.setAbsoluteTolerance(5);
         elbow = new PIDController(RobotMap.ARM_ELBOW_kP, RobotMap.ARM_ELBOW_kI, RobotMap.ARM_ELBOW_kD, RobotMap.armElbowPot, RobotMap.armElbowMotor, .02);
         elbow.setInputRange(-180, 180);
+        elbow.setOutputRange(-.8, .8);
         elbow.setAbsoluteTolerance(5);
         wrist = new PIDController(RobotMap.ARM_WRIST_kP, RobotMap.ARM_WRIST_kI, RobotMap.ARM_WRIST_kD, RobotMap.armWristPot, RobotMap.armWristMotor, .02);
         wrist.setInputRange(-180, 180);
+        wrist.setOutputRange(-.8, .8);
         wrist.setAbsoluteTolerance(5);
         
         LiveWindow.addActuator("Arm", "shoulder", shoulder);
@@ -107,7 +110,6 @@ public class Arm extends Subsystem {
     	
     	
     	//Limit the arm to staying above the ground and below the ceiling
-    	System.out.println(v12.getY() + "+" +  RobotMap.ARM_SHOULDER_HEIGHT + "+" + RobotMap.ARM_WIDTH/2 + "<" + RobotMap.ARM_GROUND_TOLERANCE);
     	if(v12.getY() + RobotMap.ARM_SHOULDER_HEIGHT - RobotMap.ARM_WIDTH/2 < RobotMap.ARM_GROUND_TOLERANCE) 
 		{
     		UdpAlertService.sendAlert(new AlertMessage("Arm Constraint: Wrist Ground"));
@@ -187,6 +189,29 @@ public class Arm extends Subsystem {
     {
     	currentSetpoint = setpoint;
     	set(setpoint.getShoulder(), setpoint.getElbow(), setpoint.getWrist());
+    }
+    
+    //Moves the shoulder to the set angle while targeting for the elbow to be just below the ceiling. Moves the wrist to the set angle.
+    public void synchronizedMoveBelowCeiling(double shoulderAngle, double wristAngle)
+    {
+    	Vector2D v1 = getSegment1Vector();
+    	Vector2D v2 = getSegment1Vector();
+    	Vector2D v12 = getVector();
+    	
+    	double shoulderYMaxSpeed = Math.sin(v1.getAngle()); //This is in an arbitrary unit, because it is only used in proportion with elbowMaxYSpeed
+    	double elbowYMaxSpeed = Math.sin(v2.getAngle()); //This is in an arbitrary unit, because it is only used in proportion with shoulderMaxYSpeed
+    	if(shoulderYMaxSpeed > elbowYMaxSpeed)
+    	{
+    		shoulder.setOutputRange(-Math.abs(elbowYMaxSpeed/shoulderYMaxSpeed), Math.abs(elbowYMaxSpeed/shoulderYMaxSpeed));
+    	}
+    	else
+    	{
+    		elbow.setOutputRange(-Math.abs(shoulderYMaxSpeed/elbowYMaxSpeed), Math.abs(shoulderYMaxSpeed/elbowYMaxSpeed));
+    	}
+    	
+    	shoulder.setSetpoint(shoulderAngle);
+    	elbow.setSetpoint(-Math.acos((ceilingHeight - RobotMap.ARM_CEILING_TOLERANCE_WHILE_TRANSITIONING - RobotMap.ARM_SHOULDER_HEIGHT - v1.getY())/RobotMap.ARM_SEGMENT_2_LENGTH));
+    	wrist.setSetpoint(wristAngle);
     }
     
     public Vector2D getVector()

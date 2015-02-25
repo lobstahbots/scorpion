@@ -1,41 +1,46 @@
 package org.usfirst.frc.team246.robot.commands;
 
 import org.usfirst.frc.team246.robot.Robot;
+import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
-public class RetractPusher extends Command {
+public class TransitionOverCeiling extends Command {
 
-    public RetractPusher() {
-        requires(Robot.pusher);
+	double shoulderGoal;
+	
+    public TransitionOverCeiling(double shoulderGoal) {
+        requires(Robot.arm);
+        this.shoulderGoal = shoulderGoal;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.pusher.enable();
+    	Robot.arm.pidOn(true);
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.pusher.setSetpoint(0);
-    	
+    	Robot.arm.synchronizedMoveBelowCeiling(shoulderGoal, -90);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return Robot.pusher.onTarget();
+        return Robot.arm.shoulder.onTarget() && Robot.arm.elbow.onTarget() && Robot.arm.wrist.onTarget();
     }
 
     // Called once after isFinished returns true
     protected void end() {
-    	Robot.pusher.disable();
+    	Robot.arm.shoulder.setOutputRange(-1, 1);
+    	Robot.arm.elbow.setOutputRange(-1, 1);
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+    	end();
     }
 }

@@ -154,29 +154,7 @@ public class LogitechF310 extends Joystick{
 			@Override
 			public boolean get()
 			{
-				return getPOV() == 315 || getPOV() == 0 || getPOV() == 45;
-			}
-		};
-	}
-	public Button getLeft()
-	{
-		return new Button() {
-			
-			@Override
-			public boolean get()
-			{
-				return getPOV() == 45 || getPOV() == 90 || getPOV() == 135;
-			}
-		};
-	}
-	public Button getDown()
-	{
-		return new Button() {
-			
-			@Override
-			public boolean get()
-			{
-				return getPOV() == 135 || getPOV() == 180 || getPOV() == 225;
+				return getPOV() == 0;
 			}
 		};
 	}
@@ -187,7 +165,29 @@ public class LogitechF310 extends Joystick{
 			@Override
 			public boolean get()
 			{
-				return getPOV() == 225 || getPOV() == 270 || getPOV() == 315;
+				return getPOV() == 90;
+			}
+		};
+	}
+	public Button getDown()
+	{
+		return new Button() {
+			
+			@Override
+			public boolean get()
+			{
+				return getPOV() == 180;
+			}
+		};
+	}
+	public Button getLeft()
+	{
+		return new Button() {
+			
+			@Override
+			public boolean get()
+			{
+				return getPOV() == 270;
 			}
 		};
 	}

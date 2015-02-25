@@ -135,7 +135,7 @@ public class RobotMap {
 	public static final double TOTE_HEIGHT = 12;
 	
 	public enum LiftSetpoints {
-		GROUND(1), SCORING_PLATFORM(4), STEP(9);
+		GROUND(1.35), SCORING_PLATFORM(4.11), STEP(9.11);
 		
 		private double value;
 		
@@ -210,10 +210,11 @@ public class RobotMap {
 	public static final double ARM_SHOULDER_MIN = -28;
 	public static final double ARM_SHOULDER_MAX = 125;
 	
-	public static final double ARM_SHOULDER_HEIGHT = 36;
+	public static final double ARM_SHOULDER_HEIGHT = 34;
 	
 	public static final double ARM_GROUND_TOLERANCE = .5;
 	public static final double ARM_CEILING_TOLERANCE = 0;
+	public static final double ARM_CEILING_TOLERANCE_WHILE_TRANSITIONING = 2;
 	public static final double ARM_LIFT_TOLERANCE = 1;
 	
 	public static final double ARM_WIDTH = 6;
@@ -224,12 +225,12 @@ public class RobotMap {
 	public static final double ARM_LIFT_LOCATION = -21.5;
 	public static final double ARM_LIFT_HEIGHT = 54;
 	
-	public static final double ARM_TURNBUCKLE_SHOULDER_ELBOW_MAX = 154;//too_generous
-	public static final double ARM_TURNBUCKLE_SHOULDER_ELBOW_MIN = -130;//good
-	public static final double ARM_TURNBUCKLE_SHOULDER_WRIST_MAX = 127;
-	public static final double ARM_TURNBUCKLE_SHOULDER_WRIST_MIN = -174;//way_too_generous
-	public static final double ARM_TURNBUCKLE_ELBOW_WRIST_MAX = 124;//good
-	public static final double ARM_TURNBUCKLE_ELBOW_WRIST_MIN = -125;//too_generous
+	public static final double ARM_TURNBUCKLE_SHOULDER_ELBOW_MAX = 159;
+	public static final double ARM_TURNBUCKLE_SHOULDER_ELBOW_MIN = -152;
+	public static final double ARM_TURNBUCKLE_SHOULDER_WRIST_MAX = 160;
+	public static final double ARM_TURNBUCKLE_SHOULDER_WRIST_MIN = -183;//way_too_generous
+	public static final double ARM_TURNBUCKLE_ELBOW_WRIST_MAX = 136;//good
+	public static final double ARM_TURNBUCKLE_ELBOW_WRIST_MIN = -126;//too_generous
 
 	
 	public enum ArmSetpoints {
@@ -237,7 +238,7 @@ public class RobotMap {
 		GROUND_UP(101,175,90),
 		GROUND_FALL(43,143,178),
 		STEP(97,108,90),
-		TOP_OF_STACK(3,69,90),
+		TOP_OF_STACK(2,48,90),
 		STORAGE(23,170,80),
 		CURLED_TAIL(0,0,0),
 		ON_LIFT(0,0,0);
@@ -284,7 +285,7 @@ public class RobotMap {
 	public static final double GRABBER_CLOSED = 0;
 	public static final double GRABBER_OPEN = 120;
 	
-	public static final double GRABBER_OPEN_SPEED = .5;
+	public static final double GRABBER_OPEN_SPEED = .75;
 	public static final double GRABBER_HOLD_SPEED = .1;
 	public static final double GRABBER_CLOSE_SPEED = -.25;
 	
@@ -476,10 +477,10 @@ public class RobotMap {
 		}
 		else
 		{
-			LEFT_RANGE_FINDER_IN = 0;
-			RIGHT_RANGE_FINDER_IN = 0;
-			LEFT_RANGE_FINDER_OUT = 0;
-			RIGHT_RANGE_FINDER_OUT = 0;
+			LEFT_RANGE_FINDER_IN = 1050;
+			RIGHT_RANGE_FINDER_IN = 1030;
+			LEFT_RANGE_FINDER_OUT = 1000;
+			RIGHT_RANGE_FINDER_OUT = 1010;
 		}
 		
 	//Forklift
@@ -509,7 +510,7 @@ public class RobotMap {
 		
 		if(!Robot.trojan)
 		{
-			pusherPot = new AnalogPotentiometer(4, 5.15, -1.97); //TODO: Get this constant
+			pusherPot = new AnalogPotentiometer(4, 5.15, -2.025); //TODO: Get this constant
 			LiveWindow.addSensor("Pusher", "pusherEncoder", pusherPot);
 		}
 		

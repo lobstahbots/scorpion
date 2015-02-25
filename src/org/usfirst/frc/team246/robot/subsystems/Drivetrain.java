@@ -28,7 +28,7 @@ public class Drivetrain extends Subsystem {
     public SwerveModule leftModule;
     public SwerveModule rightModule;
     
-    public Odometry odometry = new Odometry();
+    public Odometry odometry;
     
     public double FOV = 0; //the front of the vehicle in degrees. May be used in different ways by different control schemes.
     
@@ -41,6 +41,8 @@ public class Drivetrain extends Subsystem {
     	swerves[0] = backModule;
     	swerves[1] = leftModule;
     	swerves[2] = rightModule;
+    	
+    	odometry = new Odometry();
         
         absoluteTwistPID = new PIDController(RobotMap.ABSOLUTE_TWIST_kP, RobotMap.ABSOLUTE_TWIST_kI, RobotMap.ABSOLUTE_TWIST_kD, RobotMap.navX, absoluteTwistPIDOutput);
         absoluteTwistPID.setInputRange(-180, 180);

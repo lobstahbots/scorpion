@@ -82,6 +82,8 @@ public class Robot extends IterativeRobot {
         
         oi = new OI();
         
+        RobotMap.grabberEncoder.reset();
+        
         (new Thread(new AnalogInputCollector())).start();
         
         if(test1)
@@ -145,10 +147,13 @@ public class Robot extends IterativeRobot {
 		}
         
         if(RobotMap.navX.isCalibrating()) System.out.println("Calibrating NavX");
+        
+        System.out.println("Up" + oi.operator.getUp().get());
+        System.out.println("Left" + oi.operator.getLeft().get());
+        System.out.println("Down" + oi.operator.getDown().get());
+        System.out.println("Right" + oi.operator.getRight().get());
 
 		Scheduler.getInstance().run();
-		
-		RobotMap.grabberEncoder.reset();
 	}
 	
     public void autonomousInit() {

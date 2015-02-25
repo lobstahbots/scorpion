@@ -9,6 +9,8 @@ import org.usfirst.frc.team246.robot.commands.Intake;
 import org.usfirst.frc.team246.robot.commands.LiftTote;
 import org.usfirst.frc.team246.robot.commands.MoveArm;
 import org.usfirst.frc.team246.robot.commands.MoveArmDown1;
+import org.usfirst.frc.team246.robot.commands.MoveArmToBack;
+import org.usfirst.frc.team246.robot.commands.MoveArmToFront;
 import org.usfirst.frc.team246.robot.commands.MoveArmUp1;
 import org.usfirst.frc.team246.robot.commands.MoveForklift;
 import org.usfirst.frc.team246.robot.commands.MoveForkliftDown1;
@@ -16,6 +18,7 @@ import org.usfirst.frc.team246.robot.commands.MoveForkliftUp1;
 import org.usfirst.frc.team246.robot.commands.OpenGrabber;
 import org.usfirst.frc.team246.robot.commands.Outgest;
 import org.usfirst.frc.team246.robot.commands.PushTotes;
+import org.usfirst.frc.team246.robot.commands.RetractPusher;
 import org.usfirst.frc.team246.robot.commands.RobotCentricCrabWithTwist;
 import org.usfirst.frc.team246.robot.commands.StopGetters;
 import org.usfirst.frc.team246.robot.overclockedLibraries.LogitechF310;
@@ -81,8 +84,18 @@ public class OI {
         operator.getUp().whenPressed(new MoveForkliftUp1());
         operator.getDown().whenPressed(new MoveForkliftDown1());
         operator.getLeft().whenPressed(new MoveForklift(LiftSetpoints.GROUND, true));
-        operator.getLeft().whenReleased(new LiftTote());
-        new Toggle() {
+        operator.getLeft().whenReleased(new MoveForklift(LiftSetpoints.SCORING_PLATFORM, true));
+		
+		operator.getLB().whileHeld(new PushTotes());
+		operator.getLB().whenReleased(new RetractPusher());
+		
+		operator.getA().whenPressed(new MoveArm(ArmSetpoints.GROUND_FALL));
+		operator.getB().whenPressed(new MoveArm(ArmSetpoints.STEP));
+		operator.getX2().whenPressed(new MoveArm(ArmSetpoints.GROUND_UP));
+		operator.getY2().whenPressed(new MoveArm(ArmSetpoints.TOP_OF_STACK));
+		operator.getStart().whenPressed(new MoveArm(ArmSetpoints.STORAGE));
+		/*
+		new Toggle() {
 			
 			@Override
 			public boolean get() {
@@ -91,29 +104,24 @@ public class OI {
 			
 			@Override
 			public boolean getToggler() {
-				return Robot.forklift.getCurrentCommand().getClass() == MoveForklift.class && ((MoveForklift)(Robot.forklift.getCurrentCommand())).setpointEnum == LiftSetpoints.SCORING_PLATFORM;
-			}
-		}.toggle(new MoveForklift(LiftSetpoints.STEP, false),new MoveForklift(LiftSetpoints.SCORING_PLATFORM, false));
-		
-		operator.getLB().whileHeld(new PushTotes());
-		
-		operator.getA().whenPressed(new MoveArm(ArmSetpoints.GROUND_FALL));
-		operator.getB().whenPressed(new MoveArm(ArmSetpoints.STEP));
-		operator.getX2().whenPressed(new MoveArm(ArmSetpoints.GROUND_UP));
-		operator.getY2().whenPressed(new MoveArm(ArmSetpoints.TOP_OF_STACK));
-		operator.getStart().whenPressed(new MoveArm(ArmSetpoints.STORAGE));
-		new Toggle() {
-			
-			@Override
-			public boolean get() {
-				return operator.getDown().get();
-			}
-			
-			@Override
-			public boolean getToggler() {
 				return Robot.arm.bendUp;
 			}
 		}.toggle(new ChangeArmBend(false), new ChangeArmBend(true));
+		new Toggle() {
+			
+			@Override
+			public boolean get()
+			{
+				return operator.getBack().get();
+			}
+			
+			@Override
+			public boolean getToggler()
+			{
+				return RobotMap.armShoulderPot.get() >= 0;
+			}
+		}.toggle(new MoveArmToFront(), new MoveArmToBack());
+		*/
 		
 		operator.getRB().whileHeld(new OpenGrabber());
 		

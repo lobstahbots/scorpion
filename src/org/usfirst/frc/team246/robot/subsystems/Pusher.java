@@ -15,15 +15,11 @@ public class Pusher extends PIDSubsystem {
     // Initialize your subsystem here
     public Pusher() {
         super(RobotMap.PUSHER_kP, RobotMap.PUSHER_kI, RobotMap.PUSHER_kD, RobotMap.PUSHER_kF, .02);
-        this.setAbsoluteTolerance(.05);
+        this.setAbsoluteTolerance(.01);
         LiveWindow.addActuator("Pusher", "pusherPID", this.getPIDController());
     }
     
     public void initDefaultCommand() {
-    	if(!Robot.trojan)
-    	{
-    		setDefaultCommand(new RetractPusher());
-    	}
     }
     
     protected double returnPIDInput() {
