@@ -1,6 +1,7 @@
 package org.usfirst.frc.team246.robot.commands;
 
 import org.usfirst.frc.team246.robot.Robot;
+import org.usfirst.frc.team246.robot.RobotMap;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
 
 public class AutoDrive extends FieldCentricDrivingCommand{
@@ -17,22 +18,22 @@ public class AutoDrive extends FieldCentricDrivingCommand{
 	}
 	
 	protected void initialize() {
-		Robot.drivetrain.odometry.resetAll(); // BUG: need odometry object
-		
-		execute();
-        
+		Robot.drivetrain.odometry.resetAll();
 		Robot.drivetrain.enableAbsoluteCrab(true);
         Robot.drivetrain.enableAbsoluteTwist(true);
+		execute();
     }
     
+	@Override
     protected void execute() {
     	Robot.drivetrain.setFOV(updateHeading());
-    	
-        Vector2D crabVector = getCrabVector();
-        crabVector.setAngle(crabVector.getAngle() - Robot.drivetrain.getFOV());
-        Vector2D COR = getCOR();
+    	Robot.drivetrain.absoluteCrabPID.setSetpoint(targetLocation.getMagnitude());
+    	Robot.drivetrain.absoluteTwistPID.setSetpoint(heading);
         
-//        Robot.drivetrain.driveAbsoluteTwist(crabVector.getMagnitude(), crabVector.getAngle(), heading);
+        Robot.drivetrain.drivetrainPID.setCOR(getCOR());
+        Robot.drivetrain.drivetrainPID.setCrabDirection(targetLocation.getAngle() - Robot.drivetrain.getFOV()); //sets the direction to Robot Centric
+        Robot.drivetrain.drivetrainPID.setCrabSpeed(Robot.drivetrain.absoluteCrabPID.get()); // sets magnitude using PID
+        Robot.drivetrain.drivetrainPID.setTwist(Robot.drivetrain.absoluteTwistPID.get() - Robot.drivetrain.getFOV()); // sets twist using PID, then Robot Centric
     }
     
     protected void end() {
@@ -47,21 +48,21 @@ public class AutoDrive extends FieldCentricDrivingCommand{
 
 	@Override
 	protected double getSpinRate() {
-		return 0;
+		return heading;
 	}
 
 	@Override
 	protected Vector2D getCOR() {
-		return null;
+		return RobotMap.ROBOT_CIRCLE_CENTER;
 	}
 
 	@Override
 	protected boolean isFinished() {
-		// TODO Auto-generated method stub
-		return false;
+		return Robot.drivetrain.absoluteCrabPID.onTarget() && Robot.drivetrain.absoluteTwistPID.onTarget();
 	}
 
 	@Override
 	protected void interrupted() {	
+		end();
 	}
 }

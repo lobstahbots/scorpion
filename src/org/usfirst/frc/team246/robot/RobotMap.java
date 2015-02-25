@@ -88,6 +88,11 @@ public class RobotMap {
     public static final double crabZeroZone = .1;
     
     public static final Vector2D ROBOT_CIRCLE_CENTER = new Vector2D(true, 0, -11.67);
+    
+    public static final double NORTH = 0;
+    public static final double SOUTH = 180;
+    public static final double WEST = 90;
+    public static final double EAST = 270;
 	
 //Getters
 	
