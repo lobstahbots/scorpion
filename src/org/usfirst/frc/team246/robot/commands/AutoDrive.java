@@ -10,15 +10,21 @@ public class AutoDrive extends FieldCentricDrivingCommand{
 	
 	private Vector2D targetLocation; // x,y relative to robot, angle field centric
 	private double heading; // field centric
+	private boolean resetOdometry;
 	
-	public AutoDrive(Vector2D targetLocation, double heading)
+	public AutoDrive(Vector2D targetLocation, double heading, boolean resetOdometry)
 	{
 		this.targetLocation = targetLocation;
 		this.heading = heading;
+		this.resetOdometry = resetOdometry;
+	}
+	
+	public AutoDrive(Vector2D targetLocation, double heading){
+		this(targetLocation, heading, false);
 	}
 	
 	protected void initialize() {
-		Robot.drivetrain.odometry.resetAll();
+		if (resetOdometry) Robot.drivetrain.odometry.resetAll();
 		Robot.drivetrain.enableAbsoluteCrab(true);
         Robot.drivetrain.enableAbsoluteTwist(true);
 		execute();
