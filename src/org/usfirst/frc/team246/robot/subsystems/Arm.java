@@ -33,15 +33,15 @@ public class Arm extends Subsystem {
     public Arm() {
         shoulder = new PIDController(RobotMap.ARM_SHOULDER_kP, RobotMap.ARM_SHOULDER_kI, RobotMap.ARM_SHOULDER_kD, RobotMap.armShoulderPot, RobotMap.armShoulderMotor, .02);
         shoulder.setInputRange(RobotMap.ARM_SHOULDER_MIN, RobotMap.ARM_SHOULDER_MAX);
-        shoulder.setOutputRange(-.8, .8);
+        shoulder.setOutputRange(-RobotMap.ARM_MAX_SPEED, RobotMap.ARM_MAX_SPEED);
         shoulder.setAbsoluteTolerance(5);
         elbow = new PIDController(RobotMap.ARM_ELBOW_kP, RobotMap.ARM_ELBOW_kI, RobotMap.ARM_ELBOW_kD, RobotMap.armElbowPot, RobotMap.armElbowMotor, .02);
         elbow.setInputRange(-180, 180);
-        elbow.setOutputRange(-.8, .8);
+        elbow.setOutputRange(-RobotMap.ARM_MAX_SPEED, RobotMap.ARM_MAX_SPEED);
         elbow.setAbsoluteTolerance(5);
         wrist = new PIDController(RobotMap.ARM_WRIST_kP, RobotMap.ARM_WRIST_kI, RobotMap.ARM_WRIST_kD, RobotMap.armWristPot, RobotMap.armWristMotor, .02);
         wrist.setInputRange(-180, 180);
-        wrist.setOutputRange(-.8, .8);
+        wrist.setOutputRange(-RobotMap.ARM_MAX_SPEED, RobotMap.ARM_MAX_SPEED);
         wrist.setAbsoluteTolerance(5);
         
         LiveWindow.addActuator("Arm", "shoulder", shoulder);
@@ -210,19 +210,30 @@ public class Arm extends Subsystem {
     	Vector2D v2 = getSegment1Vector();
     	Vector2D v12 = getVector();
     	
-    	double shoulderYMaxSpeed = Math.sin(v1.getAngle()); //This is in an arbitrary unit, because it is only used in proportion with elbowMaxYSpeed
-    	double elbowYMaxSpeed = Math.sin(v2.getAngle()); //This is in an arbitrary unit, because it is only used in proportion with shoulderMaxYSpeed
-    	if(shoulderYMaxSpeed > elbowYMaxSpeed)
+    	double shoulderSpeed = RobotMap.ARM_MAX_TRANSITION_SPEED;
+    	double elbowAngle = -Math.acos((ceilingHeight - RobotMap.ARM_CEILING_TOLERANCE_WHILE_TRANSITIONING - RobotMap.ARM_SHOULDER_HEIGHT - v1.getY())/RobotMap.ARM_SEGMENT_2_LENGTH);
+    	double elbowError = elbowAngle - v2.getAngle();
+    	double elbowSpeed = RobotMap.ARM_MAX_TRANSITION_SPEED * ((elbowError / RobotMap.ARM_SYNCHRONIZED_CORRECTION_PERIOD) / RobotMap.ARM_MECHANICAL_MAX_SPEED);
+    	if(elbowSpeed > RobotMap.ARM_MAX_TRANSITION_SPEED)
     	{
-    		shoulder.setOutputRange(-Math.abs(elbowYMaxSpeed/shoulderYMaxSpeed), Math.abs(elbowYMaxSpeed/shoulderYMaxSpeed));
+    		double normalizingFactor = RobotMap.ARM_MAX_TRANSITION_SPEED / elbowSpeed;
+    		shoulderSpeed *= normalizingFactor;
+    		elbowSpeed *= normalizingFactor;
+    	}
+    	double shoulderYSpeed = shoulderSpeed * Math.sin(v1.getAngle());
+    	double elbowYSpeed = elbowSpeed * Math.sin(v2.getAngle());
+    	
+    	if(shoulderYSpeed > elbowYSpeed)
+    	{
+    		shoulder.setOutputRange(-Math.abs(elbowYSpeed/shoulderYSpeed), Math.abs(elbowYSpeed/shoulderYSpeed));
     	}
     	else
     	{
-    		elbow.setOutputRange(-Math.abs(shoulderYMaxSpeed/elbowYMaxSpeed), Math.abs(shoulderYMaxSpeed/elbowYMaxSpeed));
+    		elbow.setOutputRange(-Math.abs(shoulderYSpeed/elbowYSpeed), Math.abs(shoulderYSpeed/elbowYSpeed));
     	}
     	
     	shoulder.setSetpoint(shoulderAngle);
-    	elbow.setSetpoint(-Math.acos((ceilingHeight - RobotMap.ARM_CEILING_TOLERANCE_WHILE_TRANSITIONING - RobotMap.ARM_SHOULDER_HEIGHT - v1.getY())/RobotMap.ARM_SEGMENT_2_LENGTH));
+    	elbow.setSetpoint(elbowAngle);
     	wrist.setSetpoint(wristAngle);
     }
     

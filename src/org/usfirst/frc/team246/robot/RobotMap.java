@@ -48,9 +48,9 @@ public class RobotMap {
 	public static Encoder leftWheelEncoder;
 	public static Encoder rightWheelEncoder;
 	
-	public static AnalogPotentiometer backModulePot;
-	public static AnalogPotentiometer leftModulePot;
-	public static AnalogPotentiometer rightModulePot;
+	public static AnalogPot backModulePot;
+	public static AnalogPot leftModulePot;
+	public static AnalogPot rightModulePot;
 	
 	public static IMUAdvanced navX;
 	
@@ -123,7 +123,7 @@ public class RobotMap {
 	
 	//Sensors
 	
-	public static AnalogPotentiometer liftPot;
+	public static AnalogPot liftPot;
 	
 	//Constants
 	
@@ -163,7 +163,7 @@ public class RobotMap {
 	
 	//Sensors
 	
-	public static AnalogPotentiometer pusherPot;
+	public static AnalogPot pusherPot;
 	
 	//Constants
 	
@@ -185,9 +185,9 @@ public class RobotMap {
 	
 	//Sensors
 	
-	public static AnalogPotentiometer armShoulderPot;
-	public static AnalogPotentiometer armElbowPot;
-	public static AnalogPotentiometer armWristPot;
+	public static AnalogPot armShoulderPot;
+	public static AnalogPot armElbowPot;
+	public static AnalogPot armWristPot;
 	
 	//Constants
 	
@@ -236,7 +236,12 @@ public class RobotMap {
 	public static final double ARM_TURNBUCKLE_SHOULDER_WRIST_MIN = -183;//way_too_generous
 	public static final double ARM_TURNBUCKLE_ELBOW_WRIST_MAX = 136;//good
 	public static final double ARM_TURNBUCKLE_ELBOW_WRIST_MIN = -126;//too_generous
-
+	
+	public static final double ARM_MAX_SPEED = .75;
+	public static final double ARM_MAX_TRANSITION_SPEED = .75;
+	
+	public static final double ARM_MECHANICAL_MAX_SPEED = 60; //in degrees per second
+	public static final double ARM_SYNCHRONIZED_CORRECTION_PERIOD = .25;
 	
 	public enum ArmSetpoints {
 		
@@ -375,20 +380,20 @@ public class RobotMap {
 		
 	    if(Robot.trojan)
 	    {
-		    backModulePot = new AnalogPotentiometer(0, 1800, -900);
+		    backModulePot = new AnalogPot(0, 1800, -900, true);
 		    LiveWindow.addSensor("Drivetrain", "backModulePot", backModulePot);
-		    leftModulePot = new AnalogPotentiometer(1, 1800, -900);
+		    leftModulePot = new AnalogPot(1, 1800, -900, true);
 		    LiveWindow.addSensor("Drivetrain", "leftModulePot", leftModulePot);
-		    rightModulePot = new AnalogPotentiometer(2, 1800, -900);
+		    rightModulePot = new AnalogPot(2, 1800, -900, true);
 		    LiveWindow.addSensor("Drivetrain", "rightModulePot", rightModulePot);
 	    }
 	    else
 	    {
-	    	backModulePot = new AnalogPotentiometer(0, 1800, -900);
+	    	backModulePot = new AnalogPot(0, 1800, -900, true);
 		    LiveWindow.addSensor("Drivetrain", "backModulePot", backModulePot);
-		    leftModulePot = new AnalogPotentiometer(1, 1800, -900);
+		    leftModulePot = new AnalogPot(1, 1800, -900, true);
 		    LiveWindow.addSensor("Drivetrain", "leftModulePot", leftModulePot);
-		    rightModulePot = new AnalogPotentiometer(2, 1800, -900);
+		    rightModulePot = new AnalogPot(2, 1800, -900, true);
 		    LiveWindow.addSensor("Drivetrain", "rightModulePot", rightModulePot);
 	    }
 	    
@@ -499,7 +504,7 @@ public class RobotMap {
 		
 		if(!Robot.trojan)
 		{
-			liftPot = new AnalogPotentiometer(3, 54.8, -9.79); //TODO: Get this constant
+			liftPot = new AnalogPot(3, 54.8, -9.79, true); //TODO: Get this constant
 			LiveWindow.addSensor("Forklift", "liftPot", liftPot);
 		}
 		 
@@ -515,7 +520,7 @@ public class RobotMap {
 		
 		if(!Robot.trojan)
 		{
-			pusherPot = new AnalogPotentiometer(4, 5.15, -2.025); //TODO: Get this constant
+			pusherPot = new AnalogPot(4, 5.15, -2.025, true); //TODO: Get this constant
 			LiveWindow.addSensor("Pusher", "pusherEncoder", pusherPot);
 		}
 		
@@ -532,11 +537,11 @@ public class RobotMap {
 		
 		//Sensors
 		
-		armShoulderPot = new AnalogPotentiometer(5, 391.83673469387755102040816326531, -204.2); //TODO: Get these constants
+		armShoulderPot = new AnalogPot(5, 391.83673469387755102040816326531, -204.2, true);
 		LiveWindow.addSensor("Arm", "armShoulderPot", armShoulderPot);
-		armElbowPot = new AnalogPotentiometer(6, 391.83673469387755102040816326531, -173.4); //TODO: Get these constants
+		armElbowPot = new AnalogPot(6, 391.83673469387755102040816326531, -173.4, true);
 		LiveWindow.addSensor("Arm", "armElbowPot", armElbowPot);
-		armWristPot = new AnalogPotentiometer(7, 391.83673469387755102040816326531, -188.8); //TODO: Get these constants
+		armWristPot = new AnalogPot(7, 391.83673469387755102040816326531, -188.8, true);
 		LiveWindow.addSensor("Arm", "armWristPot", armWristPot);
 		
 	//Grabber

@@ -1,6 +1,7 @@
 package org.usfirst.frc.team246.robot.commands;
 
 import org.usfirst.frc.team246.robot.Robot;
+import org.usfirst.frc.team246.robot.RobotMap;
 import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -34,8 +35,8 @@ public class TransitionOverCeiling extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
-    	Robot.arm.shoulder.setOutputRange(-1, 1);
-    	Robot.arm.elbow.setOutputRange(-1, 1);
+    	Robot.arm.shoulder.setOutputRange(-RobotMap.ARM_MAX_SPEED, RobotMap.ARM_MAX_SPEED);
+    	Robot.arm.elbow.setOutputRange(-RobotMap.ARM_MAX_SPEED, RobotMap.ARM_MAX_SPEED);
     }
 
     // Called when another command which requires one or more of the same

@@ -23,7 +23,7 @@ public class SwerveModule
     
     public Encoder wheelEncoder; //the encoder measuring wheel speed
 
-    public AnalogPotentiometer modulePot; //the encoder measure module angle
+    public AnalogPot modulePot; //the encoder measure module angle
 
     public SpeedController wheelMotor; //the motor controlling wheel speed
 
@@ -38,7 +38,7 @@ public class SwerveModule
     
     public double maxSpeed;
     
-    public SwerveModule(Encoder wheelEncoder, AnalogPotentiometer modulePot, SpeedController wheelMotor, SpeedController moduleMotor, double maxSpeed, double x, double y, String name)
+    public SwerveModule(Encoder wheelEncoder, AnalogPot modulePot, SpeedController wheelMotor, SpeedController moduleMotor, double maxSpeed, double x, double y, String name)
     {
         // set globals
         
