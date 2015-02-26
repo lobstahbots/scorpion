@@ -74,6 +74,7 @@ public class Robot extends IterativeRobot {
      */
     public void robotInit() {
     	BBBAnalogs = new AnalogIn[6];
+    	(new Thread(new AnalogInputCollector())).start();
     	
         RobotMap.init();
         
@@ -88,8 +89,6 @@ public class Robot extends IterativeRobot {
         oi = new OI();
         
         RobotMap.grabberEncoder.reset();
-        
-        (new Thread(new AnalogInputCollector())).start();
         
         if(test1)
         {
