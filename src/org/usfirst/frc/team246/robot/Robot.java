@@ -67,6 +67,8 @@ public class Robot extends IterativeRobot {
 	public static AnalogIn[] BBBAnalogs;
 	
 	Command autoLogoTest;
+	
+	public static boolean teleopZeroedNavX = false;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -130,6 +132,7 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("ARM_SHOULDER_MANUAL_SPEED", 5);
         SmartDashboard.putNumber("ARM_ELBOW_MANUAL_SPEED", 5);
         SmartDashboard.putNumber("ARM_WRIST_MANUAL_SPEED", 5);
+        SmartDashboard.putNumber("startHeading", 0);
         
         autoLogoTest = new AutoLogoTest();
     }
@@ -164,8 +167,8 @@ public class Robot extends IterativeRobot {
 	}
 	
     public void autonomousInit() {
-    	RobotMap.navX.zeroYaw();
-    	drivetrain.PIDOn(true);
+    	RobotMap.navX.zeroYaw(0);
+    	//	drivetrain.PIDOn(true);
     	//autoLogoTest.start();
     }
 
@@ -247,6 +250,14 @@ public class Robot extends IterativeRobot {
                 drivetrain.unwind();
             }
             
+            if(!teleopZeroedNavX && DriverStation.getInstance().getMatchTime() > 130)
+            {
+            	if(oi.driver.getUp().get()) RobotMap.navX.zeroYaw(0);
+            	if(oi.driver.getLeft().get()) RobotMap.navX.zeroYaw(-90);
+            	if(oi.driver.getDown().get()) RobotMap.navX.zeroYaw(180);
+            	if(oi.driver.getRight().get()) RobotMap.navX.zeroYaw(90);
+            }
+            
             SmartDashboard.putBoolean("Forklift On Target", forklift.onTarget());
             
             SmartDashboard.putBoolean("hasTote?", getters.hasTote());
@@ -290,7 +301,7 @@ public class Robot extends IterativeRobot {
         
         if(DriverStation.getInstance().isBrownedOut()) UdpAlertService.sendAlert(new AlertMessage("Brownout").playSound("low_power.wav"));
         
-        gyroDisabled = !SmartDashboard.getBoolean("field-centric", true);
+        //gyroDisabled = !SmartDashboard.getBoolean("field-centric", true);
         
         SmartDashboard.putBoolean("haveTote", getters.hasTote());
     }

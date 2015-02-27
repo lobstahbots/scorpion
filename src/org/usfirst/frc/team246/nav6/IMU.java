@@ -232,8 +232,8 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
      * subtracted from subsequent yaw values reported by
      * the getYaw() method.
      */
-    public void zeroYaw() {
-        user_yaw_offset = getAverageFromYawHistory();
+    public void zeroYaw(double offset) {
+        user_yaw_offset = getAverageFromYawHistory() - offset;
     }
 
     /**
