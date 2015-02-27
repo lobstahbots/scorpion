@@ -74,9 +74,10 @@ public class Robot extends IterativeRobot {
      */
     public void robotInit() {
     	BBBAnalogs = new AnalogIn[6];
-    	(new Thread(new AnalogInputCollector())).start();
     	
         RobotMap.init();
+        
+        (new Thread(new AnalogInputCollector())).start();
         
         drivetrain = new Drivetrain();
         getters = new Getters();
@@ -165,7 +166,7 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {
     	RobotMap.navX.zeroYaw();
     	drivetrain.PIDOn(true);
-    	autoLogoTest.start();
+    	//autoLogoTest.start();
     }
 
     /**
