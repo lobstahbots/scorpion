@@ -4,6 +4,7 @@ import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.RobotMap;
 import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
 import org.usfirst.frc.team246.robot.commands.ManualArm;
+import org.usfirst.frc.team246.robot.commands.TransitionSimple;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AlertMessage;
 import org.usfirst.frc.team246.robot.overclockedLibraries.UdpAlertService;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
@@ -28,6 +29,9 @@ public class Arm extends Subsystem {
 	public ArmSetpoints currentSetpoint;
 	
 	public double ceilingHeight = 78;
+	
+	public boolean transitionMode = false;
+	public int transitionIndex = 0;
 
     // Initialize your subsystem here
     public Arm() {
@@ -235,6 +239,15 @@ public class Arm extends Subsystem {
     	shoulder.setSetpoint(shoulderAngle);
     	elbow.setSetpoint(elbowAngle);
     	wrist.setSetpoint(wristAngle);
+    }
+    
+    public void transitionStepUp()
+    { 
+    	if(transitionIndex < RobotMap.ARM_TRANSITION_ARRAY.length - 1 && getCurrentCommand().getClass() == TransitionSimple.class) transitionIndex++;
+    }
+    public void transitionStepDown()
+    {
+    	if(transitionIndex > 0 && getCurrentCommand().getClass() == TransitionSimple.class) transitionIndex--;
     }
     
     public Vector2D getVector()

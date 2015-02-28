@@ -251,7 +251,10 @@ public class RobotMap {
 		TOP_OF_STACK(2,48,90),
 		STORAGE(23,170,80),
 		CURLED_TAIL(0,0,0),
-		ON_LIFT(0,0,0);
+		ON_LIFT(0,0,0),
+		TRANSITION_1(0,0,0),
+		TRANSITION_2(0,0,0),
+		TRANSITION_3(0,0,0);
 		
 		private double shoulder;
 		private double elbow;
@@ -278,6 +281,12 @@ public class RobotMap {
 			return wrist;
 		}
 	}
+	
+	public static ArmSetpoints[] ARM_TRANSITION_ARRAY = {
+		ArmSetpoints.TRANSITION_1,
+		ArmSetpoints.TRANSITION_2,
+		ArmSetpoints.TRANSITION_3
+	};
 	
 //Grabber
 	

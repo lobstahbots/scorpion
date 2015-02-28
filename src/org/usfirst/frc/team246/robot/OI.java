@@ -21,6 +21,9 @@ import org.usfirst.frc.team246.robot.commands.PushTotes;
 import org.usfirst.frc.team246.robot.commands.RetractPusher;
 import org.usfirst.frc.team246.robot.commands.RobotCentricCrabWithTwist;
 import org.usfirst.frc.team246.robot.commands.StopGetters;
+import org.usfirst.frc.team246.robot.commands.TransitionSimple;
+import org.usfirst.frc.team246.robot.commands.TransitionSimpleStepDown;
+import org.usfirst.frc.team246.robot.commands.TransitionSimpleStepUp;
 import org.usfirst.frc.team246.robot.overclockedLibraries.LogitechF310;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Toggle;
 
@@ -34,11 +37,13 @@ public class OI {
     
     public LogitechF310 driver; //TODO: instantiate these when we get the controllers
     public LogitechF310 operator;
+    public LogitechF310 transitioner;
     
     public OI()
     {
     	driver = new LogitechF310(0);
     	operator = new LogitechF310(1);
+    	transitioner = new LogitechF310(2);
     	
     	//driver.getLB().whileHeld(new CrabWithAbsoluteTwist());
     	driver.getLT().whileHeld(new GoFast());
@@ -125,6 +130,10 @@ public class OI {
 		
 		operator.getRB().whileHeld(new OpenGrabber());
 		
+		transitioner.getX2().whenPressed(new TransitionSimple(true));
+		transitioner.getB().whenPressed(new TransitionSimple(false));
+		transitioner.getY2().whenPressed(new TransitionSimpleStepUp());
+		transitioner.getA().whenPressed(new TransitionSimpleStepDown());
     }
 }
 
