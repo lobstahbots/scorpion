@@ -10,10 +10,12 @@ import java.nio.ByteOrder;
 
 import org.usfirst.frc.team246.robot.commands.AutoDrive;
 import org.usfirst.frc.team246.robot.commands.AutoLogoTest;
+import org.usfirst.frc.team246.robot.commands.DeadReckoningDrive;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AlertMessage;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogIn;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SwerveModule;
 import org.usfirst.frc.team246.robot.overclockedLibraries.UdpAlertService;
+import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Victor246;
 import org.usfirst.frc.team246.robot.subsystems.Arm;
 import org.usfirst.frc.team246.robot.subsystems.Drivetrain;
@@ -157,19 +159,27 @@ public class Robot extends IterativeRobot {
 		}
         
         if(RobotMap.navX.isCalibrating()) System.out.println("Calibrating NavX");
-        
-        System.out.println("Up" + oi.operator.getUp().get());
-        System.out.println("Left" + oi.operator.getLeft().get());
-        System.out.println("Down" + oi.operator.getDown().get());
-        System.out.println("Right" + oi.operator.getRight().get());
 
 		Scheduler.getInstance().run();
 	}
 	
     public void autonomousInit() {
     	RobotMap.navX.zeroYaw(0);
-    	//	drivetrain.PIDOn(true);
-    	//autoLogoTest.start();
+    	/* CHANGE NAVX HEADING IF PUTTING IN AUTONOMOUS
+    	drivetrain.PIDOn(true);
+    	new DeadReckoningDrive(new Vector2D(false, 1, -90)) {
+			
+    		@Override
+    		protected void initialize() {
+    			super.initialize();
+    			setTimeout(6.5);
+    		}
+			@Override
+			protected boolean isFinished() {
+				return isTimedOut();
+			}
+		}.start();
+		*/
     }
 
     /**
@@ -190,6 +200,8 @@ public class Robot extends IterativeRobot {
      */
     public void teleopPeriodic() {
     	allPeriodic();
+    	
+    	System.out.println("Shoulder: " + arm.shoulder.getSetpoint() + " Elbow: " + arm.elbow.getSetpoint() + " Wrist: " + arm.wrist.getSetpoint());
     	
         if(test2)
         {

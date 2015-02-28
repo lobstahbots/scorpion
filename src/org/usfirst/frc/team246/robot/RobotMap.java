@@ -252,9 +252,14 @@ public class RobotMap {
 		STORAGE(23,170,80),
 		CURLED_TAIL(0,0,0),
 		ON_LIFT(0,0,0),
-		TRANSITION_1(0,0,0),
-		TRANSITION_2(0,0,0),
-		TRANSITION_3(0,0,0);
+		
+		TRANSITION_1(51.3, 158.4, 90),
+		TRANSITION_2(98.2, 73.0, 0),
+		TRANSITION_3(99.7, 29.1, -45.3),
+		TRANSITION_4(100.1, 9.4, -86.6),
+		TRANSITION_5(38.8, -45.1, -80.0),
+		TRANSITION_6(11.1, -60.2, -86.4),
+		TRANSITION_7(7.9, -85.2, -87.4);
 		
 		private double shoulder;
 		private double elbow;
@@ -263,10 +268,12 @@ public class RobotMap {
 		
 		private ArmSetpoints(double x, double y, double wrist)
 		{
+			
 			this.shoulder = x;
 			this.elbow = y;
 			this.wrist = wrist;
 		}
+		
 		
 		public double getShoulder()
 		{
@@ -285,7 +292,11 @@ public class RobotMap {
 	public static ArmSetpoints[] ARM_TRANSITION_ARRAY = {
 		ArmSetpoints.TRANSITION_1,
 		ArmSetpoints.TRANSITION_2,
-		ArmSetpoints.TRANSITION_3
+		ArmSetpoints.TRANSITION_3,
+		//ArmSetpoints.TRANSITION_4,
+		ArmSetpoints.TRANSITION_5,
+		ArmSetpoints.TRANSITION_6,
+		ArmSetpoints.TRANSITION_7
 	};
 	
 //Grabber
