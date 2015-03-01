@@ -256,14 +256,11 @@ public class RobotMap {
 		TRANSITION_1(51.3, 158.4, 90),
 		TRANSITION_2(98.2, 73.0, 0),
 		TRANSITION_3(99.7, 29.1, -45.3),
-		TRANSITION_4(100.1, 9.4, -86.6),
-		TRANSITION_5(38.8, -45.1, -80.0),
-		TRANSITION_6(11.1, -60.2, -86.4),
-		TRANSITION_7(7.9, -85.2, -87.4);
+		TRANSITION_4(38.8, -45.1, -80.0),
+		TRANSITION_5(11.1, -60.2, -86.4);
 		
 		private double shoulder;
 		private double elbow;
-		
 		private double wrist;
 		
 		private ArmSetpoints(double x, double y, double wrist)
@@ -293,10 +290,8 @@ public class RobotMap {
 		ArmSetpoints.TRANSITION_1,
 		ArmSetpoints.TRANSITION_2,
 		ArmSetpoints.TRANSITION_3,
-		//ArmSetpoints.TRANSITION_4,
-		ArmSetpoints.TRANSITION_5,
-		ArmSetpoints.TRANSITION_6,
-		ArmSetpoints.TRANSITION_7
+		ArmSetpoints.TRANSITION_4,
+		ArmSetpoints.TRANSITION_5
 	};
 	
 //Grabber
