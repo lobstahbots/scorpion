@@ -4,32 +4,27 @@ import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.RobotMap;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
 
-public class AutoDrive extends FieldCentricDrivingCommand{
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+public class AutoDriveSimple extends FieldCentricDrivingCommand{
 	
 //	RESET ODOMETRY DATA
 	
 	private Vector2D targetLocation; // x,y relative to robot, angle field centric
 	private double heading; // field centric
-	private boolean resetOdometry;
 	
-	public AutoDrive(Vector2D targetLocation, double heading, boolean resetOdometry)
+	public AutoDriveSimple(Vector2D targetLocation)
 	{
 		super();
 		this.targetLocation = targetLocation;
-		this.heading = heading;
-		this.resetOdometry = resetOdometry;
-	}
-	
-	public AutoDrive(Vector2D targetLocation, double heading){
-		this(targetLocation, heading, false);
 	}
 	
 	
 	
 	protected void initialize() {
-		if (resetOdometry) Robot.drivetrain.odometry.resetAll();
+		Robot.drivetrain.odometry.resetAll();
+		heading = RobotMap.navX.getYaw();
 		Robot.drivetrain.enableAbsoluteCrab(true);
-        Robot.drivetrain.enableAbsoluteTwist(true);
 		execute();
     }
     
@@ -37,15 +32,18 @@ public class AutoDrive extends FieldCentricDrivingCommand{
     protected void execute() {
     	Robot.drivetrain.setFOV(updateHeading());
     	Robot.drivetrain.absoluteCrabPID.setSetpoint(targetLocation.getMagnitude());
-    	Robot.drivetrain.absoluteTwistPID.setSetpoint(heading);
         
+    	Robot.drivetrain.drivetrainPID.setTwist(getSpinRate());
         Robot.drivetrain.drivetrainPID.setCOR(getCOR());
-        Robot.drivetrain.drivetrainPID.setCrabDirection(targetLocation.getAngle() - Robot.drivetrain.getFOV()); //sets the direction to Robot Centric
-    }
+        Robot.drivetrain.drivetrainPID.setCrabDirection(targetLocation.getAngle() - Robot.drivetrain.FOV); //sets the direction to Robot Centric
+        
+        System.out.println("Odometry: " + Robot.drivetrain.odometry.pidGet());
+        System.out.println("Setpoint: " + Robot.drivetrain.absoluteCrabPID.getSetpoint());
+        System.out.println("Output: " + Robot.drivetrain.absoluteCrabPID.get());
+	}
     
     protected void end() {
     	Robot.drivetrain.enableAbsoluteCrab(false);
-    	Robot.drivetrain.enableAbsoluteTwist(false);
     }
 
 	@Override
@@ -55,7 +53,7 @@ public class AutoDrive extends FieldCentricDrivingCommand{
 
 	@Override
 	protected double getSpinRate() {
-		return heading;
+		return 0;
 	}
 
 	@Override
@@ -65,7 +63,7 @@ public class AutoDrive extends FieldCentricDrivingCommand{
 
 	@Override
 	protected boolean isFinished() {
-		return Robot.drivetrain.absoluteCrabPID.onTarget() && Robot.drivetrain.absoluteTwistPID.onTarget();
+		return Math.abs(Math.abs(Robot.drivetrain.odometry.pidGet()) - targetLocation.getMagnitude()) < .2;
 	}
 
 	@Override

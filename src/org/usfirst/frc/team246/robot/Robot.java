@@ -8,8 +8,11 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import org.usfirst.frc.team246.robot.commands.AlignWheels;
+import org.usfirst.frc.team246.robot.commands.AutoAlignAndDrive;
 import org.usfirst.frc.team246.robot.commands.AutoDrive;
 import org.usfirst.frc.team246.robot.commands.AutoLogoTest;
+import org.usfirst.frc.team246.robot.commands.AutoSpin;
 import org.usfirst.frc.team246.robot.commands.DeadReckoningDrive;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AlertMessage;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogIn;
@@ -28,6 +31,7 @@ import org.usfirst.frc.team246.robot.subsystems.Pusher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -68,7 +72,7 @@ public class Robot extends IterativeRobot {
 	
 	public static AnalogIn[] BBBAnalogs;
 	
-	Command autoLogoTest;
+	Command auton;
 	
 	public static boolean teleopZeroedNavX = false;
 
@@ -136,7 +140,27 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("ARM_WRIST_MANUAL_SPEED", 5);
         SmartDashboard.putNumber("startHeading", 0);
         
-        autoLogoTest = new AutoLogoTest();
+        /*
+        SmartDashboard.putNumber("crabP", 0);
+        SmartDashboard.putNumber("crabI", 0);
+        SmartDashboard.putNumber("crabD", 0);
+        */
+        
+        SmartDashboard.putData(Scheduler.getInstance());
+        
+        auton = new Auton();
+    }
+    
+    class Auton extends CommandGroup
+    {
+    	
+    	public Auton()
+    	{
+    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 3.5, 0)));
+    		addSequential(new AutoSpin(135));
+    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 4.75, 90)));
+    		addSequential(new AutoAlignAndDrive(new Vector2D(true, 2, 2)));
+    	}
     }
     
     /**
@@ -164,7 +188,8 @@ public class Robot extends IterativeRobot {
 	}
 	
     public void autonomousInit() {
-    	RobotMap.navX.zeroYaw(0);
+    	RobotMap.navX.zeroYaw(90);
+    	auton.start();
     	/* CHANGE NAVX HEADING IF PUTTING IN AUTONOMOUS
     	drivetrain.PIDOn(true);
     	new DeadReckoningDrive(new Vector2D(false, 1, -90)) {
@@ -188,6 +213,8 @@ public class Robot extends IterativeRobot {
     public void autonomousPeriodic() {
     	allPeriodic();
     	
+    	//drivetrain.absoluteCrabPID.setPID(SmartDashboard.getNumber("crabP"), SmartDashboard.getNumber("crabI"), SmartDashboard.getNumber("crabD"));
+    	
         Scheduler.getInstance().run();
     }
 
@@ -200,8 +227,6 @@ public class Robot extends IterativeRobot {
      */
     public void teleopPeriodic() {
     	allPeriodic();
-    	
-    	System.out.println("Shoulder: " + arm.shoulder.getSetpoint() + " Elbow: " + arm.elbow.getSetpoint() + " Wrist: " + arm.wrist.getSetpoint());
     	
         if(test2)
         {
@@ -289,6 +314,8 @@ public class Robot extends IterativeRobot {
     
     public void allPeriodic()
     {
+    	SmartDashboard.putData(Scheduler.getInstance());
+    	
         //This is a safety to prevent any of the modules from rotating too far and overtwisting the wires. 
         //If any module angle surpasses RobotMap.UNSAFE_MODULE_ANGLE, the motor controlling it will be automatically shut off
     	for(int i=0; i<drivetrain.swerves.length; i++)

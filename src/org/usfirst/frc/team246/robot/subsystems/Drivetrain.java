@@ -44,11 +44,13 @@ public class Drivetrain extends Subsystem {
     	
     	odometry = new Odometry();
         
-        absoluteTwistPID = new PIDController(RobotMap.ABSOLUTE_TWIST_kP, RobotMap.ABSOLUTE_TWIST_kI, RobotMap.ABSOLUTE_TWIST_kD, RobotMap.navX, absoluteTwistPIDOutput);
+        absoluteTwistPID = new PIDController(RobotMap.ABSOLUTE_TWIST_kP, RobotMap.ABSOLUTE_TWIST_kI, RobotMap.ABSOLUTE_TWIST_kD, RobotMap.navX, absoluteTwistPIDOutput, .02);
         absoluteTwistPID.setInputRange(-180, 180);
         absoluteTwistPID.setContinuous();
+        absoluteTwistPID.setAbsoluteTolerance(5);
         
         absoluteCrabPID = new PIDController(RobotMap.ABSOLUTE_CRAB_kP, RobotMap.ABSOLUTE_CRAB_kI, RobotMap.ABSOLUTE_CRAB_kD, odometry, absoluteCrabPIDOutput);
+        absoluteCrabPID.setAbsoluteTolerance(.2);
         
         (new Thread(odometry)).start();
     }
@@ -160,7 +162,7 @@ public class Drivetrain extends Subsystem {
     private class AbsoluteTwistPIDOutput implements PIDOutput
     {   
         public void pidWrite(double output) {
-        	drivetrainPID.setTwist(output);
+        	drivetrainPID.setTwist(-output);
         }
     }
 
@@ -192,7 +194,6 @@ public class Drivetrain extends Subsystem {
     {
     	private double speed;
     	private double direction;
-    	private Vector2D crab = new Vector2D(false, speed, direction);
     	private Vector2D COR = new Vector2D(true, 0, 0);
     	private double spinRate = 0;
     	
@@ -207,6 +208,8 @@ public class Drivetrain extends Subsystem {
     	}
     	
     	public void setTwist(double spinRate){
+    		System.out.println("Goal: " + absoluteTwistPID.getSetpoint());
+    		System.out.println("Current: " + RobotMap.navX.getYaw());
     		this.spinRate = spinRate;
     		deploy();
     	}
@@ -217,7 +220,7 @@ public class Drivetrain extends Subsystem {
     	}
     	
     	private void deploy(){
-    		drive(crab.getMagnitude(), crab.getAngle(), spinRate, COR.getX(), COR.getY());
+    		drive(speed, direction, spinRate, COR.getX(), COR.getY());
     	}
     }
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- congratulations you did it, your prize is the smiley face just to the right----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:( hahaha
@@ -342,7 +345,11 @@ public class Drivetrain extends Subsystem {
     	}
     	
     	public void resetNetLinearDiplacement() {
-    		robotCentricLinearDisplacement = new Vector2D(true, 0, 0);
+    		//robotCentricLinearDisplacement = new Vector2D(true, 0, 0);
+    		for(int i = 0; i < swerves.length; i++)
+    		{
+    			swerves[i].resetWheelEncoder();
+    		}
 		}
     	
     	public void resetNetAngularDiplacement() {
@@ -352,7 +359,9 @@ public class Drivetrain extends Subsystem {
 //    	SET DISPLACEMENT VECTORS (needed for both calculation methods below)
     	private void setSwerveDisplacementVectors() {
     		for(int i=0; i<swerves.length; i++){
-    			swervesDisplacementVectors[i] = new Vector2D(false, swerves[i].wheelEncoder.getDistance(), swerves[i].modulePot.get());
+    			double dist = swerves[i].wheelEncoder.getDistance();
+    			if(swerves[i].invertSpeed) dist = -dist;
+    			swervesDisplacementVectors[i] = new Vector2D(false, dist, swerves[i].modulePot.get());
     		}
 		}
     	
@@ -393,7 +402,15 @@ public class Drivetrain extends Subsystem {
 
 		@Override
 		public double pidGet() {
-			return getRobotCentricLinearDisplacement().getMagnitude();
+			//return getRobotCentricLinearDisplacement().getMagnitude();
+			double sum = 0;
+			for(int i = 0; i < swerves.length; i++)
+			{
+				double dist = swerves[i].getWheelDistance();
+				if(swerves[i].invertSpeed) dist = -dist;
+				sum += dist;
+			}
+			return sum/swerves.length;
 		}
     }
 }

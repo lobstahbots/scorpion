@@ -62,6 +62,8 @@ public class SwerveModule
         speedPID.setOutputRange(-1, 1);
         anglePID.setOutputRange(-1, 1);
         
+        anglePID.setAbsoluteTolerance(5);
+        
         LiveWindow.addSensor("SwerveModule", name + "speedPID", speedPID);
         LiveWindow.addSensor("SwerveModule", name + "anglePID", anglePID);
     }

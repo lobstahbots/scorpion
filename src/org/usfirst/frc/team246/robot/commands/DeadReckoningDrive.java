@@ -12,6 +12,7 @@ public abstract class DeadReckoningDrive extends DrivingCommand {
 	Vector2D COR;
 
 	public DeadReckoningDrive(Vector2D crabVector, double spinRate, Vector2D COR) {
+		super();
 		this.crabVector = crabVector;
 		this.spinRate = spinRate;
 		this.COR = COR;
