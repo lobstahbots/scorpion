@@ -14,6 +14,8 @@ import org.usfirst.frc.team246.robot.commands.AutoDrive;
 import org.usfirst.frc.team246.robot.commands.AutoLogoTest;
 import org.usfirst.frc.team246.robot.commands.AutoSpin;
 import org.usfirst.frc.team246.robot.commands.DeadReckoningDrive;
+import org.usfirst.frc.team246.robot.commands.Intake;
+import org.usfirst.frc.team246.robot.commands.StopGetters;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AlertMessage;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogIn;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SwerveModule;
@@ -33,6 +35,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.command.WaitCommand;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -153,13 +156,21 @@ public class Robot extends IterativeRobot {
     
     class Auton extends CommandGroup
     {
-    	
     	public Auton()
     	{
     		addSequential(new AutoAlignAndDrive(new Vector2D(false, 3.5, 0)));
     		addSequential(new AutoSpin(135));
-    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 4.75, 90)));
-    		addSequential(new AutoAlignAndDrive(new Vector2D(true, 2, 2)));
+    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 5.5, 90)));
+    		addParallel(new Intake());
+    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 2, 180)));
+    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 2, 90)));
+    		addSequential(new WaitCommand(1));
+    		addParallel(new StopGetters());
+    		addSequential(new AutoAlignAndDrive(new Vector2D(false, .5, -90)));
+    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 2, 0)));
+    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 5.5, -90)));
+    		addSequential(new AutoSpin(90));
+    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 3.5, 180)));
     	}
     }
     
@@ -189,6 +200,7 @@ public class Robot extends IterativeRobot {
 	
     public void autonomousInit() {
     	RobotMap.navX.zeroYaw(90);
+    	Robot.drivetrain.setMaxSpeed(4);
     	auton.start();
     	/* CHANGE NAVX HEADING IF PUTTING IN AUTONOMOUS
     	drivetrain.PIDOn(true);
@@ -219,6 +231,7 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopInit() {
+    	Robot.drivetrain.setMaxSpeed(2);
     	drivetrain.PIDOn(true);
     }
 
