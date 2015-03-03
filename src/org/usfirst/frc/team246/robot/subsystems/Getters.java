@@ -29,15 +29,47 @@ public class Getters extends Subsystem {
     }
     
     boolean hadTote = false;
+    int leftToteLimitSwitchCount = 0;
+    int rightToteLimitSwitchCount = 0;
+    boolean leftToteLimitSwitchOn = false;
+    boolean rightToteLimitSwitchOn = false;
+    
     public boolean hasTote()
     {
-    	if(RobotMap.leftRangeFinder.get() > RobotMap.LEFT_RANGE_FINDER_IN && RobotMap.rightRangeFinder.get() > RobotMap.RIGHT_RANGE_FINDER_IN)
+    	if(RobotMap.leftToteLimitSwitch.get())
+    	{
+    		leftToteLimitSwitchCount++;
+    		if(leftToteLimitSwitchCount < RobotMap.LEFT_TOTE_LIMIT_SWITCH_REPEAT)
+    		{
+    			leftToteLimitSwitchOn = false;
+    		}
+    		else
+    		{
+    			leftToteLimitSwitchOn = true;
+    			leftToteLimitSwitchCount = 0;
+    		}
+    	}
+    	if(RobotMap.rightToteLimitSwitch.get())
+    	{
+    		rightToteLimitSwitchCount++;
+    		if(rightToteLimitSwitchCount < RobotMap.RIGHT_TOTE_LIMIT_SWITCH_REPEAT)
+    		{
+    			rightToteLimitSwitchOn = false;
+    		}
+    		else
+    		{
+    			rightToteLimitSwitchOn = true;
+    			rightToteLimitSwitchCount = 0;
+    		}
+    	}
+    	
+    	if(leftToteLimitSwitchOn && rightToteLimitSwitchOn)
     	{
     		if(!hadTote) UdpAlertService.sendAlert(new AlertMessage("Tote obtained").playSound("woohoo.wav"));
     		hadTote = true;
     		return true;
     	}
-    	else if(RobotMap.leftRangeFinder.get() < RobotMap.LEFT_RANGE_FINDER_OUT || RobotMap.rightRangeFinder.get() < RobotMap.RIGHT_RANGE_FINDER_OUT)
+    	else if(!leftToteLimitSwitchOn || !rightToteLimitSwitchOn) 
     	{
     		if(hadTote) UdpAlertService.sendAlert(new AlertMessage("Tote lost").playSound("doh.wav"));
     		hadTote = false;
@@ -47,5 +79,15 @@ public class Getters extends Subsystem {
     	{
     		return hadTote;
     	}
+//    	else if(RobotMap.leftRangeFinder.get() < RobotMap.LEFT_RANGE_FINDER_OUT || RobotMap.rightRangeFinder.get() < RobotMap.RIGHT_RANGE_FINDER_OUT)
+//    	{
+//    		if(hadTote) UdpAlertService.sendAlert(new AlertMessage("Tote lost").playSound("doh.wav"));
+//    		hadTote = false;
+//    		return false;
+//    	}
+//    	else
+//    	{
+//    		return hadTote;
+//    	}
     }
 }

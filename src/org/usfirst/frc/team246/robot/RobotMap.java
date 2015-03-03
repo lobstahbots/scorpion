@@ -103,15 +103,21 @@ public class RobotMap {
 	
 	//Sensors
 	
-	public static AnalogIn leftRangeFinder;
-	public static AnalogIn rightRangeFinder;
+//	public static AnalogIn leftRangeFinder;
+//	public static AnalogIn rightRangeFinder;
+	
+	public static DigitalInput leftToteLimitSwitch;
+	public static DigitalInput rightToteLimitSwitch;
 	
 	//constants
 	
-	public static double LEFT_RANGE_FINDER_IN;
-	public static double RIGHT_RANGE_FINDER_IN;
-	public static double LEFT_RANGE_FINDER_OUT;
-	public static double RIGHT_RANGE_FINDER_OUT;
+//	public static double LEFT_RANGE_FINDER_IN;
+//	public static double RIGHT_RANGE_FINDER_IN;
+//	public static double LEFT_RANGE_FINDER_OUT;
+//	public static double RIGHT_RANGE_FINDER_OUT;
+	
+	public static double LEFT_TOTE_LIMIT_SWITCH_REPEAT;
+	public static double RIGHT_TOTE_LIMIT_SWITCH_REPEAT;
 	
 	public static final double GETTER_POTS_TOLERANCE = 3;
 	
@@ -476,37 +482,42 @@ public class RobotMap {
 		
 		//Sensors
 		
-		if(Robot.trojan)
-		{
-			leftRangeFinder = new AnalogIn(3, true);
-			LiveWindow.addSensor("Getters", "leftRangeFinder", leftRangeFinder);
-			rightRangeFinder = new AnalogIn(4, true);
-			LiveWindow.addSensor("Getters", "rightRangeFinder", rightRangeFinder);
-		}
-		else
-		{
-			leftRangeFinder = new AnalogIn(2, false);
-			LiveWindow.addSensor("Getters", "leftRangeFinder", leftRangeFinder);
-			rightRangeFinder = new AnalogIn(3, false);
-			LiveWindow.addSensor("Getters", "rightRangeFinder", rightRangeFinder);
-		}
+//		if(Robot.trojan)
+//		{
+//			leftRangeFinder = new AnalogIn(3, true);
+//			LiveWindow.addSensor("Getters", "leftRangeFinder", leftRangeFinder);
+//			rightRangeFinder = new AnalogIn(4, true);
+//			LiveWindow.addSensor("Getters", "rightRangeFinder", rightRangeFinder);
+//		}
+//		else
+//		{
+//			leftRangeFinder = new AnalogIn(2, false);
+//			LiveWindow.addSensor("Getters", "leftRangeFinder", leftRangeFinder);
+//			rightRangeFinder = new AnalogIn(3, false);
+//			LiveWindow.addSensor("Getters", "rightRangeFinder", rightRangeFinder);
+//		}
+//		
+//		//Constants
+//		
+//		if(Robot.trojan)
+//		{
+//			LEFT_RANGE_FINDER_IN = 1.635;
+//			RIGHT_RANGE_FINDER_IN = 1.615;
+//			LEFT_RANGE_FINDER_OUT = 1.565;
+//			RIGHT_RANGE_FINDER_OUT = 1.545;
+//		}
+//		else
+//		{
+//			LEFT_RANGE_FINDER_IN = 1050;
+//			RIGHT_RANGE_FINDER_IN = 1030;
+//			LEFT_RANGE_FINDER_OUT = 1000;
+//			RIGHT_RANGE_FINDER_OUT = 1010;
+//		}
 		
-		//Constants
-		
-		if(Robot.trojan)
-		{
-			LEFT_RANGE_FINDER_IN = 1.635;
-			RIGHT_RANGE_FINDER_IN = 1.615;
-			LEFT_RANGE_FINDER_OUT = 1.565;
-			RIGHT_RANGE_FINDER_OUT = 1.545;
-		}
-		else
-		{
-			LEFT_RANGE_FINDER_IN = 1050;
-			RIGHT_RANGE_FINDER_IN = 1030;
-			LEFT_RANGE_FINDER_OUT = 1000;
-			RIGHT_RANGE_FINDER_OUT = 1010;
-		}
+		leftToteLimitSwitch = new DigitalInput(6);
+		rightToteLimitSwitch = new DigitalInput(7);
+		LiveWindow.addSensor("Getters", "Left Tote Limit Swtich", leftToteLimitSwitch);
+		LiveWindow.addSensor("Getters", "Right Tote Limit Swtich", rightToteLimitSwitch);
 		
 	//Forklift
 		
