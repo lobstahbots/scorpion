@@ -3,6 +3,7 @@ package org.usfirst.frc.team246.robot;
 import org.usfirst.frc.team246.nav6.IMUAdvanced;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogIn;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogPot;
+import org.usfirst.frc.team246.robot.overclockedLibraries.LimitSwitch;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SpeedController246;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Talon246;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
@@ -106,8 +107,8 @@ public class RobotMap {
 //	public static AnalogIn leftRangeFinder;
 //	public static AnalogIn rightRangeFinder;
 	
-	public static DigitalInput leftToteLimitSwitch;
-	public static DigitalInput rightToteLimitSwitch;
+	public static LimitSwitch leftToteLimitSwitch;
+	public static LimitSwitch rightToteLimitSwitch;
 	
 	//constants
 	
@@ -116,8 +117,8 @@ public class RobotMap {
 //	public static double LEFT_RANGE_FINDER_OUT;
 //	public static double RIGHT_RANGE_FINDER_OUT;
 	
-	public static double LEFT_TOTE_LIMIT_SWITCH_REPEAT;
-	public static double RIGHT_TOTE_LIMIT_SWITCH_REPEAT;
+	public static int LEFT_TOTE_LIMIT_SWITCH_REPEAT = 3;
+	public static int RIGHT_TOTE_LIMIT_SWITCH_REPEAT = 3;
 	
 	public static final double GETTER_POTS_TOLERANCE = 3;
 	
@@ -514,8 +515,8 @@ public class RobotMap {
 //			RIGHT_RANGE_FINDER_OUT = 1010;
 //		}
 		
-		leftToteLimitSwitch = new DigitalInput(6);
-		rightToteLimitSwitch = new DigitalInput(7);
+		leftToteLimitSwitch = new LimitSwitch(6, LEFT_TOTE_LIMIT_SWITCH_REPEAT);
+		rightToteLimitSwitch = new LimitSwitch(7, RIGHT_TOTE_LIMIT_SWITCH_REPEAT);
 		LiveWindow.addSensor("Getters", "Left Tote Limit Swtich", leftToteLimitSwitch);
 		LiveWindow.addSensor("Getters", "Right Tote Limit Swtich", rightToteLimitSwitch);
 		
