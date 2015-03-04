@@ -68,9 +68,9 @@ public class RobotMap {
 	public static double MODULE_kD = .08;
 	public static double MODULE_kF = 0;
 	
-	public static double ABSOLUTE_TWIST_kP = .15;
+	public static double ABSOLUTE_TWIST_kP = .13;
     public static double ABSOLUTE_TWIST_kI = 0;
-    public static double ABSOLUTE_TWIST_kD = .006;
+    public static double ABSOLUTE_TWIST_kD = 0;
 	
     public static double ABSOLUTE_CRAB_kP = 2;
     public static double ABSOLUTE_CRAB_kI = 0;
@@ -136,7 +136,7 @@ public class RobotMap {
 	public static final double LIFT_kP = 1;
 	public static final double LIFT_kI = 0;
 	public static final double LIFT_kD = 0;
-	public static final double LIFT_TOLERANCE = .5;
+	public static final double LIFT_TOLERANCE = 1;
 	
 	public static final double LIFT_MAX_HEIGHT = 38.31;
 	public static final double LIFT_MIN_HEIGHT = 0;
@@ -146,7 +146,7 @@ public class RobotMap {
 	public static final double TOTE_HEIGHT = 12;
 	
 	public enum LiftSetpoints {
-		GROUND(1.35), SCORING_PLATFORM(4.11), STEP(9.11);
+		GROUND(1.35), SCORING_PLATFORM(4.11), STEP(9.11), ABOVE_CAN(30);
 		
 		private double value;
 		
@@ -259,6 +259,8 @@ public class RobotMap {
 		CURLED_TAIL(0,0,0),
 		ON_LIFT(0,0,0),
 		
+		AUTON_POSITION_1(59.7, 117.3, 172.4),
+		
 		TRANSITION_1(51.3, 158.4, 90),
 		TRANSITION_2(98.2, 73.0, 0),
 		TRANSITION_3(99.7, 29.1, -45.3),
@@ -308,7 +310,6 @@ public class RobotMap {
 	
 	//Sensors
 	
-	public static DigitalInput canDetector;
 	public static Encoder grabberEncoder;
 	
 	//Constants
@@ -449,10 +450,6 @@ public class RobotMap {
 	    	MODULE_kI = 0;
 	    	MODULE_kD = .08;
 	    	MODULE_kF = 0;
-	    	
-	    	ABSOLUTE_TWIST_kP = .01;
-	        ABSOLUTE_TWIST_kI = .0001;
-	        ABSOLUTE_TWIST_kD = .006;
         }
         else
         {
@@ -465,10 +462,6 @@ public class RobotMap {
 	    	MODULE_kI = 0;
 	    	MODULE_kD = .050;
 	    	MODULE_kF = 0;
-	    	
-	    	ABSOLUTE_TWIST_kP = .01;
-	        ABSOLUTE_TWIST_kI = .0001;
-	        ABSOLUTE_TWIST_kD = .006;
         }
 		
 	//Getters
@@ -514,8 +507,8 @@ public class RobotMap {
 //			RIGHT_RANGE_FINDER_OUT = 1010;
 //		}
 		
-		leftToteLimitSwitch = new DigitalInput(6);
-		rightToteLimitSwitch = new DigitalInput(7);
+		leftToteLimitSwitch = new DigitalInput(8);
+		rightToteLimitSwitch = new DigitalInput(9);
 		LiveWindow.addSensor("Getters", "Left Tote Limit Swtich", leftToteLimitSwitch);
 		LiveWindow.addSensor("Getters", "Right Tote Limit Swtich", rightToteLimitSwitch);
 		
@@ -582,8 +575,6 @@ public class RobotMap {
 		
 		//Sensors
 		
-		canDetector = new DigitalInput(8);
-		LiveWindow.addActuator("Grabber", "canDetector", canDetector);
 		grabberEncoder = new Encoder(6, 7);
 		LiveWindow.addSensor("Grabber", "grabberEncoder", grabberEncoder);
 		

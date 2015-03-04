@@ -44,10 +44,11 @@ public class Drivetrain extends Subsystem {
     	
     	odometry = new Odometry();
         
-        absoluteTwistPID = new PIDController(RobotMap.ABSOLUTE_TWIST_kP, RobotMap.ABSOLUTE_TWIST_kI, RobotMap.ABSOLUTE_TWIST_kD, RobotMap.navX, absoluteTwistPIDOutput, .02);
+        absoluteTwistPID = new PIDController(RobotMap.ABSOLUTE_TWIST_kP, RobotMap.ABSOLUTE_TWIST_kI, RobotMap.ABSOLUTE_TWIST_kD, RobotMap.navX, absoluteTwistPIDOutput);
         absoluteTwistPID.setInputRange(-180, 180);
+        absoluteTwistPID.setOutputRange(-RobotMap.WHEEL_TOP_ABSOLUTE_SPEED, RobotMap.WHEEL_TOP_ABSOLUTE_SPEED);
         absoluteTwistPID.setContinuous();
-        absoluteTwistPID.setAbsoluteTolerance(5);
+        absoluteTwistPID.setAbsoluteTolerance(1);
         
         absoluteCrabPID = new PIDController(RobotMap.ABSOLUTE_CRAB_kP, RobotMap.ABSOLUTE_CRAB_kI, RobotMap.ABSOLUTE_CRAB_kD, odometry, absoluteCrabPIDOutput);
         absoluteCrabPID.setAbsoluteTolerance(.2);
@@ -162,7 +163,7 @@ public class Drivetrain extends Subsystem {
     private class AbsoluteTwistPIDOutput implements PIDOutput
     {   
         public void pidWrite(double output) {
-        	drivetrainPID.setTwist(-output);
+        	drivetrainPID.setTwist(-output/backModule.maxSpeed);
         }
     }
 

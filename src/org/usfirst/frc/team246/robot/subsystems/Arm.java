@@ -241,6 +241,11 @@ public class Arm extends Subsystem {
     	wrist.setSetpoint(wristAngle);
     }
     
+    public double SumSquareError(double shoulder, double elbow, double wrist)
+    {
+    	return Math.pow(RobotMap.armShoulderPot.get() - shoulder, 2) + Math.pow(RobotMap.armElbowPot.get() - elbow, 2) + Math.pow(RobotMap.armWristPot.get() - wrist, 2);
+    }
+    
     public void transitionStepUp()
     { 
     	if(transitionIndex < RobotMap.ARM_TRANSITION_ARRAY.length - 1 && getCurrentCommand().getClass() == TransitionSimple.class) transitionIndex++;

@@ -2,6 +2,8 @@ package org.usfirst.frc.team246.robot.commands;
 
 import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.RobotMap;
+import org.usfirst.frc.team246.robot.overclockedLibraries.AlertMessage;
+import org.usfirst.frc.team246.robot.overclockedLibraries.UdpAlertService;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -35,6 +37,8 @@ public class AutoSpin extends DrivingCommand {
         Robot.drivetrain.drivetrainPID.setCrabSpeed(crabVector.getMagnitude());
         Robot.drivetrain.drivetrainPID.setCrabDirection(crabVector.getAngle());
         Robot.drivetrain.drivetrainPID.setCOR(RobotMap.ROBOT_CIRCLE_CENTER);
+        
+        System.out.println(Robot.drivetrain.absoluteTwistPID.get());
     }
     
     protected void end()
@@ -59,7 +63,13 @@ public class AutoSpin extends DrivingCommand {
 
 	@Override
 	protected boolean isFinished() {
-		return Math.abs(RobotMap.navX.getYaw() - heading) < 5;
+		for(int i = 0; i < Robot.drivetrain.swerves.length; i++)
+		{
+			if(Robot.drivetrain.swerves[i].getWheelSpeed() > .2) return false;
+		}
+		double result = Math.abs(((RobotMap.navX.getYaw() + 360)%360) - ((heading + 360)%360));
+		UdpAlertService.sendAlert(new AlertMessage("Heading Error: " + result));
+		return result < 5;
 	}
 
 	@Override

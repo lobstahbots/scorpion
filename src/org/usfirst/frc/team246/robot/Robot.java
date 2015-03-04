@@ -8,13 +8,23 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
+import org.usfirst.frc.team246.robot.RobotMap.LiftSetpoints;
 import org.usfirst.frc.team246.robot.commands.AlignWheels;
 import org.usfirst.frc.team246.robot.commands.AutoAlignAndDrive;
 import org.usfirst.frc.team246.robot.commands.AutoDrive;
 import org.usfirst.frc.team246.robot.commands.AutoLogoTest;
+import org.usfirst.frc.team246.robot.commands.AutoSetDriveSpeed;
+import org.usfirst.frc.team246.robot.commands.AutoSlideCan;
 import org.usfirst.frc.team246.robot.commands.AutoSpin;
 import org.usfirst.frc.team246.robot.commands.DeadReckoningDrive;
 import org.usfirst.frc.team246.robot.commands.Intake;
+import org.usfirst.frc.team246.robot.commands.MoveArm;
+import org.usfirst.frc.team246.robot.commands.MoveForklift;
+import org.usfirst.frc.team246.robot.commands.MoveForkliftUp1;
+import org.usfirst.frc.team246.robot.commands.OpenGrabber;
+import org.usfirst.frc.team246.robot.commands.Outgest;
+import org.usfirst.frc.team246.robot.commands.SendUDPStatement;
 import org.usfirst.frc.team246.robot.commands.StopGetters;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AlertMessage;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogIn;
@@ -158,19 +168,87 @@ public class Robot extends IterativeRobot {
     {
     	public Auton()
     	{
-    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 3.5, 0)));
-    		addSequential(new AutoSpin(135));
-    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 5.5, 90)));
+    		if(!trojan) addSequential(new MoveArm(ArmSetpoints.AUTON_POSITION_1));
+    		addParallel(new AutoSetDriveSpeed(5)); //Set the speed to 5
+    		addParallel(new AutoSlideCan()); //Slide for the first can
+    		addParallel(new AutoSpin(135)); //Spin to the right angle
+    		if(!trojan) addSequential(new MoveForklift(LiftSetpoints.ABOVE_CAN, true));
+    		if(trojan) addSequential(new WaitCommand(1.5)); //Wait for fork to get above can
+    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 1.75, 0))); //Drive towards the center of the field
+    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 4.5, 90)));
+    		addParallel(new Intake());// Intake the second tote
+    		addParallel(new AutoSetDriveSpeed(3)); //Set the speed to 3
+    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 2.5, 90))); //Drive into the second tote
+    		addSequential(new WaitCommand(.5));
+    		addParallel(new AutoSetDriveSpeed(5)); //Set the speed to 5
+    		addSequential(new AutoSpin(177));
+    		if(trojan) addSequential(new WaitCommand(1));
+    		if(!trojan) addParallel(new OpenGrabber());
+    		if(!trojan) addSequential(new MoveForklift(LiftSetpoints.GROUND, true));
+    		/*Print*/addParallel(new SendUDPStatement("Auto 1"));
+    		if(!trojan) addParallel(new MoveArm(ArmSetpoints.STORAGE));
+    		/*Print*/addParallel(new SendUDPStatement("Auto 2"));
+			if(!trojan) addParallel(new MoveForkliftUp1());
+			/*Print*/addParallel(new SendUDPStatement("Auto 3"));
+			if(!trojan) addSequential(new MoveForklift(LiftSetpoints.SCORING_PLATFORM, false));
+			/*Print*/addParallel(new SendUDPStatement("Auto 4"));
+    		addSequential(new AutoSpin(0));
+    		/*Print*/addParallel(new SendUDPStatement("Auto 5"));
+    		addParallel(new AutoSetDriveSpeed(3)); //Set the speed to 3
+    		/*Print*/addParallel(new SendUDPStatement("Auto 6"));
+    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 7.5, 0)));
+    		/*Print*/addParallel(new SendUDPStatement("Auto 7"));
+    		if(!trojan) addSequential(new MoveForklift(LiftSetpoints.GROUND, false));
+    		/*Print*/addParallel(new SendUDPStatement("Auto 8"));
+    		
+    		
+    		/*
+    		addParallel(new AutoSetDriveSpeed(3)); //Set the speed to 3
+    		addParallel(new AutoSlideCan()); //Slide for the first can
+    		addParallel(new AutoSpin(135)); //Spin to the right angle
+    		addSequential(new WaitCommand(1.5)); //Wait for fork to get above can
+    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 2, 0))); //Drive towards the center of the field
+    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 4, 95)));
     		addParallel(new Intake());
-    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 2, 180)));
-    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 2, 90)));
-    		addSequential(new WaitCommand(1));
-    		addParallel(new StopGetters());
-    		addSequential(new AutoAlignAndDrive(new Vector2D(false, .5, -90)));
-    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 2, 0)));
-    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 5.5, -90)));
-    		addSequential(new AutoSpin(90));
-    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 3.5, 180)));
+    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 2.25, 95)));
+    		addSequential(new WaitCommand(1.5));
+    		addParallel(new AutoSlideCan());
+    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 6.5, 95)));
+    		addParallel(new Intake());
+    		addSequential(new AutoAlignAndDrive(new Vector2D(false, .5, 95)));
+    		addSequential(new WaitCommand(.5));
+    		addParallel(new AutoSetDriveSpeed(5)); //Set the speed to 5
+    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 8.5, 0)));
+    		*/
+    		
+//    		addParallel(new Intake());
+//    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 2, 90)));
+//    		addSequential(new AutoSetDriveSpeed(4));
+//    		addSequential(new AutoSpin(135));
+//    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 3.5, 0)));
+//    		addSequential(new AutoAlignAndDrive(new Vector2D(true, -6, -1.5)));
+//    		addParallel(new Intake());
+//    		addParallel(new AutoSetDriveSpeed(2));
+//    		addSequential(new AutoAlignAndDrive(new Vector2D(true, -.5, -.25)));
+//    		addParallel(new AlignWheels(0));
+//    		addSequential(new WaitCommand(.75));
+//    		addParallel(new Outgest());
+//    		addSequential(new WaitCommand(.2));
+//    		addParallel(new Intake());
+//    		addSequential(new WaitCommand(.75));
+//    		addParallel(new AutoSetDriveSpeed(4));
+//    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 1.75, 0)));
+//    		addSequential(new AutoAlignAndDrive(new Vector2D(true, -6.25, -1.5)));
+//    		addParallel(new AutoSetDriveSpeed(2));
+//    		addSequential(new AutoAlignAndDrive(new Vector2D(true, -.5, -.25)));
+//    		addParallel(new AlignWheels(0));
+//    		addSequential(new WaitCommand(.75));
+//    		addParallel(new Outgest());
+//    		addSequential(new WaitCommand(.2));
+//    		addParallel(new Intake());
+//    		addSequential(new WaitCommand(.75));
+//    		addParallel(new AutoSetDriveSpeed(4));
+//    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 7.5, 0)));
     	}
     }
     
@@ -200,7 +278,6 @@ public class Robot extends IterativeRobot {
 	
     public void autonomousInit() {
     	RobotMap.navX.zeroYaw(90);
-    	Robot.drivetrain.setMaxSpeed(4);
     	auton.start();
     	/* CHANGE NAVX HEADING IF PUTTING IN AUTONOMOUS
     	drivetrain.PIDOn(true);
@@ -252,7 +329,6 @@ public class Robot extends IterativeRobot {
         }
         if(test3)
         {
-        	drivetrain.absoluteTwistPID.setPID(SmartDashboard.getNumber("absoluteTwistP"), SmartDashboard.getNumber("absoluteTwistI"), SmartDashboard.getNumber("absoluteTwistD"));
         	
         }
         if(test1)
