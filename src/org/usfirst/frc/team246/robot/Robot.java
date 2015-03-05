@@ -17,6 +17,7 @@ import org.usfirst.frc.team246.robot.commands.AutoLogoTest;
 import org.usfirst.frc.team246.robot.commands.AutoSetDriveSpeed;
 import org.usfirst.frc.team246.robot.commands.AutoSlideCan;
 import org.usfirst.frc.team246.robot.commands.AutoSpin;
+import org.usfirst.frc.team246.robot.commands.CloseGrabber;
 import org.usfirst.frc.team246.robot.commands.DeadReckoningDrive;
 import org.usfirst.frc.team246.robot.commands.Intake;
 import org.usfirst.frc.team246.robot.commands.MoveArm;
@@ -168,9 +169,10 @@ public class Robot extends IterativeRobot {
     {
     	public Auton()
     	{
+    		/*Print*/addParallel(new SendUDPStatement("Starting Auto"));
     		if(!trojan) addSequential(new MoveArm(ArmSetpoints.AUTON_POSITION_1));
     		addParallel(new AutoSetDriveSpeed(5)); //Set the speed to 5
-    		addParallel(new AutoSlideCan()); //Slide for the first can
+    		addParallel(new Outgest()); //Slide for the first can
     		addParallel(new AutoSpin(135)); //Spin to the right angle
     		if(!trojan) addSequential(new MoveForklift(LiftSetpoints.ABOVE_CAN, true));
     		if(trojan) addSequential(new WaitCommand(1.5)); //Wait for fork to get above can
@@ -186,12 +188,12 @@ public class Robot extends IterativeRobot {
     		if(!trojan) addParallel(new OpenGrabber());
     		if(!trojan) addSequential(new MoveForklift(LiftSetpoints.GROUND, true));
     		/*Print*/addParallel(new SendUDPStatement("Auto 1"));
-    		if(!trojan) addParallel(new MoveArm(ArmSetpoints.STORAGE));
+    		if(!trojan) addParallel(new MoveArm(ArmSetpoints.AUTON_POSITION_2));
     		/*Print*/addParallel(new SendUDPStatement("Auto 2"));
-			if(!trojan) addParallel(new MoveForkliftUp1());
 			/*Print*/addParallel(new SendUDPStatement("Auto 3"));
-			if(!trojan) addSequential(new MoveForklift(LiftSetpoints.SCORING_PLATFORM, false));
+			if(!trojan) addSequential(new MoveForklift(LiftSetpoints.ABOVE_1_TOTE, false));
 			/*Print*/addParallel(new SendUDPStatement("Auto 4"));
+			if(!trojan) addParallel(new CloseGrabber());
     		addSequential(new AutoSpin(0));
     		/*Print*/addParallel(new SendUDPStatement("Auto 5"));
     		addParallel(new AutoSetDriveSpeed(3)); //Set the speed to 3
