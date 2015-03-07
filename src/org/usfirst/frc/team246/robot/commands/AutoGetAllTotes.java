@@ -1,6 +1,7 @@
 package org.usfirst.frc.team246.robot.commands;
 
 import org.usfirst.frc.team246.robot.Robot;
+import org.usfirst.frc.team246.robot.RobotMap;
 import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
 import org.usfirst.frc.team246.robot.RobotMap.LiftSetpoints;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
@@ -53,7 +54,8 @@ public class AutoGetAllTotes extends CommandGroup {
 			@Override
 			protected void execute()
 			{
-				if(getters.hasTote()) 
+				/*
+				if(Robot.getters.hasTote()) 
 				{
 					super.execute();
 					waiting = false;
@@ -62,6 +64,13 @@ public class AutoGetAllTotes extends CommandGroup {
 				{
 					waiting = true;
 					UdpAlertService.sendAlert(new AlertMessage("Failed to get tote"));
+				}
+				
+				
+				if(Math.abs(RobotMap.navX.getPitch()) > 10 || Math.abs(RobotMap.navX.getRoll()) > 10) 
+				{
+					setpoint = LiftSetpoints.ABOVE_CAN.getValue();
+					waiting = true;
 				}
 			}
 			@Override
