@@ -134,9 +134,9 @@ public class RobotMap {
 	
 	//Constants
 	
-	public static final double LIFT_kP = 1;
+	public static final double LIFT_kP = .5;
 	public static final double LIFT_kI = 0;
-	public static final double LIFT_kD = 0;
+	public static final double LIFT_kD = .15;
 	public static final double LIFT_TOLERANCE = 1;
 	
 	public static final double LIFT_MAX_HEIGHT = 38.31;
@@ -254,7 +254,7 @@ public class RobotMap {
 		
 		GROUND_UP(101,175,90),
 		GROUND_FALL(43,143,178),
-		STEP(97,108,90),
+		STEP(98.5,108.8,90),
 		TOP_OF_STACK(2,48,90),
 		STORAGE(23,170,80),
 		CURLED_TAIL(0,0,0),

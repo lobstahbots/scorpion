@@ -13,6 +13,7 @@ import org.usfirst.frc.team246.robot.RobotMap.LiftSetpoints;
 import org.usfirst.frc.team246.robot.commands.AlignWheels;
 import org.usfirst.frc.team246.robot.commands.AutoAlignAndDrive;
 import org.usfirst.frc.team246.robot.commands.AutoDrive;
+import org.usfirst.frc.team246.robot.commands.AutoGetAllTotes;
 import org.usfirst.frc.team246.robot.commands.AutoLogoTest;
 import org.usfirst.frc.team246.robot.commands.AutoSetDriveSpeed;
 import org.usfirst.frc.team246.robot.commands.AutoSlideCan;
@@ -27,6 +28,7 @@ import org.usfirst.frc.team246.robot.commands.OpenGrabber;
 import org.usfirst.frc.team246.robot.commands.Outgest;
 import org.usfirst.frc.team246.robot.commands.SendUDPStatement;
 import org.usfirst.frc.team246.robot.commands.StopGetters;
+import org.usfirst.frc.team246.robot.commands.ZeroNavX;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AlertMessage;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogIn;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SwerveModule;
@@ -47,7 +49,10 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.command.WaitCommand;
+import edu.wpi.first.wpilibj.command.WaitForChildren;
+import edu.wpi.first.wpilibj.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -89,6 +94,8 @@ public class Robot extends IterativeRobot {
 	Command auton;
 	
 	public static boolean teleopZeroedNavX = false;
+	
+	public static SendableChooser autonRadioBoxes;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -112,6 +119,17 @@ public class Robot extends IterativeRobot {
         oi = new OI();
         
         RobotMap.grabberEncoder.reset();
+        
+        auton = new ZeroNavX(0);
+        
+        autonRadioBoxes = new SendableChooser();
+        autonRadioBoxes.addDefault("Do Nothing Forwards", new ZeroNavX(0));
+        autonRadioBoxes.addObject("Do Nothing Left", new ZeroNavX(90));
+        autonRadioBoxes.addObject("Do Nothing Backwards", new ZeroNavX(180));
+        autonRadioBoxes.addObject("Do Nothing Right", new ZeroNavX(-90));
+        autonRadioBoxes.addObject("Get all totes", new AutoGetAllTotes());
+        SmartDashboard.putData("Auto Mode Chooser", autonRadioBoxes);
+        
         
         if(test1)
         {
@@ -161,97 +179,6 @@ public class Robot extends IterativeRobot {
         */
         
         SmartDashboard.putData(Scheduler.getInstance());
-        
-        auton = new Auton();
-    }
-    
-    class Auton extends CommandGroup
-    {
-    	public Auton()
-    	{
-    		/*Print*/addParallel(new SendUDPStatement("Starting Auto"));
-    		if(!trojan) addSequential(new MoveArm(ArmSetpoints.AUTON_POSITION_1));
-    		addParallel(new AutoSetDriveSpeed(5)); //Set the speed to 5
-    		addParallel(new Outgest()); //Slide for the first can
-    		addParallel(new AutoSpin(135)); //Spin to the right angle
-    		if(!trojan) addSequential(new MoveForklift(LiftSetpoints.ABOVE_CAN, true));
-    		if(trojan) addSequential(new WaitCommand(1.5)); //Wait for fork to get above can
-    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 1.75, 0))); //Drive towards the center of the field
-    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 4.5, 90)));
-    		addParallel(new Intake());// Intake the second tote
-    		addParallel(new AutoSetDriveSpeed(3)); //Set the speed to 3
-    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 2.5, 90))); //Drive into the second tote
-    		addSequential(new WaitCommand(.5));
-    		addParallel(new AutoSetDriveSpeed(5)); //Set the speed to 5
-    		addSequential(new AutoSpin(177));
-    		if(trojan) addSequential(new WaitCommand(1));
-    		if(!trojan) addParallel(new OpenGrabber());
-    		if(!trojan) addSequential(new MoveForklift(LiftSetpoints.GROUND, true));
-    		/*Print*/addParallel(new SendUDPStatement("Auto 1"));
-    		if(!trojan) addParallel(new MoveArm(ArmSetpoints.AUTON_POSITION_2));
-    		/*Print*/addParallel(new SendUDPStatement("Auto 2"));
-			/*Print*/addParallel(new SendUDPStatement("Auto 3"));
-			if(!trojan) addSequential(new MoveForklift(LiftSetpoints.ABOVE_1_TOTE, false));
-			/*Print*/addParallel(new SendUDPStatement("Auto 4"));
-			if(!trojan) addParallel(new CloseGrabber());
-    		addSequential(new AutoSpin(0));
-    		/*Print*/addParallel(new SendUDPStatement("Auto 5"));
-    		addParallel(new AutoSetDriveSpeed(3)); //Set the speed to 3
-    		/*Print*/addParallel(new SendUDPStatement("Auto 6"));
-    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 7.5, 0)));
-    		/*Print*/addParallel(new SendUDPStatement("Auto 7"));
-    		if(!trojan) addSequential(new MoveForklift(LiftSetpoints.GROUND, false));
-    		/*Print*/addParallel(new SendUDPStatement("Auto 8"));
-    		
-    		
-    		/*
-    		addParallel(new AutoSetDriveSpeed(3)); //Set the speed to 3
-    		addParallel(new AutoSlideCan()); //Slide for the first can
-    		addParallel(new AutoSpin(135)); //Spin to the right angle
-    		addSequential(new WaitCommand(1.5)); //Wait for fork to get above can
-    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 2, 0))); //Drive towards the center of the field
-    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 4, 95)));
-    		addParallel(new Intake());
-    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 2.25, 95)));
-    		addSequential(new WaitCommand(1.5));
-    		addParallel(new AutoSlideCan());
-    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 6.5, 95)));
-    		addParallel(new Intake());
-    		addSequential(new AutoAlignAndDrive(new Vector2D(false, .5, 95)));
-    		addSequential(new WaitCommand(.5));
-    		addParallel(new AutoSetDriveSpeed(5)); //Set the speed to 5
-    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 8.5, 0)));
-    		*/
-    		
-//    		addParallel(new Intake());
-//    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 2, 90)));
-//    		addSequential(new AutoSetDriveSpeed(4));
-//    		addSequential(new AutoSpin(135));
-//    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 3.5, 0)));
-//    		addSequential(new AutoAlignAndDrive(new Vector2D(true, -6, -1.5)));
-//    		addParallel(new Intake());
-//    		addParallel(new AutoSetDriveSpeed(2));
-//    		addSequential(new AutoAlignAndDrive(new Vector2D(true, -.5, -.25)));
-//    		addParallel(new AlignWheels(0));
-//    		addSequential(new WaitCommand(.75));
-//    		addParallel(new Outgest());
-//    		addSequential(new WaitCommand(.2));
-//    		addParallel(new Intake());
-//    		addSequential(new WaitCommand(.75));
-//    		addParallel(new AutoSetDriveSpeed(4));
-//    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 1.75, 0)));
-//    		addSequential(new AutoAlignAndDrive(new Vector2D(true, -6.25, -1.5)));
-//    		addParallel(new AutoSetDriveSpeed(2));
-//    		addSequential(new AutoAlignAndDrive(new Vector2D(true, -.5, -.25)));
-//    		addParallel(new AlignWheels(0));
-//    		addSequential(new WaitCommand(.75));
-//    		addParallel(new Outgest());
-//    		addSequential(new WaitCommand(.2));
-//    		addParallel(new Intake());
-//    		addSequential(new WaitCommand(.75));
-//    		addParallel(new AutoSetDriveSpeed(4));
-//    		addSequential(new AutoAlignAndDrive(new Vector2D(false, 7.5, 0)));
-    	}
     }
     
     /**
@@ -279,7 +206,7 @@ public class Robot extends IterativeRobot {
 	}
 	
     public void autonomousInit() {
-    	RobotMap.navX.zeroYaw(90);
+    	auton = (Command) autonRadioBoxes.getSelected();
     	auton.start();
     	/* CHANGE NAVX HEADING IF PUTTING IN AUTONOMOUS
     	drivetrain.PIDOn(true);
@@ -310,6 +237,7 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopInit() {
+    	auton.cancel();
     	Robot.drivetrain.setMaxSpeed(2);
     	drivetrain.PIDOn(true);
     }
@@ -386,13 +314,16 @@ public class Robot extends IterativeRobot {
             	if(oi.driver.getRight().get()) RobotMap.navX.zeroYaw(90);
             }
             
-            SmartDashboard.putBoolean("Forklift On Target", forklift.onTarget());
+            if(RobotMap.liftPot.get() < LiftSetpoints.GROUND.getValue() && !liftWasDown) UdpAlertService.sendAlert(new AlertMessage("Forklift Down").playSound("whack.wav"));
+            liftWasDown = RobotMap.liftPot.get() < LiftSetpoints.GROUND.getValue();
             
             SmartDashboard.putBoolean("hasTote?", getters.hasTote());
             
             Scheduler.getInstance().run();
         }
     }
+    
+    boolean liftWasDown = false;
     
     /**
      * This function is called periodically during test mode

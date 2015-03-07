@@ -29,11 +29,12 @@ public class Getters extends Subsystem {
     }
     
     boolean hadTote = false;
-    boolean leftToteLimitSwitchOn = RobotMap.leftToteLimitSwitch.get();
-    boolean rightToteLimitSwitchOn = RobotMap.rightToteLimitSwitch.get();
     
     public boolean hasTote()
     {	
+        boolean leftToteLimitSwitchOn = RobotMap.leftToteLimitSwitch.get();
+        boolean rightToteLimitSwitchOn = RobotMap.rightToteLimitSwitch.get();
+        
     	if(leftToteLimitSwitchOn && rightToteLimitSwitchOn)
     	{
     		if(!hadTote) UdpAlertService.sendAlert(new AlertMessage("Tote obtained").playSound("woohoo.wav"));

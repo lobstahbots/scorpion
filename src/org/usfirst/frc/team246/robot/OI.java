@@ -90,6 +90,8 @@ public class OI {
         operator.getDown().whenPressed(new MoveForkliftDown1());
         operator.getLeft().whenPressed(new MoveForklift(LiftSetpoints.GROUND, true));
         operator.getLeft().whenReleased(new MoveForklift(LiftSetpoints.SCORING_PLATFORM, true));
+        driver.getB().whenPressed(new MoveForklift(LiftSetpoints.GROUND, true));
+        driver.getB().whenReleased(new MoveForklift(LiftSetpoints.ABOVE_1_TOTE, true));
 		
 		operator.getLB().whileHeld(new PushTotes());
 		operator.getLB().whenReleased(new RetractPusher());
