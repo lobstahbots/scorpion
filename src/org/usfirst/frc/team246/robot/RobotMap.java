@@ -69,7 +69,7 @@ public class RobotMap {
 	public static double MODULE_kD = .08;
 	public static double MODULE_kF = 0;
 	
-	public static double ABSOLUTE_TWIST_kP = .1;
+	public static double ABSOLUTE_TWIST_kP = .075;
     public static double ABSOLUTE_TWIST_kI = 0;
     public static double ABSOLUTE_TWIST_kD = 0;
 	
@@ -147,7 +147,7 @@ public class RobotMap {
 	public static final double TOTE_HEIGHT = 12;
 	
 	public enum LiftSetpoints {
-		GROUND(1.35), SCORING_PLATFORM(4.11), STEP(9.11), ABOVE_1_TOTE(16.11), ABOVE_CAN(33);
+		GROUND(1.35), SCORING_PLATFORM(4.11), STEP(9.11), BETWEEN_TOTES(10), ABOVE_1_TOTE(16.11), ABOVE_CAN(33);
 		
 		private double value;
 		

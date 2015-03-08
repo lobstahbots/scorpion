@@ -6,6 +6,8 @@ import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
 import org.usfirst.frc.team246.robot.RobotMap.LiftSetpoints;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 
@@ -16,38 +18,28 @@ public class AutoGetAllTotes extends CommandGroup {
     
     public  AutoGetAllTotes() {
     	addParallel(new ZeroNavX(90));
+    	if(!Robot.trojan) addParallel(new MoveForklift(LiftSetpoints.ABOVE_CAN, true));
     	if(!Robot.trojan) addSequential(new MoveArm(ArmSetpoints.AUTON_POSITION_1));
 		addParallel(new AutoSetDriveSpeed(5)); //Set the speed to 5
 		addParallel(new Outgest()); //Slide for the first can
-		addParallel(new AutoSpin(135)); //Spin to the right angle
-		if(!Robot.trojan) addSequential(new MoveForklift(LiftSetpoints.ABOVE_CAN, true));
+		addSequential(new AutoSpin(135)); //Spin to the right angle
 		if(Robot.trojan) addSequential(new WaitCommand(1.5)); //Wait for fork to get above can
 		addSequential(new AutoAlignAndDrive(new Vector2D(false, 1.75, 0))); //Drive towards the center of the field
 		addSequential(new AutoAlignAndDrive(new Vector2D(false, 4.5, 90)));
 		addParallel(new Intake());// Intake the second tote
 		addParallel(new AutoSetDriveSpeed(3)); //Set the speed to 3
-		addSequential(new AutoAlignAndDrive(new Vector2D(false, 3.5, 90))); //Drive into the second tote
-		addSequential(new WaitCommand(.5));
+		addSequential(new AutoAlignAndDrive(new Vector2D(false, 4.5, 90))); //Drive into the second tote
+		addSequential(new WaitCommand(.25));
 		addParallel(new AutoSetDriveSpeed(5)); //Set the speed to 5
-		addSequential(new AutoSpin(180));
-		addSequential(new AutoSlideCan() {
-			@Override
-			protected void initialize()
-			{
-				setTimeout(.5);
-			}
-			@Override
-			protected boolean isFinished()
-			{
-				return isTimedOut();
-			}
-		});
+		addSequential(new AutoSpin(160));
+		if(!Robot.trojan) addParallel(new OpenGrabber());
+		if(!Robot.trojan) addParallel(new MoveForklift(LiftSetpoints.ABOVE_1_TOTE, true));
 		addParallel(new Intake());
 		if(Robot.trojan) addSequential(new WaitCommand(1));
-		if(!Robot.trojan) addParallel(new OpenGrabber());
-		addSequential(new Outgest(), .5);
+		addSequential(new Outgest(), .25);
 		addSequential(new Intake(), 1);
-		/*
+		addParallel(new Intake());
+
 		if(!Robot.trojan) addSequential(new MoveForklift(LiftSetpoints.GROUND, true) {
 			boolean waiting = false;
 			
@@ -65,6 +57,7 @@ public class AutoGetAllTotes extends CommandGroup {
 					waiting = true;
 					UdpAlertService.sendAlert(new AlertMessage("Failed to get tote"));
 				}
+				*/
 				
 				
 				if(Math.abs(RobotMap.navX.getPitch()) > 10 || Math.abs(RobotMap.navX.getRoll()) > 10) 
@@ -72,6 +65,7 @@ public class AutoGetAllTotes extends CommandGroup {
 					setpoint = LiftSetpoints.ABOVE_CAN.getValue();
 					waiting = true;
 				}
+				super.execute();
 			}
 			@Override
 			protected boolean isFinished()
@@ -80,20 +74,52 @@ public class AutoGetAllTotes extends CommandGroup {
 			}
 		});
 		if(!Robot.trojan) addParallel(new MoveArm(ArmSetpoints.AUTON_POSITION_2));
-		if(!Robot.trojan) addSequential(new MoveForklift(LiftSetpoints.ABOVE_1_TOTE, false));
+		if(!Robot.trojan) addSequential(new MoveForklift(LiftSetpoints.ABOVE_1_TOTE, true));
 		if(!Robot.trojan) addParallel(new CloseGrabber());
 		addParallel(new AutoSetDriveSpeed(3));
-		addSequential(new AutoSpin(90){
+		addSequential(new AutoSpin(70){
 			@Override
 			protected boolean isFinished()
 			{
-				return RobotMap.navX.getYaw() < 135;
+				return RobotMap.navX.getYaw() < 90;
 			}
 		});
-		addSequential(new AutoSpin(0));
-		addSequential(new AutoAlignAndDrive(new Vector2D(false, 7.5, 0)));
-		if(!Robot.trojan) addSequential(new MoveForklift(LiftSetpoints.GROUND, false));
-		*/
+		addSequential(new AutoSpin(-20));
+		addSequential(new AutoAlignAndDrive(new Vector2D(false, 5, -20)));
+		if(!Robot.trojan) addSequential(new MoveForklift(LiftSetpoints.GROUND, true)
+		{
+			boolean waiting = false;
+			
+			@Override
+			protected void execute()
+			{
+				/*
+				if(Robot.getters.hasTote()) 
+				{
+					super.execute();
+					waiting = false;
+				}                                           //THIS ANONYMOUS CLASS NEED TO BE COMMENTED OUT
+				else
+				{
+					waiting = true;
+					UdpAlertService.sendAlert(new AlertMessage("Failed to get tote"));
+				}
+				*/
+				
+				
+				if(Math.abs(RobotMap.navX.getPitch()) > 10 || Math.abs(RobotMap.navX.getRoll()) > 10) 
+				{
+					setpoint = LiftSetpoints.ABOVE_CAN.getValue();
+					waiting = true;
+				}
+				super.execute();
+			}
+			@Override
+			protected boolean isFinished()
+			{
+				return super.isFinished() && !waiting;
+			}
+		});
 		
 		/*
 		addParallel(new AutoSetDriveSpeed(3)); //Set the speed to 3

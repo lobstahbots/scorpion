@@ -68,7 +68,7 @@ public class AutoSpin extends DrivingCommand {
 			if(Robot.drivetrain.swerves[i].getWheelSpeed() > .2) return false;
 		}
 		double result = Math.abs(((RobotMap.navX.getYaw() + 360)%360) - ((heading + 360)%360));
-		return result < 5;
+		return result < 5 || result > 355;
 	}
 
 	@Override
