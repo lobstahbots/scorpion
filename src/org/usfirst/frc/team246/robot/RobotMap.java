@@ -147,7 +147,7 @@ public class RobotMap {
 	public static final double TOTE_HEIGHT = 12;
 	
 	public enum LiftSetpoints {
-		GROUND(1.35), SCORING_PLATFORM(4.11), STEP(9.11), BETWEEN_TOTES(10), ABOVE_1_TOTE(16.11), ABOVE_CAN(33);
+		GROUND(1.35), CLEARING_BOTTOM_TOTE(4), SCORING_PLATFORM(4.11), STEP(9.11), BETWEEN_TOTES(10), ABOVE_1_TOTE(16.11), ABOVE_CAN(33);
 		
 		private double value;
 		
@@ -259,6 +259,7 @@ public class RobotMap {
 		STORAGE(23,170,80),
 		CURLED_TAIL(0,0,0),
 		ON_LIFT(0,0,0),
+		SCORPION_HOLD(0,0,0),
 		
 		AUTON_POSITION_1(59.7, 117.3, 172.4),
 		AUTON_POSITION_2(23,170,175),

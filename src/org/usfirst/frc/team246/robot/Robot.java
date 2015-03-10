@@ -97,6 +97,13 @@ public class Robot extends IterativeRobot {
 	public static boolean teleopZeroedNavX = false;
 	
 	public static SendableChooser autonRadioBoxes;
+	
+	public enum RobotMode
+	{
+		DISABLED, AUTONOMOUS, TELEOP, TEST;
+	}
+	
+	public static RobotMode robotMode = RobotMode.DISABLED;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -189,6 +196,7 @@ public class Robot extends IterativeRobot {
      * You can use it to reset subsystems before shutting down.
      */
     public void disabledInit() {
+    	robotMode = RobotMode.DISABLED;
     	drivetrain.PIDOn(false);
     }
     
@@ -209,6 +217,7 @@ public class Robot extends IterativeRobot {
 	}
 	
     public void autonomousInit() {
+    	robotMode = RobotMode.AUTONOMOUS;
     	auton = (Command) autonRadioBoxes.getSelected();
     	auton.start();
     	/* CHANGE NAVX HEADING IF PUTTING IN AUTONOMOUS
@@ -240,6 +249,7 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopInit() {
+    	robotMode = RobotMode.TELEOP;
     	auton.cancel();
     	Robot.drivetrain.setMaxSpeed(2);
     	drivetrain.PIDOn(true);
@@ -332,6 +342,7 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during test mode
      */
     public void testPeriodic() {
+    	robotMode = RobotMode.TEST;
     	allPeriodic();
     	
         LiveWindow.run();

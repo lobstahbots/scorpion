@@ -59,7 +59,7 @@ public class Arm extends Subsystem {
     
     public boolean checkConstraints(double s, double e, double w)
     {
-    	if(!Robot.oi.operator.getBack().get())
+    	if(!Robot.oi.operator.getRight().get())
     	{
 	    	//Define vectors for arm segments
 	    	Vector2D v1 = new Vector2D(false, RobotMap.ARM_SEGMENT_1_LENGTH, s); //Between Shoulder and Elbow
@@ -244,7 +244,7 @@ public class Arm extends Subsystem {
     	wrist.setSetpoint(wristAngle);
     }
     
-    public double SumSquareError(double shoulder, double elbow, double wrist)
+    public double sumSquareError(double shoulder, double elbow, double wrist)
     {
     	return Math.pow(RobotMap.armShoulderPot.get() - shoulder, 2) + Math.pow(RobotMap.armElbowPot.get() - elbow, 2) + Math.pow(RobotMap.armWristPot.get() - wrist, 2);
     }
