@@ -22,12 +22,18 @@ public class ScorpionHold extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    	if(!Robot.forklift.onTarget() && Robot.forklift.getPIDController().get() > 0) 
+    		{
+    		System.out.println("Moving lift up");
+    		Robot.arm.elbow.setOutputRange(0, 0.2);
+    		}
+    	else Robot.arm.elbow.setOutputRange(-0.2, 0.2);
     	Robot.arm.set(ArmSetpoints.SCORPION_HOLD);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+        return Robot.grabber.getCurrentCommand().getClass() == OpenGrabber.class;
     }
 
     // Called once after isFinished returns true

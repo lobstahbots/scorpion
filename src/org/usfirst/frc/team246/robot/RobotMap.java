@@ -137,7 +137,7 @@ public class RobotMap {
 	public static final double LIFT_kP = .5;
 	public static final double LIFT_kI = 0;
 	public static final double LIFT_kD = .15;
-	public static final double LIFT_TOLERANCE = 1;
+	public static final double LIFT_TOLERANCE = .25;
 	
 	public static final double LIFT_MAX_HEIGHT = 38.31;
 	public static final double LIFT_MIN_HEIGHT = 0;
@@ -147,7 +147,7 @@ public class RobotMap {
 	public static final double TOTE_HEIGHT = 12;
 	
 	public enum LiftSetpoints {
-		GROUND(1.35), CLEARING_BOTTOM_TOTE(4), SCORING_PLATFORM(4.11), STEP(9.11), BETWEEN_TOTES(10), ABOVE_1_TOTE(16.11), ABOVE_CAN(33);
+		GROUND(1.35), SCORING_PLATFORM(4.11), STEP(9.11), BETWEEN_TOTES(10), ABOVE_1_TOTE(16.11), RECEIVE_ARM_TOTE(23.9), ABOVE_CAN(33);
 		
 		private double value;
 		
@@ -244,7 +244,7 @@ public class RobotMap {
 	public static final double ARM_TURNBUCKLE_ELBOW_WRIST_MAX = 136;//good
 	public static final double ARM_TURNBUCKLE_ELBOW_WRIST_MIN = -126;//too_generous
 	
-	public static final double ARM_MAX_SPEED = .75;
+	public static final double ARM_MAX_SPEED = .5;
 	public static final double ARM_MAX_TRANSITION_SPEED = .75;
 	
 	public static final double ARM_MECHANICAL_MAX_SPEED = 60; //in degrees per second
@@ -259,16 +259,17 @@ public class RobotMap {
 		STORAGE(23,170,80),
 		CURLED_TAIL(0,0,0),
 		ON_LIFT(0,0,0),
-		SCORPION_HOLD(0,0,0),
+		SCORPION_HOLD(14.2,-91.0,-90),
 		
 		AUTON_POSITION_1(59.7, 117.3, 172.4),
 		AUTON_POSITION_2(23,170,175),
+		AUTON_POSITION_3(-19.9, -81.0, -163.2),
 		
 		TRANSITION_1(51.3, 158.4, 90),
 		TRANSITION_2(98.2, 73.0, 0),
 		TRANSITION_3(99.7, 29.1, -45.3),
 		TRANSITION_4(38.8, -45.1, -80.0),
-		TRANSITION_5(11.1, -60.2, -86.4);
+		TRANSITION_5(14.2, -55.0, -90);
 		
 		private double shoulder;
 		private double elbow;

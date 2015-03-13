@@ -11,6 +11,7 @@ import java.nio.ByteOrder;
 import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
 import org.usfirst.frc.team246.robot.RobotMap.LiftSetpoints;
 import org.usfirst.frc.team246.robot.commands.AlignWheels;
+import org.usfirst.frc.team246.robot.commands.Auto20Points;
 import org.usfirst.frc.team246.robot.commands.Auto2Can;
 import org.usfirst.frc.team246.robot.commands.AutoAlignAndDrive;
 import org.usfirst.frc.team246.robot.commands.AutoDrive;
@@ -135,9 +136,8 @@ public class Robot extends IterativeRobot {
         autonRadioBoxes.addObject("Do Nothing Left", new ZeroNavX(90));
         autonRadioBoxes.addObject("Do Nothing Backwards", new ZeroNavX(180));
         autonRadioBoxes.addObject("Do Nothing Right", new ZeroNavX(-90));
-        autonRadioBoxes.addObject("2 Can Left", new Auto2Can(true));
-        autonRadioBoxes.addObject("2 Can Right", new Auto2Can(false));
         autonRadioBoxes.addObject("Get all totes", new AutoGetAllTotes());
+        autonRadioBoxes.addObject("20 Points", new Auto20Points());
         SmartDashboard.putData("Auto Mode Chooser", autonRadioBoxes);
         
         

@@ -39,18 +39,24 @@ public class EngageScorpionMode extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	if(Robot.arm.transitionIndex == waypoints.length - 2 && Robot.arm.sumSquareError(waypoints[Robot.arm.transitionIndex].getShoulder(), waypoints[Robot.arm.transitionIndex].getElbow(), waypoints[Robot.arm.transitionIndex].getWrist()) < 100) Robot.arm.transitionIndex++;
+    	if(incrementingUp) {
+    		if(Robot.arm.transitionIndex < waypoints.length - 1 && Robot.arm.sumSquareError(waypoints[Robot.arm.transitionIndex].getShoulder(), waypoints[Robot.arm.transitionIndex].getElbow(), waypoints[Robot.arm.transitionIndex].getWrist()) < 100) Robot.arm.transitionIndex++;
+    	}
+    	else { 
+    		if(Robot.arm.transitionIndex > 0 && Robot.arm.sumSquareError(waypoints[Robot.arm.transitionIndex].getShoulder(), waypoints[Robot.arm.transitionIndex].getElbow(), waypoints[Robot.arm.transitionIndex].getWrist()) < 100) Robot.arm.transitionIndex--;
+    	}
     	goToSetpoint();
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return Robot.arm.transitionIndex == waypoints.length && Robot.arm.sumSquareError(waypoints[Robot.arm.transitionIndex].getShoulder(), waypoints[Robot.arm.transitionIndex].getElbow(), waypoints[Robot.arm.transitionIndex].getWrist()) < 50;
+        return ((incrementingUp && Robot.arm.transitionIndex == waypoints.length - 1) || (!incrementingUp && Robot.arm.transitionIndex == 0)) && Robot.arm.sumSquareError(waypoints[Robot.arm.transitionIndex].getShoulder(), waypoints[Robot.arm.transitionIndex].getElbow(), waypoints[Robot.arm.transitionIndex].getWrist()) < 50;
     }
 
     // Called once after isFinished returns true
     protected void end() {
-    	if(Robot.robotMode == RobotMode.TELEOP) new ScorpionHold().start();
+    	System.out.println("Entering scorpion hold");
+    	if(Robot.robotMode == RobotMode.TELEOP && incrementingUp) new ScorpionHold().start();
     	else Robot.arm.set(RobotMap.armShoulderPot.get(), RobotMap.armElbowPot.get(), RobotMap.armWristPot.get());
     }
 
@@ -62,6 +68,6 @@ public class EngageScorpionMode extends Command {
     
     private void goToSetpoint()
     {
-    	Robot.arm.set(RobotMap.ARM_TRANSITION_ARRAY[Robot.arm.transitionIndex]);
+    	Robot.arm.set(waypoints[Robot.arm.transitionIndex]);
     }
 }

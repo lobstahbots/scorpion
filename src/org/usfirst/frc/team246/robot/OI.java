@@ -4,6 +4,7 @@ import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
 import org.usfirst.frc.team246.robot.RobotMap.LiftSetpoints;
 import org.usfirst.frc.team246.robot.commands.ChangeArmBend;
 import org.usfirst.frc.team246.robot.commands.CrabWithTwist;
+import org.usfirst.frc.team246.robot.commands.EngageScorpionMode;
 import org.usfirst.frc.team246.robot.commands.GoFast;
 import org.usfirst.frc.team246.robot.commands.Intake;
 import org.usfirst.frc.team246.robot.commands.LiftTote;
@@ -129,6 +130,7 @@ public class OI {
 			}
 		}.toggle(new MoveArmToFront(), new MoveArmToBack());
 		*/
+		operator.getBack().whenPressed(new EngageScorpionMode());
 		
 		operator.getRB().whileHeld(new OpenGrabber());
 		
