@@ -12,18 +12,21 @@ public class AutoDriveSimple extends FieldCentricDrivingCommand{
 	
 	private Vector2D targetLocation; // x,y relative to robot, angle field centric
 	private double heading; // field centric
+	private boolean zero;
 	
-	public AutoDriveSimple(Vector2D targetLocation)
+	public AutoDriveSimple(Vector2D targetLocation, boolean zeroOdometry)
 	{
 		super();
 		this.targetLocation = targetLocation;
+		zero = zeroOdometry;
 	}
 	
 	
 	
 	protected void initialize() {
-		Robot.drivetrain.odometry.resetAll();
+		if(zero) Robot.drivetrain.odometry.resetAll();
 		heading = RobotMap.navX.getYaw();
+		Robot.drivetrain.setAccelerationRamping(true);
 		Robot.drivetrain.enableAbsoluteCrab(true);
 		execute();
     }
@@ -36,13 +39,10 @@ public class AutoDriveSimple extends FieldCentricDrivingCommand{
     	Robot.drivetrain.drivetrainPID.setTwist(getSpinRate());
         Robot.drivetrain.drivetrainPID.setCOR(getCOR());
         Robot.drivetrain.drivetrainPID.setCrabDirection(targetLocation.getAngle() - Robot.drivetrain.FOV); //sets the direction to Robot Centric
-        
-        System.out.println("Odometry: " + Robot.drivetrain.odometry.pidGet());
-        System.out.println("Setpoint: " + Robot.drivetrain.absoluteCrabPID.getSetpoint());
-        System.out.println("Output: " + Robot.drivetrain.absoluteCrabPID.get());
 	}
     
     protected void end() {
+    	Robot.drivetrain.setAccelerationRamping(false);
     	Robot.drivetrain.enableAbsoluteCrab(false);
     }
 

@@ -16,6 +16,6 @@ public class Auto2Can extends CommandGroup {
         else addParallel(new ZeroNavX(-90));
         addParallel(new AutoSetDriveSpeed(3));
         addSequential(new MoveArm(ArmSetpoints.STORAGE));
-        addSequential(new AutoAlignAndDrive(new Vector2D(false, 6, 0)));
+        addSequential(new AutoAlignAndDrive(new Vector2D(false, 6, 0), true));
     }
 }

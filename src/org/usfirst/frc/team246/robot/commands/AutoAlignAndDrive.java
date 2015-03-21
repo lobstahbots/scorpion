@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  */
 public class AutoAlignAndDrive extends CommandGroup {
     
-    public  AutoAlignAndDrive(Vector2D targetLocation) {
+    public  AutoAlignAndDrive(Vector2D targetLocation, boolean zeroOdometry) {
         addSequential(new AlignWheels(targetLocation.getAngle()));
-        addSequential(new AutoDriveSimple(targetLocation));
+        addSequential(new AutoDriveSimple(targetLocation, zeroOdometry));
     }
 }

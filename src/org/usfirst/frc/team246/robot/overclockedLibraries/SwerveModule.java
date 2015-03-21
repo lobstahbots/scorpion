@@ -38,6 +38,8 @@ public class SwerveModule
     
     public double maxSpeed;
     
+    public boolean accelerationControl = false;
+    
     public SwerveModule(Encoder wheelEncoder, AnalogPot modulePot, SpeedController wheelMotor, SpeedController moduleMotor, double maxSpeed, double x, double y, String name)
     {
         // set globals
@@ -163,7 +165,8 @@ public class SwerveModule
                 speedPID.setPID(SmartDashboard.getNumber("speedP", RobotMap.WHEEL_kP), SmartDashboard.getNumber("speedI", RobotMap.WHEEL_kI), SmartDashboard.getNumber("speedD", RobotMap.WHEEL_kD), SmartDashboard.getNumber("speedF", RobotMap.WHEEL_kF));
             }
             speedPID.enable();
-            speedPID.setSetpoint(maxSpeed*speed);
+            if(accelerationControl) speedPID.setSetpoint(speedPID.getSetpoint() + (speed*maxSpeed - speedPID.getSetpoint())/RobotMap.ACCELERATION_CONSTANT);
+            else speedPID.setSetpoint(maxSpeed*speed);
         }
         else
         {

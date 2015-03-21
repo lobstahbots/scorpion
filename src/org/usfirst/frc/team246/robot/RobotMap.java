@@ -94,6 +94,8 @@ public class RobotMap {
     public static final double SOUTH = 180;
     public static final double WEST = 90;
     public static final double EAST = 270;
+    
+    public static final double ACCELERATION_CONSTANT = 20;
 	
 //Getters
 	
@@ -179,7 +181,7 @@ public class RobotMap {
 	public static final double PUSHER_kD = 0;
 	public static final double PUSHER_kF = .25;
 	
-	public static final double PUSHER_IN = 0;
+	public static final double PUSHER_IN = -.5;
 	public static final double PUSHER_OUT = 3;
 	
 //Arm
@@ -267,7 +269,8 @@ public class RobotMap {
 		
 		TRANSITION_1(51.3, 158.4, 90),
 		TRANSITION_2(98.2, 73.0, 0),
-		TRANSITION_3(99.7, 29.1, -45.3),
+		TRANSITION_3a(99.7, 29.1, -45.3),
+		TRANSITION_3b(99.7, 29.1, -80.0),
 		TRANSITION_4(38.8, -45.1, -80.0),
 		TRANSITION_5(14.2, -55.0, -90);
 		
@@ -301,7 +304,7 @@ public class RobotMap {
 	public static ArmSetpoints[] ARM_TRANSITION_ARRAY = {
 		ArmSetpoints.TRANSITION_1,
 		ArmSetpoints.TRANSITION_2,
-		ArmSetpoints.TRANSITION_3,
+		ArmSetpoints.TRANSITION_3a,
 		ArmSetpoints.TRANSITION_4,
 		ArmSetpoints.TRANSITION_5
 	};

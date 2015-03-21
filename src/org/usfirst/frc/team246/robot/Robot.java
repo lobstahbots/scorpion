@@ -20,6 +20,7 @@ import org.usfirst.frc.team246.robot.commands.AutoLogoTest;
 import org.usfirst.frc.team246.robot.commands.AutoSetDriveSpeed;
 import org.usfirst.frc.team246.robot.commands.AutoSlideCan;
 import org.usfirst.frc.team246.robot.commands.AutoSpin;
+import org.usfirst.frc.team246.robot.commands.AutoTest;
 import org.usfirst.frc.team246.robot.commands.CloseGrabber;
 import org.usfirst.frc.team246.robot.commands.DeadReckoningDrive;
 import org.usfirst.frc.team246.robot.commands.Intake;
@@ -136,6 +137,7 @@ public class Robot extends IterativeRobot {
         autonRadioBoxes.addObject("Do Nothing Left", new ZeroNavX(90));
         autonRadioBoxes.addObject("Do Nothing Backwards", new ZeroNavX(180));
         autonRadioBoxes.addObject("Do Nothing Right", new ZeroNavX(-90));
+        autonRadioBoxes.addObject("Test Autonomous", new AutoTest());
         autonRadioBoxes.addObject("Get all totes", new AutoGetAllTotes());
         autonRadioBoxes.addObject("20 Points", new Auto20Points());
         SmartDashboard.putData("Auto Mode Chooser", autonRadioBoxes);

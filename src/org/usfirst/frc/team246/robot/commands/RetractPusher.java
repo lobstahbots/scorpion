@@ -20,7 +20,7 @@ public class RetractPusher extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.pusher.setSetpoint(0);
+    	Robot.pusher.setSetpoint(-.072);
     	
     }
 

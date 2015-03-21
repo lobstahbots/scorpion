@@ -35,6 +35,7 @@ public class EngageScorpionMode extends Command {
     	}
     	Robot.arm.transitionIndex = bestSetpoint;
     	incrementingUp = Robot.arm.transitionIndex < 3;
+    	if(!incrementingUp) waypoints[2] = ArmSetpoints.TRANSITION_3b;
     }
 
     // Called repeatedly when this Command is scheduled to run

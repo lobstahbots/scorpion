@@ -24,11 +24,11 @@ public class AutoGetAllTotes extends CommandGroup {
 		addParallel(new Outgest()); //Slide for the first can
 		addSequential(new AutoSpin(135)); //Spin to the right angle
 		if(Robot.trojan) addSequential(new WaitCommand(1.5)); //Wait for fork to get above can
-		addSequential(new AutoAlignAndDrive(new Vector2D(false, 1.75, 0))); //Drive towards the center of the field
-		addSequential(new AutoAlignAndDrive(new Vector2D(false, 4.5, 90)));
+		addSequential(new AutoAlignAndDrive(new Vector2D(false, 1.75, 0), true)); //Drive towards the center of the field
+		addSequential(new AutoAlignAndDrive(new Vector2D(false, 4.5, 90), true));
 		addParallel(new Intake());// Intake the second tote
 		addParallel(new AutoSetDriveSpeed(3)); //Set the speed to 3
-		addSequential(new AutoAlignAndDrive(new Vector2D(false, 4.5, 90))); //Drive into the second tote
+		addSequential(new AutoAlignAndDrive(new Vector2D(false, 4.5, 90), false)); //Drive into the second tote
 		addSequential(new WaitCommand(.25));
 		addParallel(new AutoSetDriveSpeed(5)); //Set the speed to 5
 		addSequential(new AutoSpin(160));
@@ -85,7 +85,7 @@ public class AutoGetAllTotes extends CommandGroup {
 			}
 		});
 		addSequential(new AutoSpin(-20));
-		addSequential(new AutoAlignAndDrive(new Vector2D(false, 5, -20)));
+		addSequential(new AutoAlignAndDrive(new Vector2D(false, 5, -20), true));
 		if(!Robot.trojan) addSequential(new MoveForklift(LiftSetpoints.GROUND, true)
 		{
 			boolean waiting = false;

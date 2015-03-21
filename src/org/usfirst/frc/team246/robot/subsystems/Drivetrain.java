@@ -241,6 +241,14 @@ public class Drivetrain extends Subsystem {
         return RobotMap.navX.getYaw();
     }
     
+    public void setAccelerationRamping(boolean on)
+    {
+    	for(int i = 0; i < swerves.length; i++)
+    	{
+    		swerves[i].accelerationControl = on;
+    	}
+    }
+    
     double lastTimeWasMoving = Long.MAX_VALUE;
     public boolean isMoving()
     {
