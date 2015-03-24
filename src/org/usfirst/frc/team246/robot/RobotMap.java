@@ -106,23 +106,23 @@ public class RobotMap {
 	
 	//Sensors
 	
-//	public static AnalogIn leftRangeFinder;
-//	public static AnalogIn rightRangeFinder;
-	
-	public static LimitSwitch leftToteLimitSwitch;
-	public static LimitSwitch rightToteLimitSwitch;
+	public static AnalogIn leftRangeFinder;
+	public static AnalogIn rightRangeFinder;
 	
 	//constants
 	
-//	public static double LEFT_RANGE_FINDER_IN;
-//	public static double RIGHT_RANGE_FINDER_IN;
-//	public static double LEFT_RANGE_FINDER_OUT;
-//	public static double RIGHT_RANGE_FINDER_OUT;
-	
-	public static int LEFT_TOTE_LIMIT_SWITCH_REPEAT = 3;
-	public static int RIGHT_TOTE_LIMIT_SWITCH_REPEAT = 3;
+	public static double LEFT_RANGE_FINDER_IN;
+	public static double RIGHT_RANGE_FINDER_IN;
+	public static double LEFT_RANGE_FINDER_OUT;
+	public static double RIGHT_RANGE_FINDER_OUT;
+	public static double LEFT_RANGE_FINDER_PID_SETPOINT;
+	public static double RIGHT_RANGE_FINDER_PID_SETPOINT;
 	
 	public static final double GETTER_POTS_TOLERANCE = 3;
+	
+	public static final double GETTER_ADJUSTING_kP = 2;
+	public static final double GETTER_ADJUSTING_kI = 0;
+	public static final double GETTER_ADJUSTING_kD = 0;
 	
 //Forklift
 	
@@ -471,55 +471,53 @@ public class RobotMap {
 	    	MODULE_kF = 0;
         }
 		
-	//Getters
-		
-		//Motors
-		
-		leftGetterMotor = new Victor246(6, 0, pdp);
-		LiveWindow.addActuator("Getters", "leftGetterMotor", (LiveWindowSendable) leftGetterMotor);
-		rightGetterMotor = new Victor246(7, 0, pdp);
-		LiveWindow.addActuator("Getters", "rightGetterMotor", (LiveWindowSendable) rightGetterMotor);
-		
-		//Sensors
-		
-//		if(Robot.trojan)
-//		{
-//			leftRangeFinder = new AnalogIn(3, true);
-//			LiveWindow.addSensor("Getters", "leftRangeFinder", leftRangeFinder);
-//			rightRangeFinder = new AnalogIn(4, true);
-//			LiveWindow.addSensor("Getters", "rightRangeFinder", rightRangeFinder);
-//		}
-//		else
-//		{
-//			leftRangeFinder = new AnalogIn(2, false);
-//			LiveWindow.addSensor("Getters", "leftRangeFinder", leftRangeFinder);
-//			rightRangeFinder = new AnalogIn(3, false);
-//			LiveWindow.addSensor("Getters", "rightRangeFinder", rightRangeFinder);
-//		}
-//		
-//		//Constants
-//		
-//		if(Robot.trojan)
-//		{
-//			LEFT_RANGE_FINDER_IN = 1.635;
-//			RIGHT_RANGE_FINDER_IN = 1.615;
-//			LEFT_RANGE_FINDER_OUT = 1.565;
-//			RIGHT_RANGE_FINDER_OUT = 1.545;
-//		}
-//		else
-//		{
-//			LEFT_RANGE_FINDER_IN = 1050;
-//			RIGHT_RANGE_FINDER_IN = 1030;
-//			LEFT_RANGE_FINDER_OUT = 1000;
-//			RIGHT_RANGE_FINDER_OUT = 1010;
-//		}
-		
-		leftToteLimitSwitch = new LimitSwitch(8, LEFT_TOTE_LIMIT_SWITCH_REPEAT);
-		rightToteLimitSwitch = new LimitSwitch(9, RIGHT_TOTE_LIMIT_SWITCH_REPEAT);
-
-		LiveWindow.addSensor("Getters", "Left Tote Limit Swtich", leftToteLimitSwitch);
-		LiveWindow.addSensor("Getters", "Right Tote Limit Swtich", rightToteLimitSwitch);
-		
+  //Getters
+	
+  		//Motors
+  		
+  		leftGetterMotor = new Victor246(6, 0, pdp);
+  		LiveWindow.addActuator("Getters", "leftGetterMotor", (LiveWindowSendable) leftGetterMotor);
+  		rightGetterMotor = new Victor246(7, 0, pdp);
+  		LiveWindow.addActuator("Getters", "rightGetterMotor", (LiveWindowSendable) rightGetterMotor);
+  		
+  		//Sensors
+  		
+  		if(Robot.trojan)
+  		{
+  			leftRangeFinder = new AnalogIn(3, true);
+  			LiveWindow.addSensor("Getters", "leftRangeFinder", leftRangeFinder);
+  			rightRangeFinder = new AnalogIn(4, true);
+  			LiveWindow.addSensor("Getters", "rightRangeFinder", rightRangeFinder);
+  		}
+  		else
+  		{
+  			leftRangeFinder = new AnalogIn(2, false);
+  			LiveWindow.addSensor("Getters", "leftRangeFinder", leftRangeFinder);
+  			rightRangeFinder = new AnalogIn(3, false);
+  			LiveWindow.addSensor("Getters", "rightRangeFinder", rightRangeFinder);
+  		}
+  		
+  		//Constants
+  		
+  		if(Robot.trojan)
+  		{
+  			LEFT_RANGE_FINDER_IN = 0.906;
+  			RIGHT_RANGE_FINDER_IN = 0.840;
+  			LEFT_RANGE_FINDER_OUT = 0.862;
+  			RIGHT_RANGE_FINDER_OUT = 0.807;
+  			LEFT_RANGE_FINDER_PID_SETPOINT = .95;
+  			RIGHT_RANGE_FINDER_PID_SETPOINT = .93;
+  		}
+  		else
+  		{
+  			LEFT_RANGE_FINDER_IN = 1050;
+  			RIGHT_RANGE_FINDER_IN = 1030;
+  			LEFT_RANGE_FINDER_OUT = 1000;
+  			RIGHT_RANGE_FINDER_OUT = 1010;
+  			LEFT_RANGE_FINDER_PID_SETPOINT = .900;
+  			RIGHT_RANGE_FINDER_PID_SETPOINT = .900;
+  		}
+  		
 	//Forklift
 		
 		//Motors

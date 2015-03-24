@@ -77,12 +77,15 @@ public class Robot extends IterativeRobot {
 	public static double toteDistance = 65536;
 	public static double otsRPM = 0;
 	
+	public static boolean hasTote = false;
+	
 	public static boolean test1 = false;
 	public static boolean test2 = false;
 	public static boolean test3 = false;
 	public static boolean gyroDisabled = false;
 	public static boolean gasMode = false;
-	public static boolean trojan = false;
+	public static boolean trojan = true;
+	public static boolean scorpionModeTest = false;
 	
 	public static Drivetrain drivetrain;
 	public static Getters getters;
@@ -328,9 +331,11 @@ public class Robot extends IterativeRobot {
             	if(oi.driver.getDown().get()) RobotMap.navX.zeroYaw(180);
             	if(oi.driver.getRight().get()) RobotMap.navX.zeroYaw(90);
             }
-            
-            if(RobotMap.liftPot.get() < LiftSetpoints.GROUND.getValue() && !liftWasDown) UdpAlertService.sendAlert(new AlertMessage("Forklift Down").playSound("whack.wav"));
-            liftWasDown = RobotMap.liftPot.get() < LiftSetpoints.GROUND.getValue();
+            if(!trojan)
+            {
+	            if(RobotMap.liftPot.get() < LiftSetpoints.GROUND.getValue() && !liftWasDown) UdpAlertService.sendAlert(new AlertMessage("Forklift Down").playSound("whack.wav"));
+	            liftWasDown = RobotMap.liftPot.get() < LiftSetpoints.GROUND.getValue();
+            }
             
             SmartDashboard.putBoolean("hasTote?", getters.hasTote());
             
@@ -380,7 +385,9 @@ public class Robot extends IterativeRobot {
         
         //gyroDisabled = !SmartDashboard.getBoolean("field-centric", true);
         
-        SmartDashboard.putBoolean("haveTote", getters.hasTote());
+        hasTote = getters.hasTote();
+        
+        SmartDashboard.putBoolean("haveTote", hasTote);
     }
     
     public class AnalogInputCollector implements Runnable {

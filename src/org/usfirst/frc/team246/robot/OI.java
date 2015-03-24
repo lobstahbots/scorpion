@@ -2,6 +2,7 @@ package org.usfirst.frc.team246.robot;
 
 import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
 import org.usfirst.frc.team246.robot.RobotMap.LiftSetpoints;
+import org.usfirst.frc.team246.robot.commands.AdjustTote;
 import org.usfirst.frc.team246.robot.commands.ChangeArmBend;
 import org.usfirst.frc.team246.robot.commands.CrabWithTwist;
 import org.usfirst.frc.team246.robot.commands.EngageScorpionMode;
@@ -21,6 +22,7 @@ import org.usfirst.frc.team246.robot.commands.Outgest;
 import org.usfirst.frc.team246.robot.commands.PushTotes;
 import org.usfirst.frc.team246.robot.commands.RetractPusher;
 import org.usfirst.frc.team246.robot.commands.RobotCentricCrabWithTwist;
+import org.usfirst.frc.team246.robot.commands.ScorpionHold;
 import org.usfirst.frc.team246.robot.commands.StopGetters;
 import org.usfirst.frc.team246.robot.commands.TransitionSimple;
 import org.usfirst.frc.team246.robot.commands.TransitionSimpleStepDown;
@@ -44,7 +46,7 @@ public class OI {
     {
     	driver = new LogitechF310(0);
     	operator = new LogitechF310(1);
-    	transitioner = new LogitechF310(2);
+    	if(Robot.scorpionModeTest) transitioner = new LogitechF310(2);
     	
     	//driver.getLB().whileHeld(new CrabWithAbsoluteTwist());
     	driver.getLT().whileHeld(new GoFast());
@@ -70,9 +72,9 @@ public class OI {
 			}
 			public boolean getToggler()
 			{
-				return Robot.getters.getCurrentCommand().getClass() == Intake.class;
+				return Robot.getters.getCurrentCommand().getClass() == AdjustTote.class;
 			}
-		}.toggle(new StopGetters(), new Intake());
+		}.toggle(new StopGetters(), new AdjustTote());
 		
 		new Toggle() {
 			
@@ -134,10 +136,13 @@ public class OI {
 		
 		operator.getRB().whileHeld(new OpenGrabber());
 		
-		transitioner.getX2().whenPressed(new TransitionSimple(true));
-		transitioner.getB().whenPressed(new TransitionSimple(false));
-		transitioner.getY2().whenPressed(new TransitionSimpleStepUp());
-		transitioner.getA().whenPressed(new TransitionSimpleStepDown());
+		if(Robot.scorpionModeTest)
+		{
+			transitioner.getX2().whenPressed(new TransitionSimple(true));
+			transitioner.getB().whenPressed(new TransitionSimple(false));
+			transitioner.getY2().whenPressed(new TransitionSimpleStepUp());
+			transitioner.getA().whenPressed(new TransitionSimpleStepDown());
+		}
     }
 }
 
