@@ -11,7 +11,7 @@ public class AutoGetMiddleCan extends CommandGroup {
     
     public  AutoGetMiddleCan() {
         addParallel(new ZeroNavX(0));
-        addParallel(new AutoSetDriveSpeed(5));
+        addParallel(AutoSetDriveSpeed.modifyCrabAndSpin(5, 5));
 		addSequential(new AutoAlignAndDrive(new Vector2D(false, 1.25, 0), true));
     }
 }

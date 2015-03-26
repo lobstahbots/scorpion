@@ -256,7 +256,7 @@ public class Robot extends IterativeRobot {
     public void teleopInit() {
     	robotMode = RobotMode.TELEOP;
     	auton.cancel();
-    	Robot.drivetrain.setMaxSpeed(2);
+    	Robot.drivetrain.setMaxSpeed(RobotMap.SLOW_MAX_CRAB_SPEED, RobotMap.SLOW_MAX_SPIN_SPEED);
     	drivetrain.PIDOn(true);
     }
 

@@ -22,6 +22,43 @@ public class CrabWithTwist extends FieldCentricDrivingCommand{
 
 //    driverLeftJoystick is controlling "twist"
 //    driverRightJoystick is controlling "crab"
+	
+	boolean holdingHeading = false;
+	
+	/*
+	
+	protected void execute() {
+    	Robot.drivetrain.setFOV(updateHeading());
+    	
+        Vector2D crabVector = getCrabVector();
+        crabVector.setAngle(crabVector.getAngle() - Robot.drivetrain.getFOV());
+        Vector2D COR = getCOR();
+        
+        if(getSpinRate() == 0)
+        {
+        	if(!holdingHeading)
+        	{
+        		holdingHeading = true;
+        		Robot.drivetrain.absoluteTwistPID.enable();
+        		Robot.drivetrain.absoluteTwistPID.setSetpoint(Robot.drivetrain.getFOV());
+        	}
+        }
+        else
+        {
+        	if(holdingHeading)
+        	{
+        		holdingHeading = false;
+        		Robot.drivetrain.absoluteTwistPID.disable();
+        	}
+        	Robot.drivetrain.drivetrainPID.setTwist(getSpinRate());
+        }
+        
+        Robot.drivetrain.drivetrainPID.setCrabSpeed(crabVector.getMagnitude());
+        Robot.drivetrain.drivetrainPID.setCrabDirection(crabVector.getAngle());
+        Robot.drivetrain.drivetrainPID.setCOR(RobotMap.ROBOT_CIRCLE_CENTER);
+    }
+    
+    */
     
     protected Vector2D getCrabVector() {
     	Vector2D v = new Vector2D(true, Robot.oi.driver.getLeftXAxis(), -Robot.oi.driver.getLeftYAxis());
@@ -41,7 +78,7 @@ public class CrabWithTwist extends FieldCentricDrivingCommand{
         if(Robot.test2)
         {
             return SmartDashboard.getNumber("spinRate", 0) / RobotMap.WHEEL_TOP_ABSOLUTE_SPEED;
-        } 
+        }
         return Math.pow(Robot.oi.driver.getRightXAxis(), 3);
     }
 
@@ -58,7 +95,7 @@ public class CrabWithTwist extends FieldCentricDrivingCommand{
     }
 
     protected void end() {
-        
+        Robot.drivetrain.absoluteTwistPID.disable();
     }
 
     protected void interrupted() {

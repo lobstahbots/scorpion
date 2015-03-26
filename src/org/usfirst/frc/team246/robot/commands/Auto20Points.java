@@ -19,7 +19,7 @@ public class Auto20Points extends CommandGroup {
     	addParallel(new CloseGrabber());
     	addParallel(new MoveForklift(LiftSetpoints.ABOVE_CAN, true));
     	addSequential(new MoveArm(ArmSetpoints.AUTON_POSITION_1));
-		addParallel(new AutoSetDriveSpeed(5)); //Set the speed to 5
+		addParallel(AutoSetDriveSpeed.modifyCrabAndSpin(5, 5)); //Set the speed to 5
 		addParallel(new Outgest()); //Slide for the first can
 		addSequential(new AutoSpin(135)); //Spin to the right angle
 		addSequential(new AutoAlignAndDrive(new Vector2D(false, 1.25, 0), true)); //Drive towards the center of the field
@@ -37,7 +37,6 @@ public class Auto20Points extends CommandGroup {
 				super.initialize();
 			}
 		});
-		addParallel(new AutoSetDriveSpeed(5));
 		addSequential(new AutoDriveSimple(new Vector2D(false, 4.5, 90), true)
 		{
 			@Override
@@ -47,11 +46,11 @@ public class Auto20Points extends CommandGroup {
 			}
 		});
 		addParallel(new Intake());// Intake the second tote
-		addParallel(new AutoSetDriveSpeed(3)); //Set the speed to 3
+		addParallel(AutoSetDriveSpeed.modifyCrab(3)); //Set the speed to 3
 		addSequential(new AutoAlignAndDrive(new Vector2D(false, 8, 90), false)); //Drive into the second tote
 		addParallel(new MoveForklift(LiftSetpoints.RECEIVE_ARM_TOTE, true));
 		addSequential(new WaitCommand(.25));
-		addParallel(new AutoSetDriveSpeed(5)); //Set the speed to 5
+		addParallel(AutoSetDriveSpeed.modifyCrab(5)); //Set the speed to 5
 		addSequential(new AutoAlignAndDrive(new Vector2D(false, 5, 0), true));
 		addSequential(new Outgest(), .25);
 		addParallel(new Intake());

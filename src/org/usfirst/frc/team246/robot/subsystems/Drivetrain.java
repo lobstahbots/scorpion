@@ -32,11 +32,14 @@ public class Drivetrain extends Subsystem {
     
     public double FOV = 0; //the front of the vehicle in degrees. May be used in different ways by different control schemes.
     
+    public double maxCrabSpeed = RobotMap.SLOW_MAX_CRAB_SPEED;
+    public double maxSpinSpeed = RobotMap.SLOW_MAX_SPIN_SPEED;
+    
     public Drivetrain()
     {
-    	backModule = new SwerveModule(RobotMap.backWheelEncoder, RobotMap.backModulePot, RobotMap.backWheelMotor, RobotMap.backModuleMotor, 2, 0, -32.5, "backModule");
-    	leftModule = new SwerveModule(RobotMap.leftWheelEncoder, RobotMap.leftModulePot, RobotMap.leftWheelMotor, RobotMap.leftModuleMotor, 2, -17.25, 0, "leftModule");
-    	rightModule = new SwerveModule(RobotMap.rightWheelEncoder, RobotMap.rightModulePot, RobotMap.rightWheelMotor, RobotMap.rightModuleMotor, 2, 17.25, 0, "rightModule");
+    	backModule = new SwerveModule(RobotMap.backWheelEncoder, RobotMap.backModulePot, RobotMap.backWheelMotor, RobotMap.backModuleMotor, RobotMap.WHEEL_TOP_ABSOLUTE_SPEED, 0, -32.5, "backModule");
+    	leftModule = new SwerveModule(RobotMap.leftWheelEncoder, RobotMap.leftModulePot, RobotMap.leftWheelMotor, RobotMap.leftModuleMotor, RobotMap.WHEEL_TOP_ABSOLUTE_SPEED, -17.25, 0, "leftModule");
+    	rightModule = new SwerveModule(RobotMap.rightWheelEncoder, RobotMap.rightModulePot, RobotMap.rightWheelMotor, RobotMap.rightModuleMotor, RobotMap.WHEEL_TOP_ABSOLUTE_SPEED, 17.25, 0, "rightModule");
     	swerves = new SwerveModule[3];
     	swerves[0] = backModule;
     	swerves[1] = leftModule;
@@ -115,6 +118,13 @@ public class Drivetrain extends Subsystem {
         Vector2D[] crab = crab(direction, speed);
         Vector2D[] snake = snake(spinRate, corX, corY);
         
+        //Scale the crab and snake vectors according to the max speeds
+        for(int i = 0; i < moduleSetpoints.length; i++)
+        {
+        	crab[i].setMagnitude(crab[i].getMagnitude() * (maxCrabSpeed/swerves[i].maxSpeed));
+        	snake[i].setMagnitude(snake[i].getMagnitude() * (maxSpinSpeed/swerves[i].maxSpeed));
+        }
+        
         //Add together the crab and snake vectors. Also find which wheel will be spinning the fastest.
         double largestVector = 0;
         for(int i=0; i<moduleSetpoints.length; i++){
@@ -141,12 +151,10 @@ public class Drivetrain extends Subsystem {
         }
     }
     
-    public void setMaxSpeed(double maxSpeed)
+    public void setMaxSpeed(double maxCrabSpeed, double maxSpinSpeed)
     {
-    	for(int i = 0; i < swerves.length; i++)
-    	{
-    		swerves[i].setMaxSpeed(maxSpeed);
-    	}
+    	this.maxCrabSpeed = maxCrabSpeed;
+    	this.maxSpinSpeed = maxSpinSpeed;
     }
     
     //Code for turning the robot to a certain angle relative to the field

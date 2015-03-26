@@ -9,15 +9,34 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 public class AutoSetDriveSpeed extends Command {
 
-	double topSpeed;
+	double topCrabSpeed;
+	boolean changeCrab;
+	double topSpinSpeed;
+	boolean changeSpin;
 	
-    public AutoSetDriveSpeed(double topSpeed) {
-        this.topSpeed = topSpeed;
+    private AutoSetDriveSpeed(double topCrabSpeed, boolean changeCrab, double topSpinSpeed, boolean changeSpin) {
+        this.topCrabSpeed = topCrabSpeed;
+        this.changeCrab = changeCrab;
+        this.topSpinSpeed = topSpinSpeed;
+        this.changeSpin = changeSpin;
     }
-
+    public static AutoSetDriveSpeed modifyCrabAndSpin(double topCrabSpeed, double topSpinSpeed)
+    {
+    	return new AutoSetDriveSpeed(topCrabSpeed, true, topSpinSpeed, true);
+    }
+    public static AutoSetDriveSpeed modifyCrab(double topCrabSpeed)
+    {
+    	return new AutoSetDriveSpeed(topCrabSpeed, true, 0, false);
+    }
+    public static AutoSetDriveSpeed modifySpin(double topSpinSpeed)
+    {
+    	return new AutoSetDriveSpeed(0, false, topSpinSpeed, true);
+    }
+    
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.drivetrain.setMaxSpeed(topSpeed);
+    	if(changeCrab) Robot.drivetrain.maxCrabSpeed = topCrabSpeed;
+    	if(changeSpin) Robot.drivetrain.maxSpinSpeed = topSpinSpeed;
     }
 
     // Called repeatedly when this Command is scheduled to run

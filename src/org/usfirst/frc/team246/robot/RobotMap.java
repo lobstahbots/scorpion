@@ -84,7 +84,13 @@ public class RobotMap {
     public static final double MAX_MODULE_ANGLE = 360; //the maximum angle which can be commanded to a module
     public static final double UNSAFE_MODULE_ANGLE = MAX_MODULE_ANGLE + 180; //the angle at which a module motor should be emergency stopped
     
-    public static final double WHEEL_TOP_ABSOLUTE_SPEED = 7; //the highest speed that our wheels can move
+    public static final double WHEEL_TOP_ABSOLUTE_SPEED = 12; //the highest speed that our wheels can move
+    
+    public static final double FAST_MAX_CRAB_SPEED = 7;
+    public static final double FAST_MAX_SPIN_SPEED =7;
+    
+    public static final double SLOW_MAX_CRAB_SPEED = 2;
+    public static final double SLOW_MAX_SPIN_SPEED = 3;
     
     public static final double crabZeroZone = .1;
     

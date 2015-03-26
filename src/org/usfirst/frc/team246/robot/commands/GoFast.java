@@ -17,7 +17,7 @@ public class GoFast extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.drivetrain.setMaxSpeed(RobotMap.WHEEL_TOP_ABSOLUTE_SPEED);
+    	Robot.drivetrain.setMaxSpeed(RobotMap.FAST_MAX_CRAB_SPEED, RobotMap.FAST_MAX_SPIN_SPEED);
     	UdpAlertService.sendAlert(new AlertMessage("Going fast"));
     }
 
@@ -32,7 +32,7 @@ public class GoFast extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
-    	Robot.drivetrain.setMaxSpeed(2);
+    	Robot.drivetrain.setMaxSpeed(RobotMap.SLOW_MAX_CRAB_SPEED, RobotMap.SLOW_MAX_SPIN_SPEED);
     	UdpAlertService.sendAlert(new AlertMessage("Slowing Down"));
     }
 

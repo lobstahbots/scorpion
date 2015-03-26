@@ -20,17 +20,16 @@ public class AutoGetAllTotes extends CommandGroup {
     	addParallel(new ZeroNavX(90));
     	if(!Robot.trojan) addParallel(new MoveForklift(LiftSetpoints.ABOVE_CAN, true));
     	if(!Robot.trojan) addSequential(new MoveArm(ArmSetpoints.AUTON_POSITION_1));
-		addParallel(new AutoSetDriveSpeed(5)); //Set the speed to 5
+		addParallel(AutoSetDriveSpeed.modifyCrabAndSpin(5, 5)); //Set the speed to 5
 		addParallel(new Outgest()); //Slide for the first can
 		addSequential(new AutoSpin(135)); //Spin to the right angle
 		if(Robot.trojan) addSequential(new WaitCommand(1.5)); //Wait for fork to get above can
 		addSequential(new AutoAlignAndDrive(new Vector2D(false, 1.75, 0), true)); //Drive towards the center of the field
 		addSequential(new AutoAlignAndDrive(new Vector2D(false, 4.5, 90), true));
 		addParallel(new Intake());// Intake the second tote
-		addParallel(new AutoSetDriveSpeed(3)); //Set the speed to 3
+		addParallel(AutoSetDriveSpeed.modifyCrab(3)); //Set the speed to 3
 		addSequential(new AutoAlignAndDrive(new Vector2D(false, 4.5, 90), false)); //Drive into the second tote
 		addSequential(new WaitCommand(.25));
-		addParallel(new AutoSetDriveSpeed(5)); //Set the speed to 5
 		addSequential(new AutoSpin(160));
 		if(!Robot.trojan) addParallel(new OpenGrabber());
 		if(!Robot.trojan) addParallel(new MoveForklift(LiftSetpoints.ABOVE_1_TOTE, true));
@@ -76,7 +75,7 @@ public class AutoGetAllTotes extends CommandGroup {
 		if(!Robot.trojan) addParallel(new MoveArm(ArmSetpoints.AUTON_POSITION_2));
 		if(!Robot.trojan) addSequential(new MoveForklift(LiftSetpoints.ABOVE_1_TOTE, true));
 		if(!Robot.trojan) addParallel(new CloseGrabber());
-		addParallel(new AutoSetDriveSpeed(3));
+		addParallel(AutoSetDriveSpeed.modifySpin(3));
 		addSequential(new AutoSpin(70){
 			@Override
 			protected boolean isFinished()
