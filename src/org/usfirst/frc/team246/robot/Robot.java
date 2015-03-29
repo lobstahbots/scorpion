@@ -215,8 +215,6 @@ public class Robot extends IterativeRobot {
 			UdpAlertService.initialize("PaulAsus.local", 5801);
 			wasConnected = true;
 		}
-        
-        if(RobotMap.navX.isCalibrating()) System.out.println("Calibrating NavX");
 
 		Scheduler.getInstance().run();
 	}
@@ -247,6 +245,12 @@ public class Robot extends IterativeRobot {
      */
     public void autonomousPeriodic() {
     	allPeriodic();
+    	
+    	SmartDashboard.putNumber("backWheelEncoderDistance", drivetrain.backModule.getWheelDistance());
+    	SmartDashboard.putNumber("leftWheelEncoderDistance", drivetrain.leftModule.getWheelDistance());
+    	SmartDashboard.putNumber("rightWheelEncoderDistance", drivetrain.rightModule.getWheelDistance());
+    	SmartDashboard.putNumber("odometryDistance", drivetrain.odometry.getFieldCentricLinearDisplacement().getMagnitude());
+    	SmartDashboard.putNumber("odometryAngle", drivetrain.odometry.getFieldCentricLinearDisplacement().getAngle());
     	
     	//drivetrain.absoluteCrabPID.setPID(SmartDashboard.getNumber("crabP"), SmartDashboard.getNumber("crabI"), SmartDashboard.getNumber("crabD"));
     	
