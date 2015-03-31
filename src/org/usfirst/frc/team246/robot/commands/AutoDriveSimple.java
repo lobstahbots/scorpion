@@ -38,7 +38,9 @@ public class AutoDriveSimple extends FieldCentricDrivingCommand{
         
     	Robot.drivetrain.drivetrainPID.setTwist(getSpinRate());
         Robot.drivetrain.drivetrainPID.setCOR(getCOR());
-        Robot.drivetrain.drivetrainPID.setCrabDirection(targetLocation.getAngle() - Robot.drivetrain.FOV); //sets the direction to Robot Centric
+        Vector2D crabDirection = Vector2D.subtractVectors(targetLocation, Robot.drivetrain.odometry.getFieldCentricLinearDisplacement());
+        if(Robot.drivetrain.absoluteCrabPID.get() < 0) crabDirection.setAngle(crabDirection.getAngle() + 180);
+        Robot.drivetrain.drivetrainPID.setCrabDirection(crabDirection.getAngle());
 	}
     
     protected void end() {

@@ -1,5 +1,9 @@
 package org.usfirst.frc.team246.robot.subsystems;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.commands.CrabWithTwist;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SwerveModule;
@@ -217,8 +221,6 @@ public class Drivetrain extends Subsystem {
     	}
     	
     	public void setTwist(double spinRate){
-    		System.out.println("Goal: " + absoluteTwistPID.getSetpoint());
-    		System.out.println("Current: " + RobotMap.navX.getYaw());
     		this.spinRate = spinRate;
     		deploy();
     	}
@@ -321,7 +323,7 @@ public class Drivetrain extends Subsystem {
     
     public class Odometry implements Runnable, PIDSource
     {
-    	private Vector2D robotCentricLinearDisplacement = new Vector2D(true, 0, 0);
+    	private Vector2D fieldCentricLinearDisplacement = new Vector2D(true, 0, 0);
     	private double robotCentricAngularDisplacement = 0;
     	
     	private Vector2D[] swervesDisplacementVectors = new Vector2D[swerves.length];
@@ -331,23 +333,21 @@ public class Drivetrain extends Subsystem {
 			while(true){
 				setSwerveDisplacementVectors();
 				calculateNetLinearDisplacement();
-				calculateNetAngularDisplacement();
-				Timer.delay(.001); // in seconds	
+				//calculateNetAngularDisplacement();
+				Timer.delay(.05); // in seconds	
 			}
 		}
     	
-//    	GETTERS:
-    	public Vector2D getRobotCentricLinearDisplacement(){
-    		return robotCentricLinearDisplacement;
-    	}
+////    	GETTERS:
+//    	public Vector2D getRobotCentricLinearDisplacement(){
+//    		return robotCentricLinearDisplacement;
+//    	}
     	
     	public double getRobotCentricAngularDisplacement(){
     		return robotCentricAngularDisplacement;
     	}
     	
     	public Vector2D getFieldCentricLinearDisplacement(){
-    		Vector2D fieldCentricLinearDisplacement = robotCentricLinearDisplacement.cloneVector();
-    		fieldCentricLinearDisplacement.setAngle(robotCentricLinearDisplacement.getAngle() + RobotMap.navX.getYaw());
     		return fieldCentricLinearDisplacement;
     	}
     	
@@ -362,11 +362,7 @@ public class Drivetrain extends Subsystem {
     	}
     	
     	public void resetNetLinearDiplacement() {
-    		//robotCentricLinearDisplacement = new Vector2D(true, 0, 0);
-    		for(int i = 0; i < swerves.length; i++)
-    		{
-    			swerves[i].resetWheelEncoder();
-    		}
+    		fieldCentricLinearDisplacement = new Vector2D(true, 0, 0);
 		}
     	
     	public void resetNetAngularDiplacement() {
@@ -377,14 +373,22 @@ public class Drivetrain extends Subsystem {
     	private void setSwerveDisplacementVectors() {
     		for(int i=0; i<swerves.length; i++){
     			double dist = swerves[i].wheelEncoder.getDistance();
-    			if(swerves[i].invertSpeed) dist = -dist;
-    			swervesDisplacementVectors[i] = new Vector2D(false, dist, swerves[i].modulePot.get());
+    			swervesDisplacementVectors[i] = new Vector2D(false, dist, swerves[i].modulePot.get() + RobotMap.navX.getYaw());
+    			swerves[i].resetWheelEncoder();
     		}
 		}
     	
 //    	CALCULATE NETS for Odometry:
     	private void calculateNetLinearDisplacement(){
-    		robotCentricLinearDisplacement = Vector2D.addVectors(robotCentricLinearDisplacement, sumOfVectors(swervesDisplacementVectors));    		
+    		ArrayList<Vector2D> dispVectors = new ArrayList<Vector2D>(Arrays.asList(swervesDisplacementVectors));
+    		double ratio01 = dispVectors.get(0).getMagnitude()/dispVectors.get(1).getMagnitude();
+    		double ratio02 = dispVectors.get(0).getMagnitude()/dispVectors.get(2).getMagnitude();
+    		double ratio12 = dispVectors.get(1).getMagnitude()/dispVectors.get(2).getMagnitude();
+    		if((ratio01 < .5 || ratio01 > 2) && (ratio02 < .5 && ratio02 > 2)) dispVectors.remove(0);
+    		if((ratio01 < .5 || ratio01 > 2) && (ratio12 < .5 && ratio12 > 2)) dispVectors.remove(1);
+    		if((ratio02 < .5 || ratio02 > 2) && (ratio12 < .5 && ratio12 > 2)) dispVectors.remove(2);
+    		
+    		fieldCentricLinearDisplacement = Vector2D.addVectors(fieldCentricLinearDisplacement, averageOfVectors(dispVectors.toArray(new Vector2D[0])));    		
     	}
     	
     	private void calculateNetAngularDisplacement(){
@@ -409,6 +413,15 @@ public class Drivetrain extends Subsystem {
     		return sum;
     	}
     	
+    	private Vector2D averageOfVectors(Vector2D[] vectorArray){
+    		Vector2D sum = new Vector2D(true, 0, 0);
+    		for(int i=0; i<vectorArray.length; i++){
+    			sum = Vector2D.addVectors(sum, vectorArray[i]);
+    		}
+    		sum.setMagnitude(sum.getMagnitude()/vectorArray.length);
+    		return sum;
+    	}
+    	
     	private double sumOfDoubles(double[] doubleArray){
 			double sum = 0;
 			for(int i=0; i<doubleArray.length; i++){
@@ -419,15 +432,15 @@ public class Drivetrain extends Subsystem {
 
 		@Override
 		public double pidGet() {
-			//return getRobotCentricLinearDisplacement().getMagnitude();
-			double sum = 0;
-			for(int i = 0; i < swerves.length; i++)
-			{
-				double dist = swerves[i].getWheelDistance();
-				if(swerves[i].invertSpeed) dist = -dist;
-				sum += dist;
-			}
-			return sum/swerves.length;
+			return getFieldCentricLinearDisplacement().getMagnitude();
+//			double sum = 0;
+//			for(int i = 0; i < swerves.length; i++)
+//			{
+//				double dist = swerves[i].getWheelDistance();
+//				if(swerves[i].invertSpeed) dist = -dist;
+//				sum += dist;
+//			}
+//			return sum/swerves.length;
 		}
     }
 }

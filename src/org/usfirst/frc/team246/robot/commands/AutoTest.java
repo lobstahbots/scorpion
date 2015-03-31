@@ -12,8 +12,12 @@ public class AutoTest extends CommandGroup {
     
     public  AutoTest() {
     	addParallel(new ZeroNavX(0));
-        addParallel(new CloseGrabber());
-        addSequential(new WaitCommand(3));
-        addParallel(new OpenGrabber());
+    	for(int i = 0; i < 10; i++)
+    	{
+	    	addParallel(AutoSetDriveSpeed.modifyCrab(2));
+	    	addSequential(new AutoAlignAndDrive(new Vector2D(true, -10, 0), true));
+		    addParallel(AutoSetDriveSpeed.modifyCrab(5));
+		    addSequential(new AutoAlignAndDrive(new Vector2D(true, 0, 0), false));
+    	}
     }
 }
