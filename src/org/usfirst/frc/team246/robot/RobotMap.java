@@ -260,11 +260,14 @@ public class RobotMap {
 	
 	public enum ArmSetpoints {
 		
-		GROUND_UP(101,175,90),
+		GROUND_UP_HIGH(101,175,90),
+		GROUND_UP_LOW(101,175,90),
+		GROUND_FALL_PREP(43,143,178),
 		GROUND_FALL(43,143,178),
 		STEP(98.5,108.8,90),
 		TOP_OF_STACK(2,48,90),
 		STORAGE(23,170,80),
+		STORAGE_NO_CAN(23, 170, 175),
 		CURLED_TAIL(0,0,0),
 		ON_LIFT(0,0,0),
 		SCORPION_HOLD(14.2,-91.0,-90),
@@ -307,10 +310,17 @@ public class RobotMap {
 		}
 	}
 	
-	public static ArmSetpoints[] ARM_TRANSITION_ARRAY = {
+	public static ArmSetpoints[] ARM_TRANSITION_ARRAY_TO_FRONT = {
 		ArmSetpoints.TRANSITION_1,
 		ArmSetpoints.TRANSITION_2,
 		ArmSetpoints.TRANSITION_3a,
+		ArmSetpoints.TRANSITION_4,
+		ArmSetpoints.TRANSITION_5
+	};
+	public static ArmSetpoints[] ARM_TRANSITION_ARRAY_TO_BACK = {
+		ArmSetpoints.TRANSITION_1,
+		ArmSetpoints.TRANSITION_2,
+		ArmSetpoints.TRANSITION_3b,
 		ArmSetpoints.TRANSITION_4,
 		ArmSetpoints.TRANSITION_5
 	};
@@ -327,12 +337,13 @@ public class RobotMap {
 	
 	//Constants
 	
+	public static final double GRABBER_kP = 1;
+	public static final double GRABBER_kI = 0;
+	public static final double GRABBER_kD = 0;
+	
 	public static final double GRABBER_CLOSED = 0;
 	public static final double GRABBER_OPEN = 120;
-	
-	public static final double GRABBER_OPEN_SPEED = .75;
-	public static final double GRABBER_HOLD_SPEED = .1;
-	public static final double GRABBER_CLOSE_SPEED = -.25;
+	public static final double GRABBER_OPEN_WIDE = 150;
 	
 //OTS
 	

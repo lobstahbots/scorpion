@@ -1,8 +1,8 @@
 package org.usfirst.frc.team246.robot.commands;
 
 import org.usfirst.frc.team246.robot.Robot;
-import org.usfirst.frc.team246.robot.Robot.RobotMode;
 import org.usfirst.frc.team246.robot.RobotMap;
+import org.usfirst.frc.team246.robot.Robot.RobotMode;
 import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -10,11 +10,11 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class EngageScorpionMode extends Command {
+public class ExitScorpionMode extends Command {
+
+	ArmSetpoints[] waypoints = RobotMap.ARM_TRANSITION_ARRAY_TO_BACK;
 	
-	ArmSetpoints[] waypoints = RobotMap.ARM_TRANSITION_ARRAY_TO_FRONT;
-	
-    public EngageScorpionMode() {
+    public ExitScorpionMode() {
         requires(Robot.arm);
     }
 
@@ -35,14 +35,14 @@ public class EngageScorpionMode extends Command {
     }
 
     // Called repeatedly when this Command is scheduled to run
-    protected void execute() {
-    	if(Robot.arm.transitionIndex < waypoints.length - 1 && Robot.arm.sumSquareError(waypoints[Robot.arm.transitionIndex].getShoulder(), waypoints[Robot.arm.transitionIndex].getElbow(), waypoints[Robot.arm.transitionIndex].getWrist()) < 100) Robot.arm.transitionIndex++;
+    protected void execute() { 
+    	if(Robot.arm.transitionIndex > 0 && Robot.arm.sumSquareError(waypoints[Robot.arm.transitionIndex].getShoulder(), waypoints[Robot.arm.transitionIndex].getElbow(), waypoints[Robot.arm.transitionIndex].getWrist()) < 100) Robot.arm.transitionIndex--;
     	goToSetpoint();
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return Robot.arm.transitionIndex == waypoints.length - 1 && Robot.arm.sumSquareError(waypoints[Robot.arm.transitionIndex].getShoulder(), waypoints[Robot.arm.transitionIndex].getElbow(), waypoints[Robot.arm.transitionIndex].getWrist()) < 50;
+        return Robot.arm.transitionIndex == 0 && Robot.arm.sumSquareError(waypoints[Robot.arm.transitionIndex].getShoulder(), waypoints[Robot.arm.transitionIndex].getElbow(), waypoints[Robot.arm.transitionIndex].getWrist()) < 50;
     }
 
     // Called once after isFinished returns true

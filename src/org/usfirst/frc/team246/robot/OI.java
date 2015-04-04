@@ -6,9 +6,14 @@ import org.usfirst.frc.team246.robot.commands.AdjustTote;
 import org.usfirst.frc.team246.robot.commands.ChangeArmBend;
 import org.usfirst.frc.team246.robot.commands.CrabWithTwist;
 import org.usfirst.frc.team246.robot.commands.EngageScorpionMode;
+import org.usfirst.frc.team246.robot.commands.ExitScorpionMode;
+import org.usfirst.frc.team246.robot.commands.GettersLeft;
+import org.usfirst.frc.team246.robot.commands.GettersRight;
 import org.usfirst.frc.team246.robot.commands.GoFast;
 import org.usfirst.frc.team246.robot.commands.Intake;
 import org.usfirst.frc.team246.robot.commands.LiftTote;
+import org.usfirst.frc.team246.robot.commands.ManualArm;
+import org.usfirst.frc.team246.robot.commands.ManualPusher;
 import org.usfirst.frc.team246.robot.commands.MoveArm;
 import org.usfirst.frc.team246.robot.commands.MoveArmDown1;
 import org.usfirst.frc.team246.robot.commands.MoveArmToBack;
@@ -30,6 +35,8 @@ import org.usfirst.frc.team246.robot.commands.TransitionSimpleStepUp;
 import org.usfirst.frc.team246.robot.overclockedLibraries.LogitechF310;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Toggle;
 
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.buttons.Trigger;
 
 /**
@@ -41,12 +48,22 @@ public class OI {
     public LogitechF310 driver; //TODO: instantiate these when we get the controllers
     public LogitechF310 operator;
     public LogitechF310 transitioner;
+    public Joystick buttonBox;
+    
+    public Trigger processingConfirmLowerButton;
+    public Trigger processingOpenGrabberSmallButton;
+    public Trigger processingOpenGrabberLargeButton;
+    public Trigger processingDontRaiseLiftButton;
+    public Trigger breakArmConstraintsButton;
+    public Trigger manualPusherPushButton;
+    public Trigger manualPusherPullButton;
     
     public OI()
     {
     	driver = new LogitechF310(0);
     	operator = new LogitechF310(1);
-    	if(Robot.scorpionModeTest) transitioner = new LogitechF310(2);
+    	buttonBox = new Joystick(2);
+    	if(Robot.scorpionModeTest) transitioner = new LogitechF310(3);
     	
     	//driver.getLB().whileHeld(new CrabWithAbsoluteTwist());
     	driver.getLT().whileHeld(new GoFast());
@@ -81,6 +98,19 @@ public class OI {
 			@Override
 			public boolean get()
 			{
+				return driver.getLB().get();
+			}
+			public boolean getToggler()
+			{
+				return Robot.getters.getCurrentCommand().getClass() == Intake.class;
+			}
+		}.toggle(new StopGetters(), new Intake());
+		
+		new Toggle() {
+			
+			@Override
+			public boolean get()
+			{
 				return driver.getRB().get();
 			}
 			public boolean getToggler()
@@ -88,53 +118,83 @@ public class OI {
 				return Robot.getters.getCurrentCommand().getClass() == Outgest.class;
 			}
 		}.toggle(new StopGetters(), new Outgest());
-    	
-        operator.getUp().whenPressed(new MoveForkliftUp1());
-        operator.getDown().whenPressed(new MoveForkliftDown1());
-        operator.getLeft().whenPressed(new MoveForklift(LiftSetpoints.GROUND, true));
-        operator.getLeft().whenReleased(new MoveForklift(LiftSetpoints.SCORING_PLATFORM, true));
-        driver.getB().whenPressed(new MoveForklift(LiftSetpoints.GROUND, true));
-        driver.getB().whenReleased(new MoveForklift(LiftSetpoints.ABOVE_1_TOTE, true));
 		
-		operator.getLB().whileHeld(new PushTotes());
-		operator.getLB().whenReleased(new RetractPusher());
-		
-		operator.getA().whenPressed(new MoveArm(ArmSetpoints.GROUND_FALL));
-		operator.getB().whenPressed(new MoveArm(ArmSetpoints.STEP));
-		operator.getX2().whenPressed(new MoveArm(ArmSetpoints.GROUND_UP));
-		operator.getY2().whenPressed(new MoveArm(ArmSetpoints.TOP_OF_STACK));
-		operator.getStart().whenPressed(new MoveArm(ArmSetpoints.STORAGE));
-		/*
-		new Toggle() {
-			
-			@Override
-			public boolean get() {
-				return operator.getRight().get();
-			}
-			
-			@Override
-			public boolean getToggler() {
-				return Robot.arm.bendUp;
-			}
-		}.toggle(new ChangeArmBend(false), new ChangeArmBend(true));
 		new Toggle() {
 			
 			@Override
 			public boolean get()
 			{
-				return operator.getBack().get();
+				return driver.getLeft().get();
+			}
+			public boolean getToggler()
+			{
+				return Robot.getters.getCurrentCommand().getClass() == GettersLeft.class;
+			}
+		}.toggle(new StopGetters(), new GettersLeft());
+		
+		new Toggle() {
+			
+			@Override
+			public boolean get()
+			{
+				return driver.getRight().get();
+			}
+			public boolean getToggler()
+			{
+				return Robot.getters.getCurrentCommand().getClass() == GettersRight.class;
+			}
+		}.toggle(new StopGetters(), new GettersRight());
+		
+		processingConfirmLowerButton = driver.getB();
+		
+		operator.getA().whenPressed(new MoveArm(ArmSetpoints.STORAGE_NO_CAN));
+		operator.getB().whenPressed(new MoveArm(ArmSetpoints.STEP));
+		operator.getX2().whenPressed(new MoveArm(ArmSetpoints.STORAGE));
+		new Toggle() {
+			
+			@Override
+			public boolean get() {
+				return operator.getY2().get();
 			}
 			
 			@Override
-			public boolean getToggler()
-			{
-				return RobotMap.armShoulderPot.get() >= 0;
+			public boolean getToggler() {
+				return Robot.arm.getCurrentCommand().getClass() == ScorpionHold.class;
 			}
-		}.toggle(new MoveArmToFront(), new MoveArmToBack());
-		*/
-		operator.getBack().whenPressed(new EngageScorpionMode());
+		}.toggle(new ManualArm(), new ScorpionHold());
 		
+		operator.getLB().whileHeld(new PushTotes());
+		operator.getLB().whenReleased(new RetractPusher());
 		operator.getRB().whileHeld(new OpenGrabber());
+		
+		operator.getStart().whenPressed(new EngageScorpionMode());
+		operator.getBack().whenPressed(new ExitScorpionMode());
+		
+		operator.getUp().whenPressed(new MoveArm(ArmSetpoints.GROUND_UP_HIGH));
+		operator.getDown().whenPressed(new MoveArm(ArmSetpoints.GROUND_UP_LOW));
+		operator.getLeft().whenPressed(new MoveArm(ArmSetpoints.GROUND_FALL_PREP));
+		operator.getRight().whenPressed(new MoveArm(ArmSetpoints.GROUND_FALL));
+		
+        operator.getUp().whenPressed(new MoveForkliftUp1());
+        operator.getDown().whenPressed(new MoveForkliftDown1());
+        operator.getLeft().whenPressed(new MoveForklift(LiftSetpoints.GROUND, true));
+        operator.getLeft().whenReleased(new MoveForklift(LiftSetpoints.SCORING_PLATFORM, true));
+		
+        (new JoystickButton(buttonBox, 1)).whenPressed(new MoveForkliftUp1());
+        (new JoystickButton(buttonBox, 2)).whenPressed(new MoveForkliftDown1());
+        (new JoystickButton(buttonBox, 3)).whenPressed(new MoveForklift(LiftSetpoints.GROUND, true));
+        (new JoystickButton(buttonBox, 3)).whenReleased(new MoveForklift(LiftSetpoints.SCORING_PLATFORM, true));
+        
+        (new JoystickButton(buttonBox, 4)).whenPressed(new MoveArm(ArmSetpoints.TOP_OF_STACK));
+        breakArmConstraintsButton = new JoystickButton(buttonBox, 5);
+        
+        (new JoystickButton(buttonBox, 6)).whenPressed(new ManualPusher());
+        manualPusherPushButton = new JoystickButton(buttonBox, 7);
+        manualPusherPullButton = new JoystickButton(buttonBox, 8);
+		
+        processingOpenGrabberSmallButton = new JoystickButton(buttonBox, 9);
+		processingOpenGrabberLargeButton = new JoystickButton(buttonBox, 10);
+		processingDontRaiseLiftButton = new JoystickButton(buttonBox, 11);
 		
 		if(Robot.scorpionModeTest)
 		{

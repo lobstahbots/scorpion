@@ -1,48 +1,43 @@
 package org.usfirst.frc.team246.robot.commands;
 
 import org.usfirst.frc.team246.robot.Robot;
-import org.usfirst.frc.team246.robot.RobotMap;
-import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
+import org.usfirst.frc.team246.robot.overclockedLibraries.AlertMessage;
+import org.usfirst.frc.team246.robot.overclockedLibraries.UdpAlertService;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
-public class ScorpionHold extends Command {
+public class GettersRight extends Command {
 
-    public ScorpionHold() {
-        requires(Robot.arm);
+	public GettersRight() {
+		requires(Robot.getters);
+        // Use requires() here to declare subsystem dependencies
+        // eg. requires(chassis);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.arm.elbow.setOutputRange(-0.2, 0.2);
+    	UdpAlertService.sendAlert(new AlertMessage("Intaking").playSound("slurp.wav"));
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	if(!Robot.forklift.onTarget() && Robot.forklift.getPIDController().get() > 0) 
-    	{
-    		Robot.arm.elbow.setOutputRange(0, 0.2);
-    	}
-    	else Robot.arm.elbow.setOutputRange(-0.2, 0.2);
-    	Robot.arm.set(ArmSetpoints.SCORPION_HOLD);
+    	Robot.getters.set(-1, 1);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+    	return false;
     }
 
     // Called once after isFinished returns true
     protected void end() {
-    	Robot.arm.elbow.setOutputRange(-RobotMap.ARM_MAX_SPEED, RobotMap.ARM_MAX_SPEED);
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-    	end();
     }
 }

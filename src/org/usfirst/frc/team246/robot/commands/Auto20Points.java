@@ -22,22 +22,22 @@ public class Auto20Points extends CommandGroup {
 		addParallel(AutoSetDriveSpeed.modifyCrabAndSpin(5, 5)); //Set the speed to 5
 		addParallel(new Outgest()); //Slide for the first can
 		addSequential(new AutoSpin(135)); //Spin to the right angle
-		addSequential(new AutoAlignAndDrive(new Vector2D(false, 1.25, 0), true)); //Drive towards the center of the field
+		addSequential(new AutoAlignAndDrive(new Vector2D(true, 0, 1.25), true)); //Drive towards the center of the field
 		addSequential(new WaitCommand(1));
 		addParallel(new EngageScorpionMode() {
 			@Override
 			protected void initialize()
 			{
-				waypoints = new ArmSetpoints[RobotMap.ARM_TRANSITION_ARRAY.length + 1];
-				for(int i = 0; i < RobotMap.ARM_TRANSITION_ARRAY.length; i++)
+				waypoints = new ArmSetpoints[RobotMap.ARM_TRANSITION_ARRAY_TO_FRONT.length + 1];
+				for(int i = 0; i < RobotMap.ARM_TRANSITION_ARRAY_TO_FRONT.length; i++)
 				{
-					waypoints[i] = RobotMap.ARM_TRANSITION_ARRAY[i];
+					waypoints[i] = RobotMap.ARM_TRANSITION_ARRAY_TO_FRONT[i];
 				}
-				waypoints[RobotMap.ARM_TRANSITION_ARRAY.length] = ArmSetpoints.AUTON_POSITION_3;
+				waypoints[RobotMap.ARM_TRANSITION_ARRAY_TO_FRONT.length] = ArmSetpoints.AUTON_POSITION_3;
 				super.initialize();
 			}
 		});
-		addSequential(new AutoDriveSimple(new Vector2D(false, 4.5, 90), true)
+		addSequential(new AutoDriveSimple(new Vector2D(true, -4.5, 1.25), false)
 		{
 			@Override
 			protected boolean isFinished()
@@ -47,11 +47,11 @@ public class Auto20Points extends CommandGroup {
 		});
 		addParallel(new Intake());// Intake the second tote
 		addParallel(AutoSetDriveSpeed.modifyCrab(3)); //Set the speed to 3
-		addSequential(new AutoAlignAndDrive(new Vector2D(false, 8, 90), false)); //Drive into the second tote
+		addSequential(new AutoAlignAndDrive(new Vector2D(true, -8, 1.25), false)); //Drive into the second tote
 		addParallel(new MoveForklift(LiftSetpoints.RECEIVE_ARM_TOTE, true));
 		addSequential(new WaitCommand(.25));
 		addParallel(AutoSetDriveSpeed.modifyCrab(5)); //Set the speed to 5
-		addSequential(new AutoAlignAndDrive(new Vector2D(false, 5, 0), true));
+		addSequential(new AutoAlignAndDrive(new Vector2D(true, -8, 6.25), false));
 		addSequential(new Outgest(), .25);
 		addParallel(new Intake());
 		addSequential(new WaitCommand(.25));
@@ -65,6 +65,6 @@ public class Auto20Points extends CommandGroup {
 		    }
 
 		});
-		addSequential(new AutoAlignAndDrive(new Vector2D(false, 3,  -45), true));
+		addSequential(new AutoAlignAndDrive(new Vector2D(true, -6,  8.25), true));
     }
 }
