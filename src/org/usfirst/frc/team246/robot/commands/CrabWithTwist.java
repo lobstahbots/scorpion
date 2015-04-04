@@ -95,7 +95,7 @@ public class CrabWithTwist extends FieldCentricDrivingCommand{
     }
 
     protected void end() {
-        Robot.drivetrain.absoluteTwistPID.disable();
+//        Robot.drivetrain.absoluteTwistPID.disable();
     }
 
     protected void interrupted() {

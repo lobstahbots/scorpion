@@ -212,7 +212,8 @@ public class Robot extends IterativeRobot {
 		
 		if(DriverStation.getInstance().isDSAttached() && !wasConnected)
 		{
-			UdpAlertService.initialize("PaulAsus.local", 5801);
+			System.out.print("Connected to driver station");
+			UdpAlertService.initialize("buaroboticspc.local", 5801);
 			wasConnected = true;
 		}
 

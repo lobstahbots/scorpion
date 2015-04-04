@@ -44,7 +44,7 @@ public class UdpAlertService {
     
     public static void sendAlert(AlertMessage alertMessage)
     {
-    	if (!isInitialized) initialize();
+//    	if (!isInitialized) initialize();
     	if (!isInitialized) return;
         String xmlString = alertMessage.toXml();
         DatagramPacket packet = new DatagramPacket(xmlString.getBytes(), xmlString.length(), alertServerAddress, alertServicePort);
