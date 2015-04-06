@@ -19,7 +19,7 @@ public class TransitionSimple extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	if(inFront) Robot.arm.transitionIndex = RobotMap.ARM_TRANSITION_ARRAY.length - 1;
+    	if(inFront) Robot.arm.transitionIndex = RobotMap.ARM_TRANSITION_ARRAY_TO_FRONT.length - 1;
     	else Robot.arm.transitionIndex = 0;
     		goToSetpoint();
     		
@@ -48,6 +48,6 @@ public class TransitionSimple extends Command {
     
     private void goToSetpoint()
     {
-    	Robot.arm.set(RobotMap.ARM_TRANSITION_ARRAY[Robot.arm.transitionIndex]);
+    	Robot.arm.set(RobotMap.ARM_TRANSITION_ARRAY_TO_FRONT[Robot.arm.transitionIndex]);
     }
 }

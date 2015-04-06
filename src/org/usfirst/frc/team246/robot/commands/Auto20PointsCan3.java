@@ -12,9 +12,9 @@ import edu.wpi.first.wpilibj.command.WaitCommand;
 /**
  *
  */
-public class Auto20Points extends CommandGroup {
+public class Auto20PointsCan3 extends CommandGroup {
     
-    public  Auto20Points() {
+    public  Auto20PointsCan3() {
     	addParallel(new ZeroNavX(90));
     	addParallel(new CloseGrabber());
     	addParallel(new MoveForklift(LiftSetpoints.ABOVE_CAN, true));
@@ -57,7 +57,8 @@ public class Auto20Points extends CommandGroup {
 		addSequential(new WaitCommand(.25));
 		addSequential(new OpenGrabber(), .75);
 		addSequential(new WaitCommand(.5));
-		addParallel(new AutoSpin(-90));
+		addParallel(new ExitScorpionMode());
+		addParallel(new AutoSpin(-60));
 		addSequential(new MoveForklift(LiftSetpoints.BETWEEN_TOTES, true));
 		addParallel(new Outgest() {
 			@Override
@@ -66,6 +67,6 @@ public class Auto20Points extends CommandGroup {
 		    }
 
 		});
-		addSequential(new AutoAlignAndDrive(new Vector2D(true, -6,  6.25), true));
+		addSequential(new AutoAlignAndDrive(Vector2D.addVectors(new Vector2D(true, -8, 6.25), new Vector2D(false, 8, -60)), true));
     }
 }

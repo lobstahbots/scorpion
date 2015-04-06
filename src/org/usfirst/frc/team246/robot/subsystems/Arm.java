@@ -59,7 +59,7 @@ public class Arm extends Subsystem {
     
     public boolean checkConstraints(double s, double e, double w)
     {
-    	if(!Robot.oi.operator.getRight().get())
+    	if(!Robot.oi.breakArmConstraintsButton.get())
     	{
 	    	//Define vectors for arm segments
 	    	Vector2D v1 = new Vector2D(false, RobotMap.ARM_SEGMENT_1_LENGTH, s); //Between Shoulder and Elbow
@@ -251,7 +251,7 @@ public class Arm extends Subsystem {
     
     public void transitionStepUp()
     { 
-    	if(transitionIndex < RobotMap.ARM_TRANSITION_ARRAY.length - 1 && getCurrentCommand().getClass() == TransitionSimple.class) transitionIndex++;
+    	if(transitionIndex < RobotMap.ARM_TRANSITION_ARRAY_TO_FRONT.length - 1 && getCurrentCommand().getClass() == TransitionSimple.class) transitionIndex++;
     }
     public void transitionStepDown()
     {

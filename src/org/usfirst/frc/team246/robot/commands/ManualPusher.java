@@ -2,32 +2,28 @@ package org.usfirst.frc.team246.robot.commands;
 
 import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.RobotMap;
-import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
-public class ScorpionHold extends Command {
+public class ManualPusher extends Command {
 
-    public ScorpionHold() {
-        requires(Robot.arm);
+    public ManualPusher() {
+        requires(Robot.pusher);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.arm.elbow.setOutputRange(-0.2, 0.2);
+    	Robot.pusher.disable();
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	if(!Robot.forklift.onTarget() && Robot.forklift.getPIDController().get() > 0) 
-    	{
-    		Robot.arm.elbow.setOutputRange(0, 0.2);
-    	}
-    	else Robot.arm.elbow.setOutputRange(-0.2, 0.2);
-    	Robot.arm.set(ArmSetpoints.SCORPION_HOLD);
+    	if(Robot.oi.manualPusherPushButton.get()) RobotMap.pusherMotor.set(1);
+    	else if(Robot.oi.manualPusherPullButton.get()) RobotMap.pusherMotor.set(-1);
+    	else RobotMap.pusherMotor.set(0);
     }
 
     // Make this return true when this Command no longer needs to run execute()
@@ -37,12 +33,10 @@ public class ScorpionHold extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
-    	Robot.arm.elbow.setOutputRange(-RobotMap.ARM_MAX_SPEED, RobotMap.ARM_MAX_SPEED);
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-    	end();
     }
 }
