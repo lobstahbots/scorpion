@@ -389,7 +389,7 @@ public class RobotMap {
 			LiveWindow.addActuator("Drivetrain", "backModuleMotor", (LiveWindowSendable) backModuleMotor);
 			leftModuleMotor = new Victor246(3, 1, pdp);
 			LiveWindow.addActuator("Drivetrain", "leftModuleMotor", (LiveWindowSendable) leftModuleMotor);
-			rightModuleMotor = new Victor246(5, 0, pdp);
+			rightModuleMotor = new Victor246(15, 0, pdp);
 			LiveWindow.addActuator("Drivetrain", "rightModuleMotor", (LiveWindowSendable) rightModuleMotor);
 		}
 		else
