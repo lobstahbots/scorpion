@@ -6,7 +6,9 @@ import java.util.Arrays;
 
 import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.commands.CrabWithTwist;
+import org.usfirst.frc.team246.robot.overclockedLibraries.AlertMessage;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SwerveModule;
+import org.usfirst.frc.team246.robot.overclockedLibraries.UdpAlertService;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
 
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -381,12 +383,28 @@ public class Drivetrain extends Subsystem {
 //    	CALCULATE NETS for Odometry:
     	private void calculateNetLinearDisplacement(){
     		ArrayList<Vector2D> dispVectors = new ArrayList<Vector2D>(Arrays.asList(swervesDisplacementVectors));
+    		
+    		/*
     		double ratio01 = dispVectors.get(0).getMagnitude()/dispVectors.get(1).getMagnitude();
     		double ratio02 = dispVectors.get(0).getMagnitude()/dispVectors.get(2).getMagnitude();
     		double ratio12 = dispVectors.get(1).getMagnitude()/dispVectors.get(2).getMagnitude();
-    		if((ratio01 < .5 || ratio01 > 2) && (ratio02 < .5 && ratio02 > 2)) dispVectors.remove(0);
-    		if((ratio01 < .5 || ratio01 > 2) && (ratio12 < .5 && ratio12 > 2)) dispVectors.remove(1);
-    		if((ratio02 < .5 || ratio02 > 2) && (ratio12 < .5 && ratio12 > 2)) dispVectors.remove(2);
+    		UdpAlertService.sendAlert(new AlertMessage("01: " + ratio01 + ", 02: " + ratio02 + ", 12: " + ratio12 + ", " + Math.random()));
+    		UdpAlertService.sendAlert(new AlertMessage("Voting"));
+    		if((ratio01 < .5 || ratio01 > 2) && (ratio02 < .5 || ratio02 > 2))
+    		{
+    			UdpAlertService.sendAlert(new AlertMessage("Voting 0 off the island " + Math.random()));
+    			dispVectors.remove(0);
+    		}
+    		if((ratio01 < .5 || ratio01 > 2) && (ratio12 < .5 || ratio12 > 2)) 
+    		{
+    			UdpAlertService.sendAlert(new AlertMessage("Voting 1 off the island " + Math.random()));
+    			dispVectors.remove(1);
+    		}
+    		if((ratio02 < .5 || ratio02 > 2) && (ratio12 < .5 || ratio12 > 2)) {
+    			UdpAlertService.sendAlert(new AlertMessage("Voting 2 off the island " + Math.random()));
+    			dispVectors.remove(2);
+    		}
+    		*/
     		
     		fieldCentricLinearDisplacement = Vector2D.addVectors(fieldCentricLinearDisplacement, averageOfVectors(dispVectors.toArray(new Vector2D[0])));    		
     	}

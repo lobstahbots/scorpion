@@ -69,11 +69,11 @@ public class RobotMap {
 	public static double MODULE_kD = .08;
 	public static double MODULE_kF = 0;
 	
-	public static double ABSOLUTE_TWIST_kP = .075;
+	public static double ABSOLUTE_TWIST_kP = .25;
     public static double ABSOLUTE_TWIST_kI = 0;
     public static double ABSOLUTE_TWIST_kD = 0;
 	
-    public static double ABSOLUTE_CRAB_kP = 2;
+    public static double ABSOLUTE_CRAB_kP = 1;
     public static double ABSOLUTE_CRAB_kI = 0;
     public static double ABSOLUTE_CRAB_kD = 0;
     
