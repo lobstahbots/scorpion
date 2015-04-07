@@ -24,6 +24,7 @@ import org.usfirst.frc.team246.robot.commands.MoveForkliftDown1;
 import org.usfirst.frc.team246.robot.commands.MoveForkliftUp1;
 import org.usfirst.frc.team246.robot.commands.OpenGrabber;
 import org.usfirst.frc.team246.robot.commands.Outgest;
+import org.usfirst.frc.team246.robot.commands.ProcessLandfill;
 import org.usfirst.frc.team246.robot.commands.PushTotes;
 import org.usfirst.frc.team246.robot.commands.RetractPusher;
 import org.usfirst.frc.team246.robot.commands.RobotCentricCrabWithTwist;
@@ -89,9 +90,9 @@ public class OI {
 			}
 			public boolean getToggler()
 			{
-				return Robot.getters.getCurrentCommand().getClass() == AdjustTote.class;
+				return Robot.getters.getCurrentCommand().getClass() == ProcessLandfill.class;
 			}
-		}.toggle(new StopGetters(), new AdjustTote());
+		}.toggle(new StopGetters(), new ProcessLandfill());
 		
 		new Toggle() {
 			
@@ -180,21 +181,21 @@ public class OI {
         operator.getLeft().whenPressed(new MoveForklift(LiftSetpoints.GROUND, true));
         operator.getLeft().whenReleased(new MoveForklift(LiftSetpoints.SCORING_PLATFORM, true));
 		
-        (new JoystickButton(buttonBox, 1)).whenPressed(new MoveForkliftUp1());
-        (new JoystickButton(buttonBox, 2)).whenPressed(new MoveForkliftDown1());
-        (new JoystickButton(buttonBox, 3)).whenPressed(new MoveForklift(LiftSetpoints.GROUND, true));
-        (new JoystickButton(buttonBox, 3)).whenReleased(new MoveForklift(LiftSetpoints.SCORING_PLATFORM, true));
+        (new JoystickButton(buttonBox, 2)).whenPressed(new MoveForkliftUp1());
+        (new JoystickButton(buttonBox, 3)).whenPressed(new MoveForkliftDown1());
+        (new JoystickButton(buttonBox, 1)).whenPressed(new MoveForklift(LiftSetpoints.GROUND, true));
+        (new JoystickButton(buttonBox, 1)).whenReleased(new MoveForklift(LiftSetpoints.SCORING_PLATFORM, true));
         
-        (new JoystickButton(buttonBox, 4)).whenPressed(new MoveArm(ArmSetpoints.TOP_OF_STACK));
-        breakArmConstraintsButton = new JoystickButton(buttonBox, 5);
+        (new JoystickButton(buttonBox, 10)).whenPressed(new MoveArm(ArmSetpoints.TOP_OF_STACK));
+        breakArmConstraintsButton = new JoystickButton(buttonBox, 11);
         
-        (new JoystickButton(buttonBox, 6)).whenPressed(new ManualPusher());
-        manualPusherPushButton = new JoystickButton(buttonBox, 7);
-        manualPusherPullButton = new JoystickButton(buttonBox, 8);
+        (new JoystickButton(buttonBox, 7)).whenPressed(new ManualPusher());
+        manualPusherPushButton = new JoystickButton(buttonBox, 8);
+        manualPusherPullButton = new JoystickButton(buttonBox, 9);
 		
-        processingOpenGrabberSmallButton = new JoystickButton(buttonBox, 9);
-		processingOpenGrabberLargeButton = new JoystickButton(buttonBox, 10);
-		processingDontRaiseLiftButton = new JoystickButton(buttonBox, 11);
+        processingOpenGrabberSmallButton = new JoystickButton(buttonBox, 4);
+		processingOpenGrabberLargeButton = new JoystickButton(buttonBox, 5);
+		processingDontRaiseLiftButton = new JoystickButton(buttonBox, 6);
 		
 		if(Robot.scorpionModeTest)
 		{

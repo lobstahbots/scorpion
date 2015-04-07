@@ -27,15 +27,26 @@ public class Grabber extends PIDSubsystem {
     
     public void open()
     {
+    	enable();
     	setSetpoint(RobotMap.GRABBER_OPEN);
     }
     public void openWide()
     {
+    	enable();
     	setSetpoint(RobotMap.GRABBER_OPEN_WIDE);
     }
     public void close()
     {
-    	setSetpoint(RobotMap.GRABBER_CLOSED);
+    	if(RobotMap.grabberMotor.getCurrent() < 20)
+    	{
+    		enable();
+    		setSetpoint(RobotMap.GRABBER_CLOSED);
+    	}
+    	else
+    	{
+    		disable();
+    		RobotMap.grabberMotor.set(0);
+    	}
     }
 
 	@Override
