@@ -84,7 +84,7 @@ public class Robot extends IterativeRobot {
 	public static boolean test3 = false;
 	public static boolean gyroDisabled = false;
 	public static boolean gasMode = false;
-	public static boolean trojan = true;
+	public static boolean trojan = false;
 	public static boolean scorpionModeTest = false;
 	
 	public static Drivetrain drivetrain;

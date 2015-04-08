@@ -493,7 +493,7 @@ public class RobotMap {
 	
   		//Motors
   		
-  		leftGetterMotor = new Victor246(19, 0, pdp);
+  		leftGetterMotor = new Victor246(6, 0, pdp);
   		LiveWindow.addActuator("Getters", "leftGetterMotor", (LiveWindowSendable) leftGetterMotor);
   		rightGetterMotor = new Victor246(7, 0, pdp);
   		LiveWindow.addActuator("Getters", "rightGetterMotor", (LiveWindowSendable) rightGetterMotor);
@@ -584,19 +584,19 @@ public class RobotMap {
 		LiveWindow.addSensor("Arm", "armShoulderPot", armShoulderPot);
 		armElbowPot = new AnalogPot(6, 391.83673469387755102040816326531, -173.4, true);
 		LiveWindow.addSensor("Arm", "armElbowPot", armElbowPot);
-		armWristPot = new AnalogPot(3, 391.83673469387755102040816326531, -188.8, false);
+		armWristPot = new AnalogPot(7, 391.83673469387755102040816326531, -188.8, true);
 		LiveWindow.addSensor("Arm", "armWristPot", armWristPot);
 		
 	//Grabber
 		
 		//Pneumatics
 			
-			grabberMotor = new Victor246(6, 3, pdp);
-			LiveWindow.addActuator("Grabber", "grabberMotor", grabberMotor);
+		grabberMotor = new Victor246(13, 8, pdp);
+		LiveWindow.addActuator("Grabber", "grabberMotor", grabberMotor);
 		
 		//Sensors
 		
-		grabberPot = new AnalogPot(7, true);
+		grabberPot = new AnalogPot(4, false);
 		LiveWindow.addSensor("Grabber", "grabberEncoder", grabberPot);
 		
 	//OTS
