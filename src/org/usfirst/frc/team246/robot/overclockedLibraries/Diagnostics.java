@@ -41,7 +41,16 @@ public class Diagnostics implements Runnable {
 		{
 			DiagnosticsAnalogIn ai = analogIns.get(i);
 			SmartDashboard.putNumber(ai.name, ai.sensor.get());
-			
+		}
+		for(int i = 0; i < analogPots.size(); i++)
+		{
+			DiagnosticsAnalogPot ap = analogPots.get(i);
+			SmartDashboard.putNumber(ap.name, ap.sensor.get());
+		}
+		for(int i = 0; i < encoders.size(); i++)
+		{
+			DiagnosticsEncoder e = encoders.get(i);
+			SmartDashboard.putNumber(e.name, e.sensor.get());
 		}
 	}
 	
