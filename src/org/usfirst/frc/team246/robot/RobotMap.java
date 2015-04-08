@@ -1,8 +1,11 @@
 package org.usfirst.frc.team246.robot;
 
+import javax.tools.Diagnostic;
+
 import org.usfirst.frc.team246.nav6.IMUAdvanced;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogIn;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogPot;
+import org.usfirst.frc.team246.robot.overclockedLibraries.Diagnostics;
 import org.usfirst.frc.team246.robot.overclockedLibraries.LimitSwitch;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SpeedController246;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Talon246;
@@ -416,32 +419,41 @@ public class RobotMap {
 	    backWheelEncoder.setDistancePerPulse(WHEEL_ENCODER_DISTANCE_PER_TICK);
 	    backWheelEncoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kRate); // have encoder measure rate, not distance
 	    LiveWindow.addSensor("Drivetrain", "backWheelEncoder", backWheelEncoder);
+	    Diagnostics.addEncoder(backWheelEncoder, "Back Wheel Speed");
 		leftWheelEncoder = new Encoder(2,3);
 	    leftWheelEncoder.setDistancePerPulse(WHEEL_ENCODER_DISTANCE_PER_TICK);
 	    leftWheelEncoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kRate); // have encoder measure rate, not distance
 	    LiveWindow.addSensor("Drivetrain", "leftWheelEncoder", leftWheelEncoder);
+	    Diagnostics.addEncoder(leftWheelEncoder, "Left Wheel Speed");
 		rightWheelEncoder = new Encoder(4,5);
 	    rightWheelEncoder.setDistancePerPulse(WHEEL_ENCODER_DISTANCE_PER_TICK);
 	    rightWheelEncoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kRate); // have encoder measure rate, not distance
 	    LiveWindow.addSensor("Drivetrain", "rightWheelEncoder", rightWheelEncoder);
+	    Diagnostics.addEncoder(rightWheelEncoder, "Right Wheel Speed");
 		
 	    if(Robot.trojan)
 	    {
 		    backModulePot = new AnalogPot(0, 1800, -900, true);
 		    LiveWindow.addSensor("Drivetrain", "backModulePot", backModulePot);
+		    Diagnostics.addAnalogPot(backModulePot, "Back Swerve Steering");
 		    leftModulePot = new AnalogPot(1, 1800, -900, true);
 		    LiveWindow.addSensor("Drivetrain", "leftModulePot", leftModulePot);
+		    Diagnostics.addAnalogPot(leftModulePot, "Left Swerve Steering");
 		    rightModulePot = new AnalogPot(2, 1800, -900, true);
 		    LiveWindow.addSensor("Drivetrain", "rightModulePot", rightModulePot);
+		    Diagnostics.addAnalogPot(rightModulePot, "Right Swerve Steering");
 	    }
 	    else
 	    {
 	    	backModulePot = new AnalogPot(0, 1800, -900, true);
 		    LiveWindow.addSensor("Drivetrain", "backModulePot", backModulePot);
+		    Diagnostics.addAnalogPot(backModulePot, "Back Swerve Steering");
 		    leftModulePot = new AnalogPot(1, 1800, -900, true);
 		    LiveWindow.addSensor("Drivetrain", "leftModulePot", leftModulePot);
+		    Diagnostics.addAnalogPot(leftModulePot, "Left Swerve Steering");
 		    rightModulePot = new AnalogPot(2, 1800, -900, true);
 		    LiveWindow.addSensor("Drivetrain", "rightModulePot", rightModulePot);
+		    Diagnostics.addAnalogPot(rightModulePot, "Right Swerve Steering");
 	    }
 	    
 	  //We were having occasional errors with the creation of the nav6 object, so we make 5 attempts before allowing the error to go through and being forced to redeploy.
@@ -504,15 +516,20 @@ public class RobotMap {
   		{
   			leftRangeFinder = new AnalogIn(3, true);
   			LiveWindow.addSensor("Getters", "leftRangeFinder", leftRangeFinder);
+  			Diagnostics.addAnalogIn(leftRangeFinder, "Left Tote Sensor");
   			rightRangeFinder = new AnalogIn(4, true);
   			LiveWindow.addSensor("Getters", "rightRangeFinder", rightRangeFinder);
+  			Diagnostics.addAnalogIn(rightRangeFinder, "Right Tote Sensor");
+  			
   		}
   		else
   		{
   			leftRangeFinder = new AnalogIn(2, false);
   			LiveWindow.addSensor("Getters", "leftRangeFinder", leftRangeFinder);
+  			Diagnostics.addAnalogIn(leftRangeFinder, "Left Tote Sensor");
   			rightRangeFinder = new AnalogIn(3, false);
   			LiveWindow.addSensor("Getters", "rightRangeFinder", rightRangeFinder);
+  			Diagnostics.addAnalogIn(rightRangeFinder, "Right Tote Sensor");
   		}
   		
   		//Constants
@@ -549,6 +566,7 @@ public class RobotMap {
 		{
 			liftPot = new AnalogPot(3, 54.8, -9.79, true); //TODO: Get this constant
 			LiveWindow.addSensor("Forklift", "liftPot", liftPot);
+			Diagnostics.addAnalogPot(liftPot, "Forklift");
 		}
 		 
 		
@@ -565,6 +583,7 @@ public class RobotMap {
 		{
 			pusherPot = new AnalogPot(4, 5.15, -2.025, true); //TODO: Get this constant
 			LiveWindow.addSensor("Pusher", "pusherEncoder", pusherPot);
+			Diagnostics.addAnalogPot(pusherPot, "Pusher");
 		}
 		
 	//Arm
@@ -582,10 +601,13 @@ public class RobotMap {
 		
 		armShoulderPot = new AnalogPot(5, 391.83673469387755102040816326531, -204.2, true);
 		LiveWindow.addSensor("Arm", "armShoulderPot", armShoulderPot);
+		Diagnostics.addAnalogPot(armShoulderPot, "Shoulder");
 		armElbowPot = new AnalogPot(6, 391.83673469387755102040816326531, -173.4, true);
 		LiveWindow.addSensor("Arm", "armElbowPot", armElbowPot);
+		Diagnostics.addAnalogPot(armElbowPot, "Elbow");
 		armWristPot = new AnalogPot(7, 391.83673469387755102040816326531, -188.8, true);
 		LiveWindow.addSensor("Arm", "armWristPot", armWristPot);
+		Diagnostics.addAnalogPot(armWristPot, "Wrist");
 		
 	//Grabber
 		
@@ -598,6 +620,7 @@ public class RobotMap {
 		
 		grabberPot = new AnalogPot(4, false);
 		LiveWindow.addSensor("Grabber", "grabberEncoder", grabberPot);
+		Diagnostics.addAnalogPot(grabberPot, "Grabber");
 		
 	//OTS
 		
