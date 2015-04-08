@@ -131,8 +131,6 @@ public class Robot extends IterativeRobot {
         
         oi = new OI();
         
-        RobotMap.grabberEncoder.reset();
-        
         auton = new ZeroNavX(0);
         
         autonRadioBoxes = new SendableChooser();
