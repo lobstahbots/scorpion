@@ -18,6 +18,7 @@ public class ProcessLandfill extends Command {
     CloseGrabber closeGrabber = new CloseGrabber();
     OpenGrabber openGrabber = new OpenGrabber();
     OpenGrabberWide openGrabberWide = new OpenGrabberWide();
+    ScorpionHold scorpionHold = new ScorpionHold();
     
     // Called just before this Command runs the first time
     protected void initialize() {
@@ -31,12 +32,6 @@ public class ProcessLandfill extends Command {
     protected void execute() {
     	adjustTote.start();
     	
-    	if(Robot.oi.processingConfirmLowerButton.get())
-    	{
-    		if(Robot.oi.processingOpenGrabberLargeButton.get()) openGrabberWide.start();
-    		else if(Robot.oi.processingOpenGrabberSmallButton.get()) openGrabber.start();
-    		else closeGrabber.start();
-    	}
     	if(Robot.getters.hasTote() && Robot.oi.processingConfirmLowerButton.get() && liftState != LiftState.LIFTING)
     	{
     		if(liftState == LiftState.WAITING)
@@ -45,9 +40,7 @@ public class ProcessLandfill extends Command {
 	    		moveForklift = new MoveForklift(LiftSetpoints.GROUND, true);
 	    		moveForklift.start();
     		}
-    		if(Robot.oi.processingOpenGrabberLargeButton.get()) openGrabberWide.start();
-    		else if(Robot.oi.processingOpenGrabberSmallButton.get()) openGrabber.start();
-    		else closeGrabber.start();
+    		openGrabber();
     	}
     	else if(liftState == LiftState.LOWERING && Robot.forklift.onTarget() && ((!Robot.oi.processingOpenGrabberSmallButton.get() && !Robot.oi.processingOpenGrabberLargeButton.get()) || Robot.grabber.onTarget()))
     	{
@@ -55,20 +48,17 @@ public class ProcessLandfill extends Command {
     		if(Robot.oi.processingDontRaiseLiftButton.get()) moveForklift = new MoveForklift(LiftSetpoints.SCORING_PLATFORM, true);
     		else moveForklift = new MoveForklift(LiftSetpoints.ABOVE_1_TOTE, true);
     		moveForklift.start();
-    		if(Robot.oi.processingOpenGrabberLargeButton.get()) openGrabberWide.start();
-    		else if(Robot.oi.processingOpenGrabberSmallButton.get()) openGrabber.start();
-    		else closeGrabber.start();
+    		openGrabber();
     	}
     	else if(liftState == LiftState.LIFTING && !Robot.forklift.onTarget())
     	{
-    		if(Robot.oi.processingOpenGrabberLargeButton.get()) openGrabberWide.start();
-    		else if(Robot.oi.processingOpenGrabberSmallButton.get()) openGrabber.start();
-    		else closeGrabber.start();
+    		openGrabber();
     	}
     	else
     	{
     		liftState = LiftState.WAITING;
     		(new ManualForklift()).start();
+    		scorpionHold.start();
     		closeGrabber.start();
     	}
     }
@@ -87,5 +77,24 @@ public class ProcessLandfill extends Command {
     // subsystems is scheduled to run
     protected void interrupted() {
     	end();
+    }
+    
+    private void openGrabber()
+    {
+    	if(Robot.oi.processingOpenGrabberLargeButton.get()) 
+		{
+			openGrabberWide.start();
+			new ManualArm().start();
+		}
+		else if(Robot.oi.processingOpenGrabberSmallButton.get()) 
+		{
+			scorpionHold.start();
+			openGrabber.start();
+		}
+		else 
+		{
+			scorpionHold.start();
+			closeGrabber.start();
+		}
     }
 }

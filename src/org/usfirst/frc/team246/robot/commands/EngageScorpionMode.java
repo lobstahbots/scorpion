@@ -47,7 +47,7 @@ public class EngageScorpionMode extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
-    	Robot.arm.set(RobotMap.armShoulderPot.get(), RobotMap.armElbowPot.get(), RobotMap.armWristPot.get());
+    	new ScorpionHold().start();
     }
 
     // Called when another command which requires one or more of the same

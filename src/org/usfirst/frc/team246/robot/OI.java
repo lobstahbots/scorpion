@@ -26,6 +26,7 @@ import org.usfirst.frc.team246.robot.commands.OpenGrabber;
 import org.usfirst.frc.team246.robot.commands.Outgest;
 import org.usfirst.frc.team246.robot.commands.ProcessLandfill;
 import org.usfirst.frc.team246.robot.commands.PushTotes;
+import org.usfirst.frc.team246.robot.commands.ReleaseStack;
 import org.usfirst.frc.team246.robot.commands.RetractPusher;
 import org.usfirst.frc.team246.robot.commands.RobotCentricCrabWithTwist;
 import org.usfirst.frc.team246.robot.commands.ScorpionHold;
@@ -189,7 +190,10 @@ public class OI {
         (new JoystickButton(buttonBox, 10)).whenPressed(new MoveArm(ArmSetpoints.TOP_OF_STACK));
         breakArmConstraintsButton = new JoystickButton(buttonBox, 11);
         
-        (new JoystickButton(buttonBox, 7)).whenPressed(new ManualPusher());
+        (new JoystickButton(buttonBox, 7)).whenPressed(new ReleaseStack());
+        
+        (new JoystickButton(buttonBox, 8)).whenPressed(new ManualPusher());
+        (new JoystickButton(buttonBox, 8)).whenPressed(new ManualPusher());
         manualPusherPushButton = new JoystickButton(buttonBox, 8);
         manualPusherPullButton = new JoystickButton(buttonBox, 9);
 		
