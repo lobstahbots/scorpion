@@ -129,7 +129,7 @@ public class RobotMap {
 	
 	public static final double GETTER_POTS_TOLERANCE = 3;
 	
-	public static final double GETTER_ADJUSTING_kP = 2;
+	public static final double GETTER_ADJUSTING_kP = .002;
 	public static final double GETTER_ADJUSTING_kI = 0;
 	public static final double GETTER_ADJUSTING_kD = 0;
 	
@@ -156,9 +156,9 @@ public class RobotMap {
 	public static final double LIFT_MANUAL_SPEED = 6;
 	
 	public static final double TOTE_HEIGHT = 12;
-	
+	 
 	public enum LiftSetpoints {
-		GROUND(1.35), SCORING_PLATFORM(4.11), STEP(9.11), BETWEEN_TOTES(10), ABOVE_1_TOTE(16.11), RECEIVE_ARM_TOTE(23.9), ABOVE_CAN(33);
+		GROUND(.85), SCORING_PLATFORM(6.11), STEP(9.11), BETWEEN_TOTES(10), ABOVE_1_TOTE(18.11), RECEIVE_ARM_TOTE(23.9), ABOVE_CAN(33);
 		
 		private double value;
 		
@@ -263,14 +263,14 @@ public class RobotMap {
 	
 	public enum ArmSetpoints {
 		
-		GROUND_UP_HIGH(101,175,90),
-		GROUND_UP_LOW(101,175,90),
-		GROUND_FALL_PREP(43,143,178),
-		GROUND_FALL(43,143,178),
-		STEP(98.5,108.8,90),
+		GROUND_UP_HIGH(65.3,167.3,86.7),
+		GROUND_UP_LOW(109.8,175.3,84.3),
+		GROUND_FALL_PREP(48.0,113.6,174.1),
+		GROUND_FALL(57.8,128.2,174.2),
+		STEP(103.6,102.1,83.7),
 		TOP_OF_STACK(2,48,90),
-		STORAGE(23,170,80),
-		STORAGE_NO_CAN(23, 170, 175),
+		STORAGE(4.3,155.1,86.1),
+		STORAGE_NO_CAN(5.7, 154.9, 177.0),
 		CURLED_TAIL(0,0,0),
 		ON_LIFT(0,0,0),
 		SCORPION_HOLD(14.2,-91.0,-90),
@@ -281,9 +281,9 @@ public class RobotMap {
 		
 		TRANSITION_1(51.3, 158.4, 90),
 		TRANSITION_2(98.2, 73.0, 0),
-		TRANSITION_3a(99.7, 29.1, -45.3),
-		TRANSITION_3b(99.7, 29.1, -80.0),
-		TRANSITION_4(38.8, -45.1, -80.0),
+		TRANSITION_3a(99.7, 29.1, -55.3),
+		TRANSITION_3b(99.7, 29.1, -90.0),
+		TRANSITION_4(38.8, -55.0, -90.0),
 		TRANSITION_5(14.2, -55.0, -90);
 		
 		private double shoulder;
@@ -336,7 +336,7 @@ public class RobotMap {
 	
 	//Sensors
 	
-	public static AnalogPot grabberPot;
+	public static Encoder grabberEncoder;
 	
 	//Constants
 	
@@ -345,8 +345,8 @@ public class RobotMap {
 	public static final double GRABBER_kD = 15;
 	public static final double GRABBER_kF = 0;
 	
-	public static final double GRABBER_CLOSED = .26;
-	public static final double GRABBER_OPEN = .33;
+	public static final double GRABBER_CLOSED = 129;
+	public static final double GRABBER_OPEN = -120;
 	public static final double GRABBER_OPEN_WIDE = .35;
 	
 //OTS
@@ -545,12 +545,12 @@ public class RobotMap {
   		}
   		else
   		{
-  			LEFT_RANGE_FINDER_IN = 1050;
-  			RIGHT_RANGE_FINDER_IN = 1030;
-  			LEFT_RANGE_FINDER_OUT = 1000;
-  			RIGHT_RANGE_FINDER_OUT = 1010;
-  			LEFT_RANGE_FINDER_PID_SETPOINT = .900;
-  			RIGHT_RANGE_FINDER_PID_SETPOINT = .900;
+  			LEFT_RANGE_FINDER_IN = 565;
+  			RIGHT_RANGE_FINDER_IN = 575;
+  			LEFT_RANGE_FINDER_OUT = 500;
+  			RIGHT_RANGE_FINDER_OUT = 530;
+  			LEFT_RANGE_FINDER_PID_SETPOINT = 625;
+  			RIGHT_RANGE_FINDER_PID_SETPOINT = 635;
   		}
   		
 	//Forklift
@@ -618,9 +618,10 @@ public class RobotMap {
 		
 		//Sensors
 		
-		grabberPot = new AnalogPot(4, false);
-		LiveWindow.addSensor("Grabber", "grabberEncoder", grabberPot);
-		Diagnostics.addAnalogPot(grabberPot, "Grabber");
+		grabberEncoder = new Encoder(6,7);
+		grabberEncoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kDistance);
+		LiveWindow.addSensor("Grabber", "grabberEncoder", grabberEncoder);
+		Diagnostics.addEncoder(grabberEncoder, "Grabber");
 		
 	//OTS
 		

@@ -4,6 +4,7 @@ import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
 import org.usfirst.frc.team246.robot.RobotMap.LiftSetpoints;
 import org.usfirst.frc.team246.robot.commands.AdjustTote;
 import org.usfirst.frc.team246.robot.commands.ChangeArmBend;
+import org.usfirst.frc.team246.robot.commands.CloseGrabber;
 import org.usfirst.frc.team246.robot.commands.CrabWithTwist;
 import org.usfirst.frc.team246.robot.commands.EngageScorpionMode;
 import org.usfirst.frc.team246.robot.commands.ExitScorpionMode;
@@ -91,9 +92,9 @@ public class OI {
 			}
 			public boolean getToggler()
 			{
-				return Robot.getters.getCurrentCommand().getClass() == ProcessLandfill.class;
+				return Robot.getters.getCurrentCommand().getClass() == AdjustTote.class;
 			}
-		}.toggle(new StopGetters(), new ProcessLandfill());
+		}.toggle(new StopGetters(), new AdjustTote());
 		
 		new Toggle() {
 			
@@ -148,6 +149,8 @@ public class OI {
 		}.toggle(new StopGetters(), new GettersRight());
 		
 		processingConfirmLowerButton = driver.getB();
+		driver.getB().whenPressed(new MoveForklift(LiftSetpoints.GROUND, true));
+		driver.getB().whenReleased(new MoveForklift(LiftSetpoints.ABOVE_1_TOTE, true));
 		
 		operator.getA().whenPressed(new MoveArm(ArmSetpoints.STORAGE_NO_CAN));
 		operator.getB().whenPressed(new MoveArm(ArmSetpoints.STEP));
@@ -167,7 +170,20 @@ public class OI {
 		
 		operator.getLB().whileHeld(new PushTotes());
 		operator.getLB().whenReleased(new RetractPusher());
-		operator.getRB().whileHeld(new OpenGrabber());
+		new Toggle() {
+			
+			@Override
+			public boolean get()
+			{
+				return operator.getRB().get();
+			}
+			
+			@Override
+			public boolean getToggler()
+			{
+				return Robot.grabber.getCurrentCommand() == null || Robot.grabber.getCurrentCommand().getClass() == CloseGrabber.class;
+			}
+		}.toggle(new OpenGrabber(), new CloseGrabber());
 		
 		operator.getStart().whenPressed(new EngageScorpionMode());
 		operator.getBack().whenPressed(new ExitScorpionMode());

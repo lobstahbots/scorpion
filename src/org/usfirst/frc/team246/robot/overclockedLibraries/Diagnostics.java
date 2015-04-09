@@ -3,6 +3,7 @@ package org.usfirst.frc.team246.robot.overclockedLibraries;
 import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Diagnostics implements Runnable {
@@ -37,20 +38,24 @@ public class Diagnostics implements Runnable {
 
 	@Override
 	public void run() {
-		for(int i = 0; i < analogIns.size(); i++)
+		while(true)
 		{
-			DiagnosticsAnalogIn ai = analogIns.get(i);
-			SmartDashboard.putNumber(ai.name, ai.sensor.get());
-		}
-		for(int i = 0; i < analogPots.size(); i++)
-		{
-			DiagnosticsAnalogPot ap = analogPots.get(i);
-			SmartDashboard.putNumber(ap.name, ap.sensor.get());
-		}
-		for(int i = 0; i < encoders.size(); i++)
-		{
-			DiagnosticsEncoder e = encoders.get(i);
-			SmartDashboard.putNumber(e.name, e.sensor.get());
+			for(int i = 0; i < analogIns.size(); i++)
+			{
+				DiagnosticsAnalogIn ai = analogIns.get(i);
+				SmartDashboard.putNumber(ai.name, ai.sensor.get());
+			}
+			for(int i = 0; i < analogPots.size(); i++)
+			{
+				DiagnosticsAnalogPot ap = analogPots.get(i);
+				SmartDashboard.putNumber(ap.name, ap.sensor.get());
+			}
+			for(int i = 0; i < encoders.size(); i++)
+			{
+				DiagnosticsEncoder e = encoders.get(i);
+				SmartDashboard.putNumber(e.name, e.sensor.getDistance());
+			}
+			Timer.delay(.1);
 		}
 	}
 	

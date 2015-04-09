@@ -8,6 +8,8 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import javax.tools.Diagnostic;
+
 import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
 import org.usfirst.frc.team246.robot.RobotMap.LiftSetpoints;
 import org.usfirst.frc.team246.robot.commands.AlignWheels;
@@ -34,6 +36,7 @@ import org.usfirst.frc.team246.robot.commands.StopGetters;
 import org.usfirst.frc.team246.robot.commands.ZeroNavX;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AlertMessage;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogIn;
+import org.usfirst.frc.team246.robot.overclockedLibraries.Diagnostics;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SwerveModule;
 import org.usfirst.frc.team246.robot.overclockedLibraries.UdpAlertService;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
@@ -85,7 +88,7 @@ public class Robot extends IterativeRobot {
 	public static boolean gyroDisabled = false;
 	public static boolean gasMode = false;
 	public static boolean trojan = false;
-	public static boolean scorpionModeTest = false;
+	public static boolean scorpionModeTest = true;
 	
 	public static Drivetrain drivetrain;
 	public static Getters getters;
@@ -117,7 +120,10 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
     	BBBAnalogs = new AnalogIn[6];
     	
+    	Diagnostics.initialize();
         RobotMap.init();
+        
+        RobotMap.grabberEncoder.reset();
         
         (new Thread(new AnalogInputCollector())).start();
         
@@ -220,6 +226,7 @@ public class Robot extends IterativeRobot {
 	
     public void autonomousInit() {
     	robotMode = RobotMode.AUTONOMOUS;
+    	RobotMap.grabberEncoder.reset();
     	auton = (Command) autonRadioBoxes.getSelected();
     	auton.start();
     	/* CHANGE NAVX HEADING IF PUTTING IN AUTONOMOUS
@@ -413,10 +420,10 @@ public class Robot extends IterativeRobot {
 		        DatagramPacket packet = new DatagramPacket(data, data.length);
 		        try {
 					AIs.receive(packet);
-				} catch (IOException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
-//		        System.out.println("0: " + Integer.toHexString(data[0]&0xff));
+		        System.out.println("0: " + Integer.toHexString(data[0]&0xff));
 //		        System.out.println("1: " + Integer.toHexString(data[1]&0xff));
 //		        System.out.println("2: " + Integer.toHexString(data[2]&0xff));
 //		        System.out.println("3: " + Integer.toHexString(data[3]&0xff));

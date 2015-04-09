@@ -1,6 +1,7 @@
 package org.usfirst.frc.team246.robot.commands;
 
 import org.usfirst.frc.team246.robot.Robot;
+import org.usfirst.frc.team246.robot.RobotMap;
 import org.usfirst.frc.team246.robot.RobotMap.LiftSetpoints;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
@@ -12,13 +13,12 @@ public class ReleaseStack extends CommandGroup {
     
     public  ReleaseStack() {
         addParallel(new ManualArm());
-        addParallel(new MoveForklift(LiftSetpoints.GROUND, true));
         addSequential(new OpenGrabber() {
         	
         	@Override
         	protected boolean isFinished()
         	{
-        		return Robot.grabber.onTarget();
+        		return Math.abs(RobotMap.grabberEncoder.getDistance()) < .01;
         	}
         });
         addSequential(new PushTotes());
@@ -27,7 +27,11 @@ public class ReleaseStack extends CommandGroup {
     @Override
     protected void end()
     {
-    	new CloseGrabber().start();
     	new RetractPusher().start();
+    }
+    @Override
+    protected void interrupted()
+    {
+    	end();
     }
 }
