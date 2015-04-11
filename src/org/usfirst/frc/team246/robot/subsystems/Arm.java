@@ -127,16 +127,16 @@ public class Arm extends Subsystem {
 	    	
 	    	//Limit the grabber to staying above the ground and below the ceiling
 	    	//4 points of the rectangle of the grabber
-	    	double p0 = v12.getY() + RobotMap.ARM_SHOULDER_HEIGHT + Vector2D.addVectors(new Vector2D(false, RobotMap.GRABBER_SMALL_LENGTH, v3.getAngle()), new Vector2D(false, RobotMap.GRABBER_WIDTH/2, v3.getAngle() + 90)).getY();
-	    	double p1 = v12.getY() + RobotMap.ARM_SHOULDER_HEIGHT + Vector2D.addVectors(new Vector2D(false, RobotMap.GRABBER_SMALL_LENGTH, v3.getAngle()), new Vector2D(false, RobotMap.GRABBER_WIDTH/2, v3.getAngle() - 90)).getY();
-	    	double p2 = v12.getY() + RobotMap.ARM_SHOULDER_HEIGHT + Vector2D.addVectors(v3, new Vector2D(false, RobotMap.GRABBER_WIDTH/2, v3.getAngle() + 90)).getY();
-	    	double p3 = v12.getY() + RobotMap.ARM_SHOULDER_HEIGHT + Vector2D.addVectors(v3, new Vector2D(false, RobotMap.GRABBER_WIDTH/2, v3.getAngle() - 90)).getY();
-	    	if(p0 < RobotMap.ARM_GROUND_TOLERANCE || p1 < RobotMap.ARM_GROUND_TOLERANCE || p2 < RobotMap.ARM_GROUND_TOLERANCE || p3 < RobotMap.ARM_GROUND_TOLERANCE) 
+//	    	double p0 = v12.getY() + RobotMap.ARM_SHOULDER_HEIGHT + Vector2D.addVectors(new Vector2D(false, RobotMap.GRABBER_SMALL_LENGTH, v3.getAngle()), new Vector2D(false, RobotMap.GRABBER_WIDTH/2, v3.getAngle() + 90)).getY();
+//	    	double p1 = v12.getY() + RobotMap.ARM_SHOULDER_HEIGHT + Vector2D.addVectors(new Vector2D(false, RobotMap.GRABBER_SMALL_LENGTH, v3.getAngle()), new Vector2D(false, RobotMap.GRABBER_WIDTH/2, v3.getAngle() - 90)).getY();
+	    	double p2 = v123.getY() + RobotMap.ARM_SHOULDER_HEIGHT;
+	    	double p3 = v123.getY() + RobotMap.ARM_SHOULDER_HEIGHT;
+	    	if(/*p0 < RobotMap.ARM_GROUND_TOLERANCE || p1 < RobotMap.ARM_GROUND_TOLERANCE || */ p2 < RobotMap.ARM_GROUND_TOLERANCE || p3 < RobotMap.ARM_GROUND_TOLERANCE) 
 			{
 	    		UdpAlertService.sendAlert(new AlertMessage("Arm Constraint: Grabber Ground").playSound("GrabberGround.wav"));
 	    		return false;
 			}
-	    	if(p0 > ceilingHeight || p1 > ceilingHeight || p2 > ceilingHeight || p3 > ceilingHeight) 
+	    	if(/*p0 > ceilingHeight + RobotMap.ARM_CEILING_TOLERANCE|| p1 > ceilingHeight + RobotMap.ARM_CEILING_TOLERANCE || */ p2 > ceilingHeight - RobotMap.ARM_CEILING_TOLERANCE || p3 > ceilingHeight - RobotMap.ARM_CEILING_TOLERANCE) 
 			{
 	    		UdpAlertService.sendAlert(new AlertMessage("Arm Constraint: Grabber Ceiling").playSound("GrabberCeiling.wav"));
 	    		return false;

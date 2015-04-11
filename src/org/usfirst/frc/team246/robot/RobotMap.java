@@ -6,6 +6,7 @@ import org.usfirst.frc.team246.nav6.IMUAdvanced;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogIn;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogPot;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Diagnostics;
+import org.usfirst.frc.team246.robot.overclockedLibraries.GEncoder;
 import org.usfirst.frc.team246.robot.overclockedLibraries.LimitSwitch;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SpeedController246;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Talon246;
@@ -72,7 +73,7 @@ public class RobotMap {
 	public static double MODULE_kD = .08;
 	public static double MODULE_kF = 0;
 	
-	public static double ABSOLUTE_TWIST_kP = .25;
+	public static double ABSOLUTE_TWIST_kP = .2;
     public static double ABSOLUTE_TWIST_kI = 0;
     public static double ABSOLUTE_TWIST_kD = 0;
 	
@@ -158,7 +159,7 @@ public class RobotMap {
 	public static final double TOTE_HEIGHT = 12;
 	 
 	public enum LiftSetpoints {
-		GROUND(.85), SCORING_PLATFORM(6.11), STEP(9.11), BETWEEN_TOTES(10), ABOVE_1_TOTE(18.11), RECEIVE_ARM_TOTE(23.9), ABOVE_CAN(33);
+		GROUND(2.2), SCORING_PLATFORM(6.61), STEP(9.11), BETWEEN_TOTES(10), ABOVE_1_TOTE(18.61), RECEIVE_ARM_TOTE(18.61), FIX_ARM_TOTE(23), ABOVE_CAN(38);
 		
 		private double value;
 		
@@ -233,17 +234,17 @@ public class RobotMap {
 	public static final double ARM_SHOULDER_MIN = -28;
 	public static final double ARM_SHOULDER_MAX = 125;
 	
-	public static final double ARM_SHOULDER_HEIGHT = 34;
+	public static final double ARM_SHOULDER_HEIGHT = 36;
 	
 	public static final double ARM_GROUND_TOLERANCE = .5;
-	public static final double ARM_CEILING_TOLERANCE = 0;
+	public static final double ARM_CEILING_TOLERANCE = -1;
 	public static final double ARM_CEILING_TOLERANCE_WHILE_TRANSITIONING = 2;
 	public static final double ARM_LIFT_TOLERANCE = 1;
 	
 	public static final double ARM_WIDTH = 6;
-	public static final double GRABBER_WIDTH = 6;
+	public static final double GRABBER_WIDTH = 2;
 	public static final double GRABBER_LENGTH = 24;
-	public static final double GRABBER_SMALL_LENGTH = 10.5;
+	public static final double GRABBER_SMALL_LENGTH = 12;
 	
 	public static final double ARM_LIFT_LOCATION = -21.5;
 	public static final double ARM_LIFT_HEIGHT = 54;
@@ -268,14 +269,14 @@ public class RobotMap {
 		GROUND_FALL_PREP(48.0,113.6,174.1),
 		GROUND_FALL(57.8,128.2,174.2),
 		STEP(103.6,102.1,83.7),
-		TOP_OF_STACK(2,48,90),
+		TOP_OF_STACK(-21.0,43.5,86.0),
 		STORAGE(4.3,155.1,86.1),
 		STORAGE_NO_CAN(5.7, 154.9, 177.0),
 		CURLED_TAIL(0,0,0),
 		ON_LIFT(0,0,0),
 		SCORPION_HOLD(14.2,-91.0,-90),
 		
-		AUTON_POSITION_1(59.7, 117.3, 172.4),
+		AUTON_POSITION_1(67.0, 85.0, 169.6),
 		AUTON_POSITION_2(23,170,175),
 		AUTON_POSITION_3(-19.9, -81.0, -163.2),
 		
@@ -283,8 +284,8 @@ public class RobotMap {
 		TRANSITION_2(98.2, 73.0, 0),
 		TRANSITION_3a(99.7, 29.1, -55.3),
 		TRANSITION_3b(99.7, 29.1, -90.0),
-		TRANSITION_4(38.8, -55.0, -90.0),
-		TRANSITION_5(14.2, -55.0, -90);
+		TRANSITION_4(38.8, -50.0, -90.0),
+		TRANSITION_5(14.2, -50.0, -90);
 		
 		private double shoulder;
 		private double elbow;
@@ -336,7 +337,7 @@ public class RobotMap {
 	
 	//Sensors
 	
-	public static Encoder grabberEncoder;
+	public static GEncoder grabberEncoder;
 	
 	//Constants
 	
@@ -348,6 +349,9 @@ public class RobotMap {
 	public static final double GRABBER_CLOSED = 129;
 	public static final double GRABBER_OPEN = -120;
 	public static final double GRABBER_OPEN_WIDE = .35;
+	
+	public static final double GRABBER_UNSAFE_MIN = -400;
+	public static final double GRABBER_UNSAFE_MAX = 400;
 	
 //OTS
 	
@@ -618,7 +622,7 @@ public class RobotMap {
 		
 		//Sensors
 		
-		grabberEncoder = new Encoder(6,7);
+		grabberEncoder = new GEncoder(6,7);
 		grabberEncoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kDistance);
 		LiveWindow.addSensor("Grabber", "grabberEncoder", grabberEncoder);
 		Diagnostics.addEncoder(grabberEncoder, "Grabber");

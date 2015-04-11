@@ -227,6 +227,7 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {
     	robotMode = RobotMode.AUTONOMOUS;
     	RobotMap.grabberEncoder.reset();
+    	RobotMap.grabberMotor.set(0);
     	auton = (Command) autonRadioBoxes.getSelected();
     	auton.start();
     	/* CHANGE NAVX HEADING IF PUTTING IN AUTONOMOUS
@@ -266,6 +267,7 @@ public class Robot extends IterativeRobot {
     public void teleopInit() {
     	robotMode = RobotMode.TELEOP;
     	auton.cancel();
+    	RobotMap.grabberMotor.set(0);
     	Robot.drivetrain.setMaxSpeed(RobotMap.SLOW_MAX_CRAB_SPEED, RobotMap.SLOW_MAX_SPIN_SPEED);
     	drivetrain.PIDOn(true);
     }
@@ -380,6 +382,7 @@ public class Robot extends IterativeRobot {
                 SmartDashboard.putBoolean("motorKilled", true);
             }
     	}
+
         //allows the operator to manually return control of all modules to their respective PIDcontrollers
         if(!SmartDashboard.getBoolean("motorKilled", true))
         {
@@ -387,6 +390,7 @@ public class Robot extends IterativeRobot {
             {
             	((Victor246)drivetrain.swerves[i].moduleMotor).returnControl();
             }
+            ((Victor246)RobotMap.grabberMotor).returnControl();
         }
         
         SmartDashboard.putNumber("Heading", RobotMap.navX.getYaw());

@@ -33,7 +33,8 @@ public class Grabber extends PIDSubsystem {
 //    	enable();
 //    	setSetpoint(RobotMap.GRABBER_OPEN);
     	disable();
-    	if(RobotMap.grabberEncoder.getDistance() > RobotMap.GRABBER_OPEN) RobotMap.grabberMotor.set(-.5);
+    	if(RobotMap.grabberEncoder.getDistance() > RobotMap.GRABBER_OPEN) RobotMap.grabberMotor.set(-.75);
+    	else RobotMap.grabberMotor.set(0);
     }
     public void openWide()
     {
@@ -57,7 +58,9 @@ public class Grabber extends PIDSubsystem {
 //    		RobotMap.grabberMotor.set(0);
 //    	}
     	disable();
-    	if(RobotMap.grabberEncoder.getDistance() < RobotMap.GRABBER_CLOSED) RobotMap.grabberMotor.set(.5);
+    	if(RobotMap.grabberEncoder.getDistance() > RobotMap.GRABBER_UNSAFE_MIN) RobotMap.grabberMotor.set(-.75);
+    	else if(RobotMap.grabberEncoder.getDistance() < RobotMap.GRABBER_CLOSED) RobotMap.grabberMotor.set(.5);
+    	else RobotMap.grabberMotor.set(0);
     }
 
 	@Override

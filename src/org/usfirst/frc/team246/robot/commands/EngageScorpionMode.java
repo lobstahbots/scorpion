@@ -37,6 +37,8 @@ public class EngageScorpionMode extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
     	if(Robot.arm.transitionIndex < waypoints.length - 1 && Robot.arm.sumSquareError(waypoints[Robot.arm.transitionIndex].getShoulder(), waypoints[Robot.arm.transitionIndex].getElbow(), waypoints[Robot.arm.transitionIndex].getWrist()) < 100) Robot.arm.transitionIndex++;
+    	if(Robot.arm.transitionIndex == 3) Robot.arm.shoulder.setOutputRange(-.75, .75);
+    	else Robot.arm.shoulder.setOutputRange(-RobotMap.ARM_MAX_SPEED, RobotMap.ARM_MAX_SPEED);
     	goToSetpoint();
     }
 

@@ -193,11 +193,6 @@ public class OI {
 		operator.getLeft().whenPressed(new MoveArm(ArmSetpoints.GROUND_FALL_PREP));
 		operator.getRight().whenPressed(new MoveArm(ArmSetpoints.GROUND_FALL));
 		
-        operator.getUp().whenPressed(new MoveForkliftUp1());
-        operator.getDown().whenPressed(new MoveForkliftDown1());
-        operator.getLeft().whenPressed(new MoveForklift(LiftSetpoints.GROUND, true));
-        operator.getLeft().whenReleased(new MoveForklift(LiftSetpoints.SCORING_PLATFORM, true));
-		
         (new JoystickButton(buttonBox, 2)).whenPressed(new MoveForkliftUp1());
         (new JoystickButton(buttonBox, 3)).whenPressed(new MoveForkliftDown1());
         (new JoystickButton(buttonBox, 1)).whenPressed(new MoveForklift(LiftSetpoints.GROUND, true));

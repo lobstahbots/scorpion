@@ -14,6 +14,6 @@ public class GEncoder extends Encoder
 	@Override
 	public double getDistance()
 	{
-		return super.getDistance() - offset;
+		return super.getDistance() + offset;
 	}
 }

@@ -16,13 +16,14 @@ public class Auto20Points extends CommandGroup {
     
     public  Auto20Points() {
     	addParallel(new ZeroNavX(90));
+    	addParallel(new OffsetGrabber(20));
     	addParallel(new CloseGrabber());
     	addParallel(new MoveForklift(LiftSetpoints.ABOVE_CAN, true));
     	addSequential(new MoveArm(ArmSetpoints.AUTON_POSITION_1));
 		addParallel(AutoSetDriveSpeed.modifyCrabAndSpin(5, 5)); //Set the speed to 5
 		addParallel(new Outgest()); //Slide for the first can
 		addSequential(new AutoSpin(135)); //Spin to the right angle
-		addSequential(new AutoAlignAndDrive(new Vector2D(true, 0, 1.25), true)); //Drive towards the center of the field
+		addSequential(new AutoAlignAndDrive(new Vector2D(true, 0, 2), true)); //Drive towards the center of the field
 		addSequential(new WaitCommand(1));
 		addParallel(new EngageScorpionMode() {
 			@Override
@@ -36,8 +37,10 @@ public class Auto20Points extends CommandGroup {
 				waypoints[RobotMap.ARM_TRANSITION_ARRAY_TO_FRONT.length] = ArmSetpoints.AUTON_POSITION_3;
 				super.initialize();
 			}
+			
+			protected void end() {}
 		});
-		addSequential(new AutoDriveSimple(new Vector2D(true, -4.5, 1.25), false)
+		addSequential(new AutoDriveSimple(new Vector2D(true, -4.5, 2), false)
 		{
 			@Override
 			protected boolean isFinished()
@@ -51,13 +54,13 @@ public class Auto20Points extends CommandGroup {
 		addParallel(new MoveForklift(LiftSetpoints.RECEIVE_ARM_TOTE, true));
 		addSequential(new WaitCommand(.25));
 		addParallel(AutoSetDriveSpeed.modifyCrab(5)); //Set the speed to 5
-		addSequential(new AutoAlignAndDrive(new Vector2D(true, -8, 6.25), false));
+		addSequential(new AutoAlignAndDrive(new Vector2D(true, -8, 9), false));
 		addSequential(new Outgest(), .25);
 		addParallel(new Intake());
-		addSequential(new WaitCommand(.25));
-		addSequential(new OpenGrabber(), .75);
-		addSequential(new WaitCommand(.5));
-		addParallel(new AutoSpin(-90));
+		addSequential(new AutoSpin(90));
+		//addParallel(new MoveForklift(LiftSetpoints.FIX_ARM_TOTE, true));
+		addParallel(new OpenGrabber());
+		addSequential(new WaitCommand(1));
 		addSequential(new MoveForklift(LiftSetpoints.BETWEEN_TOTES, true));
 		addParallel(new Outgest() {
 			@Override
@@ -66,6 +69,6 @@ public class Auto20Points extends CommandGroup {
 		    }
 
 		});
-		addSequential(new AutoAlignAndDrive(new Vector2D(true, -6,  6.25), true));
+		//addSequential(new AutoAlignAndDrive(new Vector2D(true, -6,  9), false));
     }
 }
