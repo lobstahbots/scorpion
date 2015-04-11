@@ -7,6 +7,8 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.tools.Diagnostic;
 
@@ -99,6 +101,7 @@ public class Robot extends IterativeRobot {
 	public static OTS ots;
 	
 	public static AnalogIn[] BBBAnalogs;
+	public static OTSReciever otsReciever;
 	
 	Command auton;
 	
@@ -441,6 +444,67 @@ public class Robot extends IterativeRobot {
 			}
 		}
 	}
+    
+    public class OTSReciever implements Runnable {
+    	private Vector2D toteCorner = new Vector2D(true, 0, 0);
+    	private double toteAngle = 0;
+    	private boolean seesTote = false;
+    	
+    	public void run() {
+    		try {
+                int port = 5810;
+
+                // Create a socket to listen on the port.
+                DatagramSocket dsocket = new DatagramSocket(port);
+
+                // Create a buffer to read datagrams into. If a
+                // packet is larger than this buffer, the
+                // excess will simply be discarded!
+                byte[] buffer = new byte[2048];
+
+                // Create a packet to receive data into the buffer
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+                System.out.println("Waiting for tote detection message");
+                // Now loop forever, waiting to receive packets and printing them.
+                while (true) {
+                  // Wait to receive a datagram
+                  dsocket.receive(packet);
+
+                  // Convert the contents to a string, and display them
+                  String msg = new String(buffer, 0, packet.getLength());
+                  System.out.println(packet.getAddress().getHostName() + ": "
+                      + msg);
+
+                  if (msg != "none") {
+                    List<String> fields = Arrays.asList(msg.split(","));
+                    seesTote = true;
+                    System.out.println("Tote detected at X = " + fields.get(0) + ", Y = " + fields.get(1) + ", Theta = " + fields.get(2));
+                    toteCorner = new Vector2D(true, Double.parseDouble(fields.get(0)), Double.parseDouble(fields.get(1)));
+                    toteAngle = Double.parseDouble(fields.get(2));
+                  } else {
+                      seesTote = false;
+                      System.out.println("No totes detected");
+                  }
+                  // Reset the length of the packet before reusing it.
+                  packet.setLength(buffer.length);
+                }
+            } catch (Exception e) {
+                System.err.println(e);
+            }
+    	}
+    	
+    	public Vector2D getToteCorner() {
+    		return toteCorner;
+    	}
+    	
+    	public double getToteAngle() {
+    		return toteAngle;
+    	}
+    	
+    	public boolean seesTote() {
+    		return seesTote;
+    	}
+    }
     
     public static int getShort(byte[] input, int offset)
     {
