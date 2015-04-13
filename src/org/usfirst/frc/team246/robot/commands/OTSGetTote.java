@@ -1,9 +1,11 @@
 package org.usfirst.frc.team246.robot.commands;
 
 import org.usfirst.frc.team246.robot.Robot;
+import org.usfirst.frc.team246.robot.RobotMap;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -28,8 +30,6 @@ public class OTSGetTote extends Command {
     }
     
     private AutoAlignAndDrive driveIntoTote;
-    private static final double LEFT_RIGHT_TOTE_OFFSET = 4;
-    // to hit short side of tote first, shift over this many inches
 
     // Called just before this Command runs the first time
     protected void initialize() {
@@ -38,9 +38,11 @@ public class OTSGetTote extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
     	Vector2D toteAquiredLocation = Robot.otsReciever.getToteCorner();
-    	toteAquiredLocation.setMagnitude(toteAquiredLocation.getMagnitude() + 10); // drive 10in past corner to acquire
-    	double toteAquiredX = rightIntakeFirst ? toteAquiredLocation.getX() - LEFT_RIGHT_TOTE_OFFSET : toteAquiredLocation.getX() + LEFT_RIGHT_TOTE_OFFSET;
-    	toteAquiredLocation.setX(toteAquiredX);
+    	double parallelShiftAngle = rightIntakeFirst ? 90 + Robot.otsReciever.getToteAngle() : Robot.otsReciever.getToteAngle() - 180; // relative to 0 degrees on Y-axis
+    	// I'm triple sure the above calculation is right (Michael)
+    	toteAquiredLocation.setMagnitude(toteAquiredLocation.getMagnitude() + RobotMap.OTS_GET_TOTE_OVERSHOOT); // drive 10in past corner to acquire
+    	Vector2D parallelToteShift = new Vector2D(false, RobotMap.LEFT_RIGHT_TOTE_OFFSET, parallelShiftAngle);
+    	toteAquiredLocation = Vector2D.addVectors(toteAquiredLocation, parallelToteShift); // shift parallel to short side of tote
     	toteAquiredLocation = Vector2D.addVectors(toteAquiredLocation, lastCommandedPosition); // correction if odometry not reset
     	driveIntoTote = new AutoAlignAndDrive(toteAquiredLocation, resetOdometry);
     	driveIntoTote.start();
