@@ -130,9 +130,9 @@ public class RobotMap {
 	
 	public static final double GETTER_POTS_TOLERANCE = 3;
 	
-	public static final double GETTER_ADJUSTING_kP = .002;
-	public static final double GETTER_ADJUSTING_kI = 0;
-	public static final double GETTER_ADJUSTING_kD = 0;
+	public static double GETTER_ADJUSTING_kP = .002;
+	public static double GETTER_ADJUSTING_kI = 0;
+	public static double GETTER_ADJUSTING_kD = 0;
 	
 //Forklift
 	
@@ -159,7 +159,7 @@ public class RobotMap {
 	public static final double TOTE_HEIGHT = 12;
 	 
 	public enum LiftSetpoints {
-		GROUND(2.2), SCORING_PLATFORM(6.61), STEP(9.11), BETWEEN_TOTES(10), ABOVE_1_TOTE(18.61), RECEIVE_ARM_TOTE(18.61), FIX_ARM_TOTE(23), ABOVE_CAN(38);
+		GROUND(2.2), SCORING_PLATFORM(6.61), STEP(10.61), BETWEEN_TOTES(10), ABOVE_1_TOTE(18.61), RECEIVE_ARM_TOTE(18.61), FIX_ARM_TOTE(23), ABOVE_CAN(38);
 		
 		private double value;
 		
@@ -540,6 +540,9 @@ public class RobotMap {
   		
   		if(Robot.trojan)
   		{
+  			GETTER_ADJUSTING_kP = 2;
+  			GETTER_ADJUSTING_kI = 0;
+  			GETTER_ADJUSTING_kD = 0;
   			LEFT_RANGE_FINDER_IN = 0.906;
   			RIGHT_RANGE_FINDER_IN = 0.840;
   			LEFT_RANGE_FINDER_OUT = 0.862;
@@ -549,6 +552,9 @@ public class RobotMap {
   		}
   		else
   		{
+  			GETTER_ADJUSTING_kP = .002;
+  			GETTER_ADJUSTING_kI = 0;
+  			GETTER_ADJUSTING_kD = 0;
   			LEFT_RANGE_FINDER_IN = 565;
   			RIGHT_RANGE_FINDER_IN = 575;
   			LEFT_RANGE_FINDER_OUT = 500;

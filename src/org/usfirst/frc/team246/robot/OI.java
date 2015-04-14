@@ -8,6 +8,7 @@ import org.usfirst.frc.team246.robot.commands.CloseGrabber;
 import org.usfirst.frc.team246.robot.commands.CrabWithTwist;
 import org.usfirst.frc.team246.robot.commands.EngageScorpionMode;
 import org.usfirst.frc.team246.robot.commands.ExitScorpionMode;
+import org.usfirst.frc.team246.robot.commands.GetToteSimple;
 import org.usfirst.frc.team246.robot.commands.GettersLeft;
 import org.usfirst.frc.team246.robot.commands.GettersRight;
 import org.usfirst.frc.team246.robot.commands.GoFast;
@@ -54,8 +55,7 @@ public class OI {
     public Joystick buttonBox;
     
     public Trigger processingConfirmLowerButton;
-    public Trigger processingOpenGrabberSmallButton;
-    public Trigger processingOpenGrabberLargeButton;
+    public Trigger processingOpenGrabberButton;
     public Trigger processingDontRaiseLiftButton;
     public Trigger breakArmConstraintsButton;
     public Trigger manualPusherPushButton;
@@ -152,6 +152,11 @@ public class OI {
 		driver.getB().whenPressed(new MoveForklift(LiftSetpoints.GROUND, true));
 		driver.getB().whenReleased(new MoveForklift(LiftSetpoints.ABOVE_1_TOTE, true));
 		
+		driver.getBack().whenPressed(new GetToteSimple(true, false));
+		driver.getStart().whenPressed(new GetToteSimple(false, false));
+		driver.getLeftStick().whenPressed(new GetToteSimple(true, true));
+		driver.getRightStick().whenPressed(new GetToteSimple(false, true));
+		
 		operator.getA().whenPressed(new MoveArm(ArmSetpoints.STORAGE_NO_CAN));
 		operator.getB().whenPressed(new MoveArm(ArmSetpoints.STEP));
 		operator.getX2().whenPressed(new MoveArm(ArmSetpoints.STORAGE));
@@ -208,8 +213,7 @@ public class OI {
         manualPusherPushButton = new JoystickButton(buttonBox, 8);
         manualPusherPullButton = new JoystickButton(buttonBox, 9);
 		
-        processingOpenGrabberSmallButton = new JoystickButton(buttonBox, 4);
-		processingOpenGrabberLargeButton = new JoystickButton(buttonBox, 5);
+        processingOpenGrabberButton = new JoystickButton(buttonBox, 4);
 		processingDontRaiseLiftButton = new JoystickButton(buttonBox, 6);
 		
 		if(Robot.scorpionModeTest)

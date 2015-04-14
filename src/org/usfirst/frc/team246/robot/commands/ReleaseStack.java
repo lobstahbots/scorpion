@@ -18,7 +18,7 @@ public class ReleaseStack extends CommandGroup {
         	@Override
         	protected boolean isFinished()
         	{
-        		return Math.abs(RobotMap.grabberEncoder.getDistance()) < .01;
+        		return Robot.grabber.inTolerance();
         	}
         });
         addSequential(new PushTotes());

@@ -12,9 +12,9 @@ import edu.wpi.first.wpilibj.command.WaitCommand;
 /**
  *
  */
-public class Auto20PointsCan1 extends CommandGroup {
+public class Auto20PointsWithStepCan extends CommandGroup {
     
-    public  Auto20PointsCan1() {
+    public  Auto20PointsWithStepCan() {
     	addParallel(new ZeroNavX(90));
     	addParallel(new OffsetGrabber(20));
     	addParallel(new CloseGrabber());
@@ -37,6 +37,8 @@ public class Auto20PointsCan1 extends CommandGroup {
 				waypoints[RobotMap.ARM_TRANSITION_ARRAY_TO_FRONT.length] = ArmSetpoints.AUTON_POSITION_3;
 				super.initialize();
 			}
+			
+			protected void end() {}
 		});
 		addSequential(new AutoDriveSimple(new Vector2D(true, -4.5, 2), false)
 		{
@@ -48,18 +50,17 @@ public class Auto20PointsCan1 extends CommandGroup {
 		});
 		addParallel(new Intake());// Intake the second tote
 		addParallel(AutoSetDriveSpeed.modifyCrab(3)); //Set the speed to 3
-		addSequential(new AutoAlignAndDrive(new Vector2D(true, -8, 2), false)); //Drive into the second tote
+		addSequential(new AutoAlignAndDrive(new Vector2D(true, -8, 1.25), false)); //Drive into the second tote
 		addParallel(new MoveForklift(LiftSetpoints.RECEIVE_ARM_TOTE, true));
 		addSequential(new WaitCommand(.25));
 		addParallel(AutoSetDriveSpeed.modifyCrab(5)); //Set the speed to 5
-		addSequential(new AutoAlignAndDrive(new Vector2D(true, -8, 6.25), false));
+		addSequential(new AutoAlignAndDrive(new Vector2D(true, -8, 9), false));
 		addSequential(new Outgest(), .25);
 		addParallel(new Intake());
-		addSequential(new WaitCommand(.25));
-		addSequential(new OpenGrabber(), .75);
-		addSequential(new WaitCommand(.5));
-		addParallel(new ExitScorpionMode());
-		addParallel(new AutoSpin(0));
+		addSequential(new AutoSpin(90));
+		//addParallel(new MoveForklift(LiftSetpoints.FIX_ARM_TOTE, true));
+		addParallel(new OpenGrabber());
+		addSequential(new WaitCommand(1));
 		addSequential(new MoveForklift(LiftSetpoints.BETWEEN_TOTES, true));
 		addParallel(new Outgest() {
 			@Override
@@ -68,6 +69,8 @@ public class Auto20PointsCan1 extends CommandGroup {
 		    }
 
 		});
-		addSequential(new AutoAlignAndDrive(new Vector2D(true, -8,  12.25), true));
+		addParallel(new ExitScorpionMode());
+		addSequential(new AutoAlignAndDrive(new Vector2D(true, -6,  9), false));
+		addSequential(new AutoSpin(0));
     }
 }

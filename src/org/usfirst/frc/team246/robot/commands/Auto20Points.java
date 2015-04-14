@@ -69,6 +69,6 @@ public class Auto20Points extends CommandGroup {
 		    }
 
 		});
-		//addSequential(new AutoAlignAndDrive(new Vector2D(true, -6,  9), false));
+		addSequential(new AutoAlignAndDrive(new Vector2D(true, -6,  9), false));
     }
 }

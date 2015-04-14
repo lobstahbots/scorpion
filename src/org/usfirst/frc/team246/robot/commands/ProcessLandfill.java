@@ -18,10 +18,11 @@ public class ProcessLandfill extends Command {
     CloseGrabber closeGrabber = new CloseGrabber();
     OpenGrabber openGrabber = new OpenGrabber();
     OpenGrabberWide openGrabberWide = new OpenGrabberWide();
-    ScorpionHold scorpionHold = new ScorpionHold();
+    Command scorpionHold = new ScorpionHold();
     
     // Called just before this Command runs the first time
     protected void initialize() {
+    	scorpionHold = Robot.arm.getCurrentCommand();
     }
     
     enum LiftState { WAITING, LOWERING, LIFTING }
@@ -42,7 +43,7 @@ public class ProcessLandfill extends Command {
     		}
     		openGrabber();
     	}
-    	else if(liftState == LiftState.LOWERING && Robot.forklift.onTarget() && ((!Robot.oi.processingOpenGrabberSmallButton.get() && !Robot.oi.processingOpenGrabberLargeButton.get()) || Robot.grabber.onTarget()))
+    	else if(liftState == LiftState.LOWERING && Robot.forklift.onTarget() && (!Robot.oi.processingOpenGrabberButton.get() || Robot.grabber.onTarget()))
     	{
     		liftState = LiftState.LIFTING;
     		if(Robot.oi.processingDontRaiseLiftButton.get()) moveForklift = new MoveForklift(LiftSetpoints.SCORING_PLATFORM, true);
@@ -81,15 +82,11 @@ public class ProcessLandfill extends Command {
     
     private void openGrabber()
     {
-    	if(Robot.oi.processingOpenGrabberLargeButton.get()) 
+    	if(Robot.oi.processingOpenGrabberButton.get()) 
 		{
 			openGrabberWide.start();
-			new ManualArm().start();
-		}
-		else if(Robot.oi.processingOpenGrabberSmallButton.get()) 
-		{
-			scorpionHold.start();
-			openGrabber.start();
+			if(Robot.grabber.inTolerance()) scorpionHold.start();
+			else new ManualArm().start();
 		}
 		else 
 		{

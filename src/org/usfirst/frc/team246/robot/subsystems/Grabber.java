@@ -5,6 +5,7 @@ import org.usfirst.frc.team246.robot.RobotMap;
 import org.usfirst.frc.team246.robot.commands.CloseGrabber;
 import org.usfirst.frc.team246.robot.commands.ManualGrabber;
 import org.usfirst.frc.team246.robot.commands.OpenGrabber;
+import org.usfirst.frc.team246.robot.commands.StopGrabber;
 
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -25,6 +26,7 @@ public class Grabber extends PIDSubsystem {
 	}
 	
     public void initDefaultCommand() {
+    	setDefaultCommand(new StopGrabber());
     }
     
     public void open()
@@ -71,6 +73,11 @@ public class Grabber extends PIDSubsystem {
 	@Override
 	protected void usePIDOutput(double output) {
 		RobotMap.grabberMotor.set(output);
+	}
+	
+	public boolean inTolerance()
+	{
+		 return Math.abs(RobotMap.grabberEncoder.getDistance()) < .01;
 	}
 }
 

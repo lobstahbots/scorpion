@@ -19,6 +19,7 @@ import org.usfirst.frc.team246.robot.commands.AutoAlignAndDrive;
 import org.usfirst.frc.team246.robot.commands.AutoDrive;
 import org.usfirst.frc.team246.robot.commands.AutoGetAllTotes;
 import org.usfirst.frc.team246.robot.commands.AutoLogoTest;
+import org.usfirst.frc.team246.robot.commands.AutoMineLandfill;
 import org.usfirst.frc.team246.robot.commands.AutoSetDriveSpeed;
 import org.usfirst.frc.team246.robot.commands.AutoSlideCan;
 import org.usfirst.frc.team246.robot.commands.AutoSpin;
@@ -87,7 +88,7 @@ public class Robot extends IterativeRobot {
 	public static boolean test3 = false;
 	public static boolean gyroDisabled = false;
 	public static boolean gasMode = false;
-	public static boolean trojan = false;
+	public static boolean trojan = true;
 	public static boolean scorpionModeTest = true;
 	
 	public static Drivetrain drivetrain;
@@ -145,6 +146,7 @@ public class Robot extends IterativeRobot {
         autonRadioBoxes.addObject("Do Nothing Backwards", new ZeroNavX(180));
         autonRadioBoxes.addObject("Do Nothing Right", new ZeroNavX(-90));
         autonRadioBoxes.addObject("Test Autonomous", new AutoTest());
+        autonRadioBoxes.addObject("Mine Landfill", new AutoMineLandfill());
         autonRadioBoxes.addObject("Get all totes", new AutoGetAllTotes());
         autonRadioBoxes.addObject("20 Points", new Auto20Points());
         SmartDashboard.putData("Auto Mode Chooser", autonRadioBoxes);
