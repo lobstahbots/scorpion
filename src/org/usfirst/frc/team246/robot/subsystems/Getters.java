@@ -49,4 +49,8 @@ public class Getters extends Subsystem {
     		return hadTote;
     	}
     }
+    
+    public boolean hasToteWithoutSound() {
+    	return hadTote;
+    }
 }
