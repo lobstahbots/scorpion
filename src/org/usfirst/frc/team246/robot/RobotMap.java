@@ -106,6 +106,10 @@ public class RobotMap {
     public static final double EAST = 270;
     
     public static final double ACCELERATION_CONSTANT = 20;
+    
+    // for OTSGetTote
+    public static final double LEFT_RIGHT_TOTE_OFFSET = 4; // to hit short side of tote first, shift (parallel) over this many inches
+    public static final double OTS_GET_TOTE_OVERSHOOT = 10;
 	
 //Getters
 	
