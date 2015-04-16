@@ -123,6 +123,7 @@ public class Robot extends IterativeRobot {
      */
     public void robotInit() {
     	BBBAnalogs = new AnalogIn[6];
+    	otsReciever = new OTSReciever();
     	
     	Diagnostics.initialize();
         RobotMap.init();
@@ -130,6 +131,7 @@ public class Robot extends IterativeRobot {
         RobotMap.grabberEncoder.reset();
         
         (new Thread(new AnalogInputCollector())).start();
+        (new Thread(otsReciever)).start();
         
         drivetrain = new Drivetrain();
         getters = new Getters();
