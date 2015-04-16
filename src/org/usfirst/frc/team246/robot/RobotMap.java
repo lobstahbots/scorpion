@@ -108,8 +108,9 @@ public class RobotMap {
     public static final double ACCELERATION_CONSTANT = 20;
     
     // for OTSGetTote
-    public static final double LEFT_RIGHT_TOTE_OFFSET = 4; // to hit short side of tote first, shift (parallel) over this many inches
-    public static final double OTS_GET_TOTE_OVERSHOOT = 10;
+    public static final double PARALLEL_TOTE_SHIFT_MAGNITUDE = 4; // distance (from corner) along tote's short side where getter should hit 
+    public static final Vector2D LEFT_GRABBER_LOCATION = new Vector2D(true, 2, 3); // TODO: set these values. Locations relative to OTS
+    public static final Vector2D RIGHT_GRABBER_LOCATION = new Vector2D(true, -2, 3);
 	
 //Getters
 	
