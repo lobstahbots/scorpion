@@ -188,10 +188,6 @@ public class Drivetrain extends Subsystem {
 
     private AbsoluteCrabPIDOutput absoluteCrabPIDOutput = new AbsoluteCrabPIDOutput();
     public PIDController absoluteCrabPID;
-    
-    /**
-     *@author Michael Silver
-     */
      
     private class AbsoluteCrabPIDOutput implements PIDOutput
     {   

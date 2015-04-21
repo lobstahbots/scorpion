@@ -20,6 +20,7 @@ import org.usfirst.frc.team246.robot.commands.MoveArm;
 import org.usfirst.frc.team246.robot.commands.MoveArmDown1;
 import org.usfirst.frc.team246.robot.commands.MoveArmToBack;
 import org.usfirst.frc.team246.robot.commands.MoveArmToFront;
+import org.usfirst.frc.team246.robot.commands.MoveArmToStep;
 import org.usfirst.frc.team246.robot.commands.MoveArmUp1;
 import org.usfirst.frc.team246.robot.commands.MoveForklift;
 import org.usfirst.frc.team246.robot.commands.MoveForkliftDown1;
@@ -33,6 +34,7 @@ import org.usfirst.frc.team246.robot.commands.RetractPusher;
 import org.usfirst.frc.team246.robot.commands.RobotCentricCrabWithTwist;
 import org.usfirst.frc.team246.robot.commands.ScorpionHold;
 import org.usfirst.frc.team246.robot.commands.StopGetters;
+import org.usfirst.frc.team246.robot.commands.StopGrabber;
 import org.usfirst.frc.team246.robot.commands.TransitionSimple;
 import org.usfirst.frc.team246.robot.commands.TransitionSimpleStepDown;
 import org.usfirst.frc.team246.robot.commands.TransitionSimpleStepUp;
@@ -158,7 +160,7 @@ public class OI {
 		driver.getRightStick().whenPressed(new GetToteSimple(false, true));
 		
 		operator.getA().whenPressed(new MoveArm(ArmSetpoints.STORAGE_NO_CAN));
-		operator.getB().whenPressed(new MoveArm(ArmSetpoints.STEP));
+		operator.getB().whenPressed(new MoveArmToStep());
 		operator.getX2().whenPressed(new MoveArm(ArmSetpoints.STORAGE));
 		new Toggle() {
 			
@@ -186,9 +188,38 @@ public class OI {
 			@Override
 			public boolean getToggler()
 			{
-				return Robot.grabber.getCurrentCommand() == null || Robot.grabber.getCurrentCommand().getClass() == CloseGrabber.class;
+				return ((Robot.grabber.getCurrentCommand() == null || Robot.grabber.getCurrentCommand().getClass() == StopGrabber.class) && RobotMap.grabberEncoder.getDistance() > -5) || Robot.grabber.getCurrentCommand().getClass() == CloseGrabber.class;
 			}
 		}.toggle(new OpenGrabber(), new CloseGrabber());
+		new Trigger() {
+
+			@Override
+			public boolean get() {
+				return operator.getLB().get() && Robot.grabber.getCurrentCommand().getClass() == CloseGrabber.class && RobotMap.grabberEncoder.getDistance() > Robot.grabber.grabberSetpoint
+						&& Robot.arm.getWrist() < 135;
+			}
+		}.whenActive(new EngageScorpionMode());
+		new Trigger() {
+
+			@Override
+			public boolean get() {
+				return operator.getLB().get() && Robot.grabber.getCurrentCommand().getClass() == CloseGrabber.class && RobotMap.grabberEncoder.getDistance() > Robot.grabber.grabberSetpoint
+						&& Robot.arm.getWrist() > 135;
+			}
+		}.whenActive(new EngageScorpionMode() {
+			
+			@Override
+			protected void initialize()
+			{
+				waypoints = new ArmSetpoints[RobotMap.ARM_TRANSITION_ARRAY_TO_FRONT.length + 1];
+				for(int i = 0; i < RobotMap.ARM_TRANSITION_ARRAY_TO_FRONT.length; i++)
+				{
+					waypoints[i] = RobotMap.ARM_TRANSITION_ARRAY_TO_FRONT[i];
+				}
+				waypoints[RobotMap.ARM_TRANSITION_ARRAY_TO_FRONT.length] = ArmSetpoints.GROUND_FALL_PREP;
+				super.initialize();
+			}
+		});
 		
 		operator.getStart().whenPressed(new EngageScorpionMode());
 		operator.getBack().whenPressed(new ExitScorpionMode());

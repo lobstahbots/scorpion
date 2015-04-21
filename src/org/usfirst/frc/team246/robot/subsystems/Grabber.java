@@ -35,16 +35,30 @@ public class Grabber extends PIDSubsystem {
 //    	enable();
 //    	setSetpoint(RobotMap.GRABBER_OPEN);
     	disable();
-    	if(RobotMap.grabberEncoder.getDistance() > RobotMap.GRABBER_OPEN) RobotMap.grabberMotor.set(-.75);
-    	else RobotMap.grabberMotor.set(0);
+    	grabberSetpoint = RobotMap.GRABBER_CLOSED;
+    	if(RobotMap.grabberEncoder.getDistance() < RobotMap.GRABBER_UNSAFE_MIN)
+    	{
+    		RobotMap.grabberMotor.set(0);
+    		System.out.println("OPEN WATCHDOG");
+    	}
+    	else if(RobotMap.grabberEncoder.getDistance() > RobotMap.GRABBER_OPEN)
+    	{
+    		RobotMap.grabberMotor.set(-.75);
+    		System.out.println("OPENING");
+    	}
+    	else
+    	{
+    		RobotMap.grabberMotor.set(0);
+    		System.out.println("STOPPING OPEN");
+    	}
     }
     public void openWide()
     {
-    	currentStopped = false;
+    	//currentStopped = false;
     	enable();
     	setSetpoint(RobotMap.GRABBER_OPEN_WIDE);
     }
-    boolean currentStopped = false;
+    public double grabberSetpoint = RobotMap.GRABBER_CLOSED;
     public void close()
     {
 //    	SmartDashboard.putNumber("Grabber current draw", RobotMap.grabberMotor.getCurrent());
@@ -60,9 +74,22 @@ public class Grabber extends PIDSubsystem {
 //    		RobotMap.grabberMotor.set(0);
 //    	}
     	disable();
-    	if(RobotMap.grabberEncoder.getDistance() > RobotMap.GRABBER_UNSAFE_MIN) RobotMap.grabberMotor.set(-.75);
-    	else if(RobotMap.grabberEncoder.getDistance() < RobotMap.GRABBER_CLOSED) RobotMap.grabberMotor.set(.5);
-    	else RobotMap.grabberMotor.set(0);
+    	if(RobotMap.grabberMotor.getCurrent() > RobotMap.GRABBER_CURRENT_LIMIT && grabberSetpoint == RobotMap.GRABBER_CLOSED) grabberSetpoint = Math.min(RobotMap.GRABBER_CLOSED, RobotMap.grabberEncoder.getDistance() + RobotMap.GRABBER_CURRENT_OFFSET);
+    	if(RobotMap.grabberEncoder.getDistance() > RobotMap.GRABBER_UNSAFE_MAX)
+    	{
+    		RobotMap.grabberMotor.set(0);
+    		System.out.println("CLOSE WATCHDOG");
+    	}
+    	else if(RobotMap.grabberEncoder.getDistance() < grabberSetpoint)
+    	{
+    		RobotMap.grabberMotor.set(.5);
+    		System.out.println("CLOSING");
+    	}
+    	else
+    	{
+    		RobotMap.grabberMotor.set(0);
+    		System.out.println("STOPPING CLOSE");
+    	}
     }
 
 	@Override

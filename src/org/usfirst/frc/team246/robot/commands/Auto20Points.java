@@ -16,7 +16,6 @@ public class Auto20Points extends CommandGroup {
     
     public  Auto20Points() {
     	addParallel(new ZeroNavX(90));
-    	addParallel(new OffsetGrabber(20));
     	addParallel(new CloseGrabber());
     	addParallel(new MoveForklift(LiftSetpoints.ABOVE_CAN, true));
     	addSequential(new MoveArm(ArmSetpoints.AUTON_POSITION_1));

@@ -14,6 +14,7 @@ import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
 import org.usfirst.frc.team246.robot.RobotMap.LiftSetpoints;
 import org.usfirst.frc.team246.robot.commands.AlignWheels;
 import org.usfirst.frc.team246.robot.commands.Auto20Points;
+import org.usfirst.frc.team246.robot.commands.Auto20PointsNoArm;
 import org.usfirst.frc.team246.robot.commands.Auto2Can;
 import org.usfirst.frc.team246.robot.commands.AutoAlignAndDrive;
 import org.usfirst.frc.team246.robot.commands.AutoDrive;
@@ -124,7 +125,7 @@ public class Robot extends IterativeRobot {
     	Diagnostics.initialize();
         RobotMap.init();
         
-        RobotMap.grabberEncoder.reset();
+        //RobotMap.grabberEncoder.reset();
         
         (new Thread(new AnalogInputCollector())).start();
         
@@ -149,6 +150,7 @@ public class Robot extends IterativeRobot {
         autonRadioBoxes.addObject("Mine Landfill", new AutoMineLandfill());
         autonRadioBoxes.addObject("Get all totes", new AutoGetAllTotes());
         autonRadioBoxes.addObject("20 Points", new Auto20Points());
+        autonRadioBoxes.addObject("20 Points Normal", new Auto20PointsNoArm());
         SmartDashboard.putData("Auto Mode Chooser", autonRadioBoxes);
         
         
@@ -371,7 +373,6 @@ public class Robot extends IterativeRobot {
     
     public void allPeriodic()
     {
-    	SmartDashboard.putData(Scheduler.getInstance());
     	
         //This is a safety to prevent any of the modules from rotating too far and overtwisting the wires. 
         //If any module angle surpasses RobotMap.UNSAFE_MODULE_ANGLE, the motor controlling it will be automatically shut off
@@ -429,7 +430,7 @@ public class Robot extends IterativeRobot {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-		        System.out.println("0: " + Integer.toHexString(data[0]&0xff));
+//		        System.out.println("0: " + Integer.toHexString(data[0]&0xff));
 //		        System.out.println("1: " + Integer.toHexString(data[1]&0xff));
 //		        System.out.println("2: " + Integer.toHexString(data[2]&0xff));
 //		        System.out.println("3: " + Integer.toHexString(data[3]&0xff));

@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 public class EngageScorpionMode extends Command {
 	
-	ArmSetpoints[] waypoints = RobotMap.ARM_TRANSITION_ARRAY_TO_FRONT;
+	protected ArmSetpoints[] waypoints = RobotMap.ARM_TRANSITION_ARRAY_TO_FRONT;
 	
     public EngageScorpionMode() {
         requires(Robot.arm);

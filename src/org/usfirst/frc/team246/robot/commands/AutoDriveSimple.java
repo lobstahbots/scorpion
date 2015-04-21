@@ -34,7 +34,7 @@ public class AutoDriveSimple extends FieldCentricDrivingCommand{
 	@Override
     protected void execute() {
     	Robot.drivetrain.setFOV(updateHeading());
-    	Robot.drivetrain.absoluteCrabPID.setSetpoint(targetLocation.getMagnitude());
+    	Robot.drivetrain.absoluteCrabPID.setSetpoint(Vector2D.subtractVectors(targetLocation, Robot.drivetrain.odometry.getFieldCentricLinearDisplacement()).getMagnitude() + Robot.drivetrain.odometry.pidGet());
         
     	Robot.drivetrain.drivetrainPID.setTwist(getSpinRate());
         Robot.drivetrain.drivetrainPID.setCOR(getCOR());
@@ -65,7 +65,7 @@ public class AutoDriveSimple extends FieldCentricDrivingCommand{
 
 	@Override
 	protected boolean isFinished() {
-		return Math.abs(Math.abs(Robot.drivetrain.odometry.pidGet()) - targetLocation.getMagnitude()) < .2;
+		return Math.abs(Vector2D.subtractVectors(targetLocation, Robot.drivetrain.odometry.getFieldCentricLinearDisplacement()).getMagnitude()) < .2;
 	}
 
 	@Override

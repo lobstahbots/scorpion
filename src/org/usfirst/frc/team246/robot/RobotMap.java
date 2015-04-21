@@ -6,7 +6,6 @@ import org.usfirst.frc.team246.nav6.IMUAdvanced;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogIn;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogPot;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Diagnostics;
-import org.usfirst.frc.team246.robot.overclockedLibraries.GEncoder;
 import org.usfirst.frc.team246.robot.overclockedLibraries.LimitSwitch;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SpeedController246;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Talon246;
@@ -80,6 +79,8 @@ public class RobotMap {
     public static double ABSOLUTE_CRAB_kP = 1;
     public static double ABSOLUTE_CRAB_kI = 0;
     public static double ABSOLUTE_CRAB_kD = 0;
+    
+    public static double ABSOLUTE_CRAB_FAST_kP = 1;
     
     public static final double K_MODULE_ANGLE_DELTA = 1;
     public static final double K_MODULE_ANGLE_TWIST = 0;
@@ -337,7 +338,7 @@ public class RobotMap {
 	
 	//Sensors
 	
-	public static GEncoder grabberEncoder;
+	public static Encoder grabberEncoder;
 	
 	//Constants
 	
@@ -346,12 +347,14 @@ public class RobotMap {
 	public static final double GRABBER_kD = 15;
 	public static final double GRABBER_kF = 0;
 	
-	public static final double GRABBER_CLOSED = 129;
-	public static final double GRABBER_OPEN = -120;
+	public static final double GRABBER_CLOSED = 94;
+	public static final double GRABBER_OPEN = -155;
 	public static final double GRABBER_OPEN_WIDE = .35;
+	public static final double GRABBER_CURRENT_LIMIT = 11;
+	public static final double GRABBER_CURRENT_OFFSET = 40;
 	
-	public static final double GRABBER_UNSAFE_MIN = -400;
-	public static final double GRABBER_UNSAFE_MAX = 400;
+	public static final double GRABBER_UNSAFE_MIN = -258;
+	public static final double GRABBER_UNSAFE_MAX = 128;
 	
 //OTS
 	
@@ -624,12 +627,12 @@ public class RobotMap {
 		//Pneumatics
 			
 		grabberMotor = new Victor246(13, 8, pdp);
+		grabberMotor.setSafetyEnabled(true);
 		LiveWindow.addActuator("Grabber", "grabberMotor", grabberMotor);
 		
 		//Sensors
 		
-		grabberEncoder = new GEncoder(6,7);
-		grabberEncoder.setPIDSourceParameter(PIDSource.PIDSourceParameter.kDistance);
+		grabberEncoder = new Encoder(6, 7);
 		LiveWindow.addSensor("Grabber", "grabberEncoder", grabberEncoder);
 		Diagnostics.addEncoder(grabberEncoder, "Grabber");
 		

@@ -13,6 +13,7 @@ public class ReleaseStack extends CommandGroup {
     
     public  ReleaseStack() {
         addParallel(new ManualArm());
+        addParallel(new MoveForklift(LiftSetpoints.SCORING_PLATFORM, true));
         addSequential(new OpenGrabber() {
         	
         	@Override

@@ -145,6 +145,17 @@ public class AnalogPot implements Potentiometer, LiveWindowSendable {
     		return m_analog_input.get() * m_fullRange + m_offset;
     	}
     }
+    
+    public double getRaw() {
+    	if(m_analog_input.onRIO)
+    	{
+    		return m_analog_input.get() / ControllerPower.getVoltage5V();
+    	}
+    	else
+    	{
+    		return m_analog_input.get();
+    	}
+    }
 
     /**
      * Implement the PIDSource interface.
