@@ -5,24 +5,26 @@ import org.usfirst.frc.team246.robot.RobotMap.LiftSetpoints;
 import org.usfirst.frc.team246.robot.subsystems.Grabber;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
  */
 public class ProcessLandfill extends Command {
 
-    public ProcessLandfill() {}
+    public ProcessLandfill() {
+    }
 
     AdjustTote adjustTote = new AdjustTote();
     MoveForklift moveForklift = new MoveForklift(LiftSetpoints.ABOVE_1_TOTE, true);
     CloseGrabber closeGrabber = new CloseGrabber();
     OpenGrabber openGrabber = new OpenGrabber();
     OpenGrabberWide openGrabberWide = new OpenGrabberWide();
-    Command scorpionHold = new ScorpionHold();
+    Command scorpionHold = null;
     
     // Called just before this Command runs the first time
     protected void initialize() {
-    	scorpionHold = Robot.arm.getCurrentCommand();
+    	adjustTote.start();
     }
     
     enum LiftState { WAITING, LOWERING, LIFTING }
@@ -31,9 +33,10 @@ public class ProcessLandfill extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	adjustTote.start();
     	
-    	if(Robot.getters.hasTote() && Robot.oi.processingConfirmLowerButton.get() && liftState != LiftState.LIFTING)
+    	if(Robot.arm.getCurrentCommand().getClass() == ScorpionHold.class) scorpionHold = Robot.arm.getCurrentCommand();
+    	
+    	if(Robot.hasTote && Robot.oi.processingConfirmLowerButton.get() && liftState != LiftState.LIFTING)
     	{
     		if(liftState == LiftState.WAITING)
     		{
@@ -59,7 +62,7 @@ public class ProcessLandfill extends Command {
     	{
     		liftState = LiftState.WAITING;
     		(new ManualForklift()).start();
-    		scorpionHold.start();
+    		if(scorpionHold != null) scorpionHold.start();
     		closeGrabber.start();
     	}
     }
@@ -85,7 +88,7 @@ public class ProcessLandfill extends Command {
     	if(Robot.oi.processingOpenGrabberButton.get()) 
 		{
 			openGrabberWide.start();
-			if(Robot.grabber.inTolerance()) scorpionHold.start();
+			if(Robot.grabber.inToleranceOpenWide()) scorpionHold.start();
 			else new ManualArm().start();
 		}
 		else 

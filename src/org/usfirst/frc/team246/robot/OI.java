@@ -8,6 +8,9 @@ import org.usfirst.frc.team246.robot.commands.CloseGrabber;
 import org.usfirst.frc.team246.robot.commands.CrabWithTwist;
 import org.usfirst.frc.team246.robot.commands.EngageScorpionMode;
 import org.usfirst.frc.team246.robot.commands.ExitScorpionMode;
+import org.usfirst.frc.team246.robot.commands.Get5thTote;
+import org.usfirst.frc.team246.robot.commands.GetLastTote;
+import org.usfirst.frc.team246.robot.commands.GetTote;
 import org.usfirst.frc.team246.robot.commands.GetToteSimple;
 import org.usfirst.frc.team246.robot.commands.GettersLeft;
 import org.usfirst.frc.team246.robot.commands.GettersRight;
@@ -15,6 +18,7 @@ import org.usfirst.frc.team246.robot.commands.GoFast;
 import org.usfirst.frc.team246.robot.commands.Intake;
 import org.usfirst.frc.team246.robot.commands.LiftTote;
 import org.usfirst.frc.team246.robot.commands.ManualArm;
+import org.usfirst.frc.team246.robot.commands.ManualForklift;
 import org.usfirst.frc.team246.robot.commands.ManualPusher;
 import org.usfirst.frc.team246.robot.commands.MoveArm;
 import org.usfirst.frc.team246.robot.commands.MoveArmDown1;
@@ -26,6 +30,7 @@ import org.usfirst.frc.team246.robot.commands.MoveForklift;
 import org.usfirst.frc.team246.robot.commands.MoveForkliftDown1;
 import org.usfirst.frc.team246.robot.commands.MoveForkliftUp1;
 import org.usfirst.frc.team246.robot.commands.OpenGrabber;
+import org.usfirst.frc.team246.robot.commands.OpenGrabberWide;
 import org.usfirst.frc.team246.robot.commands.Outgest;
 import org.usfirst.frc.team246.robot.commands.ProcessLandfill;
 import org.usfirst.frc.team246.robot.commands.PushTotes;
@@ -63,6 +68,8 @@ public class OI {
     public Trigger manualPusherPushButton;
     public Trigger manualPusherPullButton;
     
+    public boolean lastToting;
+    
     public OI()
     {
     	driver = new LogitechF310(0);
@@ -98,12 +105,13 @@ public class OI {
 			}
 		}.toggle(new StopGetters(), new AdjustTote());
 		
+		
 		new Toggle() {
 			
 			@Override
 			public boolean get()
 			{
-				return driver.getLB().get();
+				return driver.getStart().get();
 			}
 			public boolean getToggler()
 			{
@@ -150,17 +158,50 @@ public class OI {
 			}
 		}.toggle(new StopGetters(), new GettersRight());
 		
-		processingConfirmLowerButton = driver.getB();
+		//processingConfirmLowerButton = driver.getB();
 		driver.getB().whenPressed(new MoveForklift(LiftSetpoints.GROUND, true));
 		driver.getB().whenReleased(new MoveForklift(LiftSetpoints.ABOVE_1_TOTE, true));
-		
-		driver.getBack().whenPressed(new GetToteSimple(true, false));
-		driver.getStart().whenPressed(new GetToteSimple(false, false));
-		driver.getLeftStick().whenPressed(new GetToteSimple(true, true));
-		driver.getRightStick().whenPressed(new GetToteSimple(false, true));
+		new Trigger() {
+			
+			@Override
+			public boolean get() {
+				if(Robot.hasTote && driver.getLB().get() && !buttonBox.getRawButton(6) && Robot.forklift.getCurrentCommand().getClass() != GetLastTote.class)
+				{
+					if(!lastToting)
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}
+				else
+				{
+					lastToting = false;
+					return false;
+				}
+					
+			}
+		}.whenActive(new GetTote());
+		new Trigger() {
+			
+			@Override
+			public boolean get() {
+				if(Robot.hasTote && driver.getLB().get() && buttonBox.getRawButton(6) && Robot.forklift.getCurrentCommand().getClass() != GetTote.class)
+				{
+					lastToting = true;
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}.whenActive(new GetLastTote());
 		
 		operator.getA().whenPressed(new MoveArm(ArmSetpoints.STORAGE_NO_CAN));
-		operator.getB().whenPressed(new MoveArmToStep());
+		operator.getB().whenPressed(new MoveArm(ArmSetpoints.STEP));
 		operator.getX2().whenPressed(new MoveArm(ArmSetpoints.STORAGE));
 		new Toggle() {
 			
@@ -244,8 +285,12 @@ public class OI {
         manualPusherPushButton = new JoystickButton(buttonBox, 8);
         manualPusherPullButton = new JoystickButton(buttonBox, 9);
 		
-        processingOpenGrabberButton = new JoystickButton(buttonBox, 4);
+        (new JoystickButton(buttonBox, 4)).whenPressed(new MoveForklift(LiftSetpoints.STEP, false));
+        
+        processingOpenGrabberButton = new JoystickButton(buttonBox, 5);
 		processingDontRaiseLiftButton = new JoystickButton(buttonBox, 6);
+		
+		new JoystickButton(buttonBox, 5).whenPressed(new Get5thTote());
 		
 		if(Robot.scorpionModeTest)
 		{

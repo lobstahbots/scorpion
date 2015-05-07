@@ -49,14 +49,15 @@ public class Auto20Points extends CommandGroup {
 		});
 		addParallel(new Intake());// Intake the second tote
 		addParallel(AutoSetDriveSpeed.modifyCrab(3)); //Set the speed to 3
-		addSequential(new AutoAlignAndDrive(new Vector2D(true, -8, 1.25), false)); //Drive into the second tote
+		addSequential(new AutoAlignAndDrive(new Vector2D(true, -8, 2), false)); //Drive into the second tote
 		addParallel(new MoveForklift(LiftSetpoints.RECEIVE_ARM_TOTE, true));
 		addSequential(new WaitCommand(.25));
 		addParallel(AutoSetDriveSpeed.modifyCrab(5)); //Set the speed to 5
 		addSequential(new AutoAlignAndDrive(new Vector2D(true, -8, 9), false));
+		addSequential(new AutoSpin(90));
 		addSequential(new Outgest(), .25);
 		addParallel(new Intake());
-		addSequential(new AutoSpin(90));
+		addSequential(new WaitCommand(.5));
 		//addParallel(new MoveForklift(LiftSetpoints.FIX_ARM_TOTE, true));
 		addParallel(new OpenGrabber());
 		addSequential(new WaitCommand(1));
@@ -68,6 +69,6 @@ public class Auto20Points extends CommandGroup {
 		    }
 
 		});
-		addSequential(new AutoAlignAndDrive(new Vector2D(true, -6,  9), false));
+		addSequential(new AutoAlignAndDrive(new Vector2D(true, -5,  9), false));
     }
 }

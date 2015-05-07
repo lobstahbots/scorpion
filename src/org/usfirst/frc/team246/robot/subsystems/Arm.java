@@ -207,7 +207,9 @@ public class Arm extends Subsystem {
     public void set(ArmSetpoints setpoint)
     {
     	currentSetpoint = setpoint;
-    	set(setpoint.getShoulder(), setpoint.getElbow(), setpoint.getWrist());
+    	shoulder.setSetpoint(setpoint.getShoulder());
+    	elbow.setSetpoint(setpoint.getElbow());
+    	wrist.setSetpoint(setpoint.getWrist());
     }
     
     //Moves the shoulder to the set angle while targeting for the elbow to be just below the ceiling. Moves the wrist to the set angle.

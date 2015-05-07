@@ -39,24 +39,42 @@ public class Grabber extends PIDSubsystem {
     	if(RobotMap.grabberEncoder.getDistance() < RobotMap.GRABBER_UNSAFE_MIN)
     	{
     		RobotMap.grabberMotor.set(0);
-    		System.out.println("OPEN WATCHDOG");
+//    		System.out.println("OPEN WATCHDOG");
     	}
     	else if(RobotMap.grabberEncoder.getDistance() > RobotMap.GRABBER_OPEN)
     	{
     		RobotMap.grabberMotor.set(-.75);
-    		System.out.println("OPENING");
+//    		System.out.println("OPENING");
     	}
     	else
     	{
     		RobotMap.grabberMotor.set(0);
-    		System.out.println("STOPPING OPEN");
+//    		System.out.println("STOPPING OPEN");
     	}
     }
     public void openWide()
     {
-    	//currentStopped = false;
-    	enable();
-    	setSetpoint(RobotMap.GRABBER_OPEN_WIDE);
+    	disable();
+    	grabberSetpoint = RobotMap.GRABBER_CLOSED;
+    	if(RobotMap.grabberEncoder.getDistance() < RobotMap.GRABBER_UNSAFE_MIN)
+    	{
+    		RobotMap.grabberMotor.set(0);
+//    		System.out.println("OPEN WATCHDOG");
+    	}
+    	else if(RobotMap.grabberEncoder.getDistance() > RobotMap.GRABBER_OPEN_WIDE)
+    	{
+    		RobotMap.grabberMotor.set(-.75);
+//    		System.out.println("OPENING");
+    	}
+    	else
+    	{
+    		RobotMap.grabberMotor.set(0);
+//    		System.out.println("STOPPING OPEN");
+    	}
+    	
+//    	//currentStopped = false;
+//    	enable();
+//    	setSetpoint(RobotMap.GRABBER_OPEN_WIDE);
     }
     public double grabberSetpoint = RobotMap.GRABBER_CLOSED;
     public void close()
@@ -78,17 +96,17 @@ public class Grabber extends PIDSubsystem {
     	if(RobotMap.grabberEncoder.getDistance() > RobotMap.GRABBER_UNSAFE_MAX)
     	{
     		RobotMap.grabberMotor.set(0);
-    		System.out.println("CLOSE WATCHDOG");
+//    		System.out.println("CLOSE WATCHDOG");
     	}
     	else if(RobotMap.grabberEncoder.getDistance() < grabberSetpoint)
     	{
     		RobotMap.grabberMotor.set(.5);
-    		System.out.println("CLOSING");
+//    		System.out.println("CLOSING");
     	}
     	else
     	{
     		RobotMap.grabberMotor.set(0);
-    		System.out.println("STOPPING CLOSE");
+//    		System.out.println("STOPPING CLOSE");
     	}
     }
 
@@ -102,9 +120,13 @@ public class Grabber extends PIDSubsystem {
 		RobotMap.grabberMotor.set(output);
 	}
 	
-	public boolean inTolerance()
+	public boolean inToleranceOpen()
 	{
-		 return Math.abs(RobotMap.grabberEncoder.getDistance()) < .01;
+		 return Math.abs(RobotMap.grabberEncoder.getDistance() - RobotMap.GRABBER_OPEN) < 5;
+	}
+	public boolean inToleranceOpenWide()
+	{
+		return Math.abs(RobotMap.grabberEncoder.getDistance() - RobotMap.GRABBER_OPEN_WIDE) < 5;
 	}
 }
 

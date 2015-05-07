@@ -18,7 +18,7 @@ public class Forklift extends PIDSubsystem {
 		super(RobotMap.LIFT_kP, RobotMap.LIFT_kI, RobotMap.LIFT_kD, 0.02);
 		LiveWindow.addActuator("Forklift", "liftPID", this.getPIDController());
 		setAbsoluteTolerance(RobotMap.LIFT_TOLERANCE);
-		setOutputRange(-1, .8);
+		setOutputRange(-1, 1);
 	}
 
 	// Put methods for controlling this subsystem

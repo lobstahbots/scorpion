@@ -20,6 +20,7 @@ public class EngageScorpionMode extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
+    	//  TELEOP:
     	int bestSetpoint = 0;
     	double bestSetpointError = Double.MAX_VALUE;
     	for(int i = 0; i < waypoints.length; i++)
@@ -49,7 +50,7 @@ public class EngageScorpionMode extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
-    	new ScorpionHold().start();
+    	new ScorpionHold().start();  // if testing auton scorpion, comment out this line
     }
 
     // Called when another command which requires one or more of the same

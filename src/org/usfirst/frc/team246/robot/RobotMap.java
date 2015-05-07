@@ -152,20 +152,20 @@ public class RobotMap {
 	
 	//Constants
 	
-	public static final double LIFT_kP = .5;
+	public static final double LIFT_kP = .75;
 	public static final double LIFT_kI = 0;
 	public static final double LIFT_kD = .15;
 	public static final double LIFT_TOLERANCE = .25;
 	
 	public static final double LIFT_MAX_HEIGHT = 38.31;
-	public static final double LIFT_MIN_HEIGHT = 0;
+	public static final double LIFT_MIN_HEIGHT = 3;
 	
 	public static final double LIFT_MANUAL_SPEED = 6;
 	
 	public static final double TOTE_HEIGHT = 12;
 	 
 	public enum LiftSetpoints {
-		GROUND(2.2), SCORING_PLATFORM(6.61), STEP(10.61), BETWEEN_TOTES(10), ABOVE_1_TOTE(18.61), RECEIVE_ARM_TOTE(18.61), FIX_ARM_TOTE(23), ABOVE_CAN(38);
+		GROUND(3.2), SCORING_PLATFORM(6.61), STEP(10.61), BETWEEN_TOTES(10), ABOVE_1_TOTE(18.61), RECEIVE_ARM_TOTE(24.61), FIX_ARM_TOTE(23), ABOVE_CAN(38);
 		
 		private double value;
 		
@@ -272,7 +272,7 @@ public class RobotMap {
 		
 		GROUND_UP_HIGH(65.3,167.3,86.7),
 		GROUND_UP_LOW(109.8,175.3,84.3),
-		GROUND_FALL_PREP(48.0,113.6,174.1),
+		GROUND_FALL_PREP(44.4,88.3, 174.1),
 		GROUND_FALL(57.8,128.2,174.2),
 		STEP(103.6,102.1,83.7),
 		TOP_OF_STACK(-21.0,43.5,86.0),
@@ -354,9 +354,9 @@ public class RobotMap {
 	
 	public static final double GRABBER_CLOSED = 94;
 	public static final double GRABBER_OPEN = -155;
-	public static final double GRABBER_OPEN_WIDE = .35;
+	public static final double GRABBER_OPEN_WIDE = -225;
 	public static final double GRABBER_CURRENT_LIMIT = 11;
-	public static final double GRABBER_CURRENT_OFFSET = 40;
+	public static final double GRABBER_CURRENT_OFFSET = 50;
 	
 	public static final double GRABBER_UNSAFE_MIN = -258;
 	public static final double GRABBER_UNSAFE_MAX = 128;
@@ -620,7 +620,7 @@ public class RobotMap {
 		armShoulderPot = new AnalogPot(5, 391.83673469387755102040816326531, -204.2, true);
 		LiveWindow.addSensor("Arm", "armShoulderPot", armShoulderPot);
 		Diagnostics.addAnalogPot(armShoulderPot, "Shoulder", armShoulderMotor);
-		armElbowPot = new AnalogPot(6, 391.83673469387755102040816326531, -173.4, true);
+		armElbowPot = new AnalogPot(6, 391.83673469387755102040816326531, -196.7, true);
 		LiveWindow.addSensor("Arm", "armElbowPot", armElbowPot);
 		Diagnostics.addAnalogPot(armElbowPot, "Elbow", armElbowMotor);
 		armWristPot = new AnalogPot(7, 391.83673469387755102040816326531, -188.8, true);

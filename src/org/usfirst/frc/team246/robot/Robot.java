@@ -39,6 +39,7 @@ import org.usfirst.frc.team246.robot.commands.SendUDPStatement;
 import org.usfirst.frc.team246.robot.commands.StopGetters;
 import org.usfirst.frc.team246.robot.commands.ZeroNavX;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AlertMessage;
+import org.usfirst.frc.team246.robot.overclockedLibraries.AlertMessage.Severity;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogIn;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Diagnostics;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SwerveModule;
@@ -91,8 +92,8 @@ public class Robot extends IterativeRobot {
 	public static boolean test3 = false;
 	public static boolean gyroDisabled = false;
 	public static boolean gasMode = false;
-	public static boolean trojan = true;
-	public static boolean scorpionModeTest = true;
+	public static boolean trojan = false;
+	public static boolean scorpionModeTest = false; //Joystick 3 Button 1 Error is true
 	
 	public static Drivetrain drivetrain;
 	public static Getters getters;
@@ -104,6 +105,8 @@ public class Robot extends IterativeRobot {
 	
 	public static AnalogIn[] BBBAnalogs;
 	public static OTSReciever otsReciever;
+	
+	public static boolean autonRun = false;
 	
 	Command auton;
 	
@@ -155,7 +158,6 @@ public class Robot extends IterativeRobot {
         autonRadioBoxes.addObject("Mine Landfill", new AutoMineLandfill());
         autonRadioBoxes.addObject("Get all totes", new AutoGetAllTotes());
         autonRadioBoxes.addObject("20 Points", new Auto20Points());
-        autonRadioBoxes.addObject("20 Points Normal", new Auto20PointsNoArm());
         SmartDashboard.putData("Auto Mode Chooser", autonRadioBoxes);
         
         
@@ -226,7 +228,7 @@ public class Robot extends IterativeRobot {
 		if(DriverStation.getInstance().isDSAttached() && !wasConnected)
 		{
 			System.out.print("Connected to driver station");
-			UdpAlertService.initialize("buaroboticspc.local", 5801);
+			UdpAlertService.initialize("paulasus.local", 5801);
 			wasConnected = true;
 		}
 
@@ -234,11 +236,16 @@ public class Robot extends IterativeRobot {
 	}
 	
     public void autonomousInit() {
-    	robotMode = RobotMode.AUTONOMOUS;
-    	RobotMap.grabberEncoder.reset();
-    	RobotMap.grabberMotor.set(0);
-    	auton = (Command) autonRadioBoxes.getSelected();
-    	auton.start();
+    	if(!autonRun)
+    	{
+    		autonRun = true;
+	    	robotMode = RobotMode.AUTONOMOUS;
+	    	RobotMap.grabberEncoder.reset();
+	    	RobotMap.grabberMotor.set(0);
+	    	auton = (Command) autonRadioBoxes.getSelected();
+	    	auton.start();
+    	}
+    	else UdpAlertService.sendAlert(new AlertMessage("THE FIELD BROKE OUR AUTONOMOUS!").playSound("uhoh.wav").severity(Severity.FATAL));
     	/* CHANGE NAVX HEADING IF PUTTING IN AUTONOMOUS
     	drivetrain.PIDOn(true);
     	new DeadReckoningDrive(new Vector2D(false, 1, -90)) {
@@ -354,7 +361,6 @@ public class Robot extends IterativeRobot {
             }
             if(!trojan)
             {
-	            if(RobotMap.liftPot.get() < LiftSetpoints.GROUND.getValue() && !liftWasDown) UdpAlertService.sendAlert(new AlertMessage("Forklift Down").playSound("whack.wav"));
 	            liftWasDown = RobotMap.liftPot.get() < LiftSetpoints.GROUND.getValue();
             }
             

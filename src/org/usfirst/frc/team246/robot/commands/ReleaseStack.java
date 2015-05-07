@@ -13,13 +13,13 @@ public class ReleaseStack extends CommandGroup {
     
     public  ReleaseStack() {
         addParallel(new ManualArm());
-        addParallel(new MoveForklift(LiftSetpoints.SCORING_PLATFORM, true));
+        addParallel(new MoveForklift(LiftSetpoints.GROUND, true));
         addSequential(new OpenGrabber() {
         	
         	@Override
         	protected boolean isFinished()
         	{
-        		return Robot.grabber.inTolerance();
+        		return Robot.grabber.inToleranceOpen();
         	}
         });
         addSequential(new PushTotes());
