@@ -2,6 +2,7 @@ package org.usfirst.frc.team246.robot.subsystems;
 
 import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.RobotMap;
+import org.usfirst.frc.team246.robot.commands.LiftManualGas;
 import org.usfirst.frc.team246.robot.commands.ManualForklift;
 
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
@@ -27,7 +28,8 @@ public class Forklift extends PIDSubsystem {
     public void initDefaultCommand() {
         if(!Robot.trojan)
         {
-        	setDefaultCommand(new ManualForklift());
+        	if(Robot.liftGasMode) setDefaultCommand(new LiftManualGas());
+        	else setDefaultCommand(new ManualForklift());
         }
     }
 

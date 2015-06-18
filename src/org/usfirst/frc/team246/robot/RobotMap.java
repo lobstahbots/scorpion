@@ -94,8 +94,8 @@ public class RobotMap {
     public static final double FAST_MAX_CRAB_SPEED = 7;
     public static final double FAST_MAX_SPIN_SPEED =7;
     
-    public static final double SLOW_MAX_CRAB_SPEED = 2;
-    public static final double SLOW_MAX_SPIN_SPEED = 3;
+    public static final double SLOW_MAX_CRAB_SPEED = 3;
+    public static final double SLOW_MAX_SPIN_SPEED = 5;
     
     public static final double crabZeroZone = .1;
     
@@ -582,7 +582,7 @@ public class RobotMap {
 		
 		if(!Robot.trojan)
 		{
-			liftPot = new AnalogPot(3, 54.8, -9.79, true); //TODO: Get this constant
+			liftPot = new AnalogPot(3, 54.8, -38.29, true); //TODO: Get this constant
 			LiveWindow.addSensor("Forklift", "liftPot", liftPot);
 			Diagnostics.addAnalogPot(liftPot, "Forklift", liftMotor);
 		}
