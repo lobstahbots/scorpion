@@ -92,7 +92,10 @@ public class Grabber extends PIDSubsystem {
 //    		RobotMap.grabberMotor.set(0);
 //    	}
     	disable();
-    	if(RobotMap.grabberMotor.getCurrent() > RobotMap.GRABBER_CURRENT_LIMIT && grabberSetpoint == RobotMap.GRABBER_CLOSED) grabberSetpoint = Math.min(RobotMap.GRABBER_CLOSED, RobotMap.grabberEncoder.getDistance() + RobotMap.GRABBER_CURRENT_OFFSET);
+    	if(RobotMap.grabberMotor.getCurrent() > RobotMap.GRABBER_CURRENT_LIMIT && grabberSetpoint == RobotMap.GRABBER_CLOSED) 
+    	{
+    			grabberSetpoint = Math.min(RobotMap.GRABBER_CLOSED, RobotMap.grabberEncoder.getDistance() + RobotMap.GRABBER_CURRENT_OFFSET);
+    	}
     	if(RobotMap.grabberEncoder.getDistance() > RobotMap.GRABBER_UNSAFE_MAX)
     	{
     		RobotMap.grabberMotor.set(0);

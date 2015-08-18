@@ -94,7 +94,7 @@ public class Robot extends IterativeRobot {
 	public static boolean gasMode = false;
 	public static boolean trojan = false;
 	public static boolean scorpionModeTest = false; //Joystick 3 Button 1 Error is true
-	public static boolean liftGasMode = true;
+	public static boolean liftGasMode = false;
 	
 	public static Drivetrain drivetrain;
 	public static Getters getters;
@@ -229,7 +229,7 @@ public class Robot extends IterativeRobot {
 		if(DriverStation.getInstance().isDSAttached() && !wasConnected)
 		{
 			System.out.print("Connected to driver station");
-			UdpAlertService.initialize("paulasus.local", 5801);
+			UdpAlertService.initialize("MSilver-PC.local", 5801);
 			wasConnected = true;
 		}
 

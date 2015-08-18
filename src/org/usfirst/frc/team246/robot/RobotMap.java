@@ -94,7 +94,7 @@ public class RobotMap {
     public static final double FAST_MAX_CRAB_SPEED = 7;
     public static final double FAST_MAX_SPIN_SPEED =7;
     
-    public static final double SLOW_MAX_CRAB_SPEED = 3;
+    public static final double SLOW_MAX_CRAB_SPEED = 2.31;
     public static final double SLOW_MAX_SPIN_SPEED = 5;
     
     public static final double crabZeroZone = .1;
@@ -158,14 +158,14 @@ public class RobotMap {
 	public static final double LIFT_TOLERANCE = .25;
 	
 	public static final double LIFT_MAX_HEIGHT = 38.31;
-	public static final double LIFT_MIN_HEIGHT = 3;
+	public static final double LIFT_MIN_HEIGHT = 1;
 	
 	public static final double LIFT_MANUAL_SPEED = 6;
 	
 	public static final double TOTE_HEIGHT = 12;
 	 
 	public enum LiftSetpoints {
-		GROUND(3.2), SCORING_PLATFORM(6.61), STEP(10.61), BETWEEN_TOTES(10), ABOVE_1_TOTE(18.61), RECEIVE_ARM_TOTE(24.61), FIX_ARM_TOTE(23), ABOVE_CAN(38);
+		GROUND(1.2), SCORING_PLATFORM(6.61), STEP(10.61), BETWEEN_TOTES(10), ABOVE_1_TOTE(18.61), RECEIVE_ARM_TOTE(20.61), FIX_ARM_TOTE(23), ABOVE_CAN(38);
 		
 		private double value;
 		
@@ -356,7 +356,7 @@ public class RobotMap {
 	public static final double GRABBER_OPEN = -155;
 	public static final double GRABBER_OPEN_WIDE = -225;
 	public static final double GRABBER_CURRENT_LIMIT = 11;
-	public static final double GRABBER_CURRENT_OFFSET = 50;
+	public static final double GRABBER_CURRENT_OFFSET = 75;
 	
 	public static final double GRABBER_UNSAFE_MIN = -258;
 	public static final double GRABBER_UNSAFE_MAX = 128;
@@ -582,7 +582,7 @@ public class RobotMap {
 		
 		if(!Robot.trojan)
 		{
-			liftPot = new AnalogPot(3, 54.8, -38.29, true); //TODO: Get this constant
+			liftPot = new AnalogPot(3, 54.8, -3.00, true); //TODO: Get this constant
 			LiveWindow.addSensor("Forklift", "liftPot", liftPot);
 			Diagnostics.addAnalogPot(liftPot, "Forklift", liftMotor);
 		}
