@@ -1,6 +1,7 @@
 
 package org.usfirst.frc.team246.robot;
 
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
@@ -9,11 +10,33 @@ import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.tools.Diagnostic;
+
+import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
 import org.usfirst.frc.team246.robot.RobotMap.LiftSetpoints;
+import org.usfirst.frc.team246.robot.commands.AlignWheels;
 import org.usfirst.frc.team246.robot.commands.Auto20Points;
+import org.usfirst.frc.team246.robot.commands.Auto20PointsNoArm;
+import org.usfirst.frc.team246.robot.commands.Auto2Can;
+import org.usfirst.frc.team246.robot.commands.AutoAlignAndDrive;
+import org.usfirst.frc.team246.robot.commands.AutoDrive;
 import org.usfirst.frc.team246.robot.commands.AutoGetAllTotes;
+import org.usfirst.frc.team246.robot.commands.AutoLogoTest;
 import org.usfirst.frc.team246.robot.commands.AutoMineLandfill;
+import org.usfirst.frc.team246.robot.commands.AutoSetDriveSpeed;
+import org.usfirst.frc.team246.robot.commands.AutoSlideCan;
+import org.usfirst.frc.team246.robot.commands.AutoSpin;
 import org.usfirst.frc.team246.robot.commands.AutoTest;
+import org.usfirst.frc.team246.robot.commands.CloseGrabber;
+import org.usfirst.frc.team246.robot.commands.DeadReckoningDrive;
+import org.usfirst.frc.team246.robot.commands.Intake;
+import org.usfirst.frc.team246.robot.commands.MoveArm;
+import org.usfirst.frc.team246.robot.commands.MoveForklift;
+import org.usfirst.frc.team246.robot.commands.MoveForkliftUp1;
+import org.usfirst.frc.team246.robot.commands.OpenGrabber;
+import org.usfirst.frc.team246.robot.commands.Outgest;
+import org.usfirst.frc.team246.robot.commands.SendUDPStatement;
+import org.usfirst.frc.team246.robot.commands.StopGetters;
 import org.usfirst.frc.team246.robot.commands.ZeroNavX;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AlertMessage;
 import org.usfirst.frc.team246.robot.overclockedLibraries.AlertMessage.Severity;
@@ -34,7 +57,11 @@ import org.usfirst.frc.team246.robot.subsystems.Pusher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.command.WaitCommand;
+import edu.wpi.first.wpilibj.command.WaitForChildren;
+import edu.wpi.first.wpilibj.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;

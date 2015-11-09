@@ -2,6 +2,7 @@ package org.usfirst.frc.team246.robot.commands;
 
 import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.RobotMap;
+import org.usfirst.frc.team246.robot.Robot.RobotMode;
 import org.usfirst.frc.team246.robot.RobotMap.ArmSetpoints;
 
 import edu.wpi.first.wpilibj.command.Command;

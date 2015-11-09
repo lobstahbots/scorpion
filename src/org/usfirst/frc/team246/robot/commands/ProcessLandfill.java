@@ -2,7 +2,10 @@ package org.usfirst.frc.team246.robot.commands;
 
 import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.RobotMap.LiftSetpoints;
+import org.usfirst.frc.team246.robot.subsystems.Grabber;
+
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *

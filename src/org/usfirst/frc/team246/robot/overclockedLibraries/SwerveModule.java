@@ -3,6 +3,7 @@ package org.usfirst.frc.team246.robot.overclockedLibraries;
 import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.RobotMap;
 
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SpeedController;
