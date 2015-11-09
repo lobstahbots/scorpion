@@ -1,16 +1,10 @@
 package org.usfirst.frc.team246.robot.subsystems;
 
-import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.RobotMap;
-import org.usfirst.frc.team246.robot.commands.CloseGrabber;
-import org.usfirst.frc.team246.robot.commands.ManualGrabber;
-import org.usfirst.frc.team246.robot.commands.OpenGrabber;
 import org.usfirst.frc.team246.robot.commands.StopGrabber;
 
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
