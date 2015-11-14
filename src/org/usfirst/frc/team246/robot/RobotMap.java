@@ -28,7 +28,7 @@ public class RobotMap {
 
 	public static PowerDistributionPanel pdp;
 
-	//Drivetrain
+	//DRIVETRAIN
 
 	//Motors
 
@@ -102,7 +102,7 @@ public class RobotMap {
 
 	public static final double ACCELERATION_CONSTANT = 20;
 
-	//Getters
+	//GETTERS
 
 	//Motors
 
@@ -129,7 +129,7 @@ public class RobotMap {
 	public static double GETTER_ADJUSTING_kI = 0;
 	public static double GETTER_ADJUSTING_kD = 0;
 
-	//Forklift
+	//FORKLIFT
 
 	//Motors
 
@@ -169,7 +169,7 @@ public class RobotMap {
 		}
 	}
 
-	//Pusher
+	//PUSHER
 
 	//Motors
 
@@ -189,7 +189,7 @@ public class RobotMap {
 	public static final double PUSHER_IN = -.5;
 	public static final double PUSHER_OUT = 3;
 
-	//Arm
+	//ARM
 
 	//Motors
 
@@ -324,7 +324,7 @@ public class RobotMap {
 		ArmSetpoints.TRANSITION_5
 	};
 
-	//Grabber
+	//GRABBER
 
 	//Motors
 
@@ -355,7 +355,7 @@ public class RobotMap {
 	{
 		pdp = new PowerDistributionPanel();
 
-		//Drivetrain
+		//DRIVETRAIN
 
 		//Motors
 
@@ -480,7 +480,7 @@ public class RobotMap {
 			MODULE_kF = 0;
 		}
 
-		//Getters
+		//GETTERS
 
 		//Motors
 
@@ -538,7 +538,7 @@ public class RobotMap {
 			RIGHT_RANGE_FINDER_PID_SETPOINT = 635;
 		}
 
-		//Forklift
+		//FORKLIFT
 
 		//Motors
 
@@ -549,13 +549,13 @@ public class RobotMap {
 
 		if(!Robot.trojan)
 		{
-			liftPot = new AnalogPot(3, 54.8, -3.00, true); //TODO: Get this constant
+			liftPot = new AnalogPot(3, 54.8, -3.00, true);
 			LiveWindow.addSensor("Forklift", "liftPot", liftPot);
 			Diagnostics.addAnalogPot(liftPot, "Forklift", liftMotor);
 		}
 
 
-		//Pusher
+		//PUSHER
 
 		//Motors
 
@@ -566,12 +566,12 @@ public class RobotMap {
 
 		if(!Robot.trojan)
 		{
-			pusherPot = new AnalogPot(4, 5.15, -2.025, true); //TODO: Get this constant
+			pusherPot = new AnalogPot(4, 5.15, -2.025, true);
 			LiveWindow.addSensor("Pusher", "pusherEncoder", pusherPot);
 			Diagnostics.addAnalogPot(pusherPot, "Pusher", pusherMotor);
 		}
 
-		//Arm
+		//ARM
 
 		//Motors
 
@@ -594,7 +594,7 @@ public class RobotMap {
 		LiveWindow.addSensor("Arm", "armWristPot", armWristPot);
 		Diagnostics.addAnalogPot(armWristPot, "Wrist", armWristMotor);
 
-		//Grabber
+		//GRABBER
 
 		//Pneumatics
 
