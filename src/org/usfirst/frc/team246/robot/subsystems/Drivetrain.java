@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.usfirst.frc.team246.robot.Robot;
+import org.usfirst.frc.team246.robot.RobotMap;
 import org.usfirst.frc.team246.robot.commands.CrabWithTwist;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SwerveModule;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
@@ -12,9 +13,6 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.Timer;
-
-import org.usfirst.frc.team246.robot.RobotMap;
-
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -400,29 +398,7 @@ public class Drivetrain extends Subsystem {
     		
     		fieldCentricLinearDisplacement = Vector2D.addVectors(fieldCentricLinearDisplacement, averageOfVectors(dispVectors.toArray(new Vector2D[0])));    		
     	}
-    	
-    	private void calculateNetAngularDisplacement(){
-    		Vector2D[] swervesDisplacementFromCenter = new Vector2D[swerves.length];
-    		Vector2D[] swervesPerpendicularDiplacement = new Vector2D[swerves.length];
-    		double[] swervesAngularDisplacement = new double[swerves.length];
-    		
-    		for(int i=0; i<swerves.length; i++){
-    			swervesDisplacementFromCenter[i] = new Vector2D(true, -swerves[i].getX(), -swerves[i].getY()); // negative because x,y were relative to center
-    			swervesPerpendicularDiplacement[i] = Vector2D.perpendicularProjection(swervesDisplacementVectors[i], swervesDisplacementFromCenter[i]);
-    			swervesAngularDisplacement[i] = swervesPerpendicularDiplacement[i].getMagnitude() / swervesDisplacementFromCenter[i].getMagnitude(); // w = v_perp/r
-    		}
-    		robotCentricAngularDisplacement = robotCentricAngularDisplacement + sumOfDoubles(swervesAngularDisplacement);
-    	}
-    	
-//    	MATH UTILITIES:
-    	private Vector2D sumOfVectors(Vector2D[] vectorArray){
-    		Vector2D sum = new Vector2D(true, 0, 0);
-    		for(int i=0; i<vectorArray.length; i++){
-    			sum = Vector2D.addVectors(sum, vectorArray[i]);
-    		}
-    		return sum;
-    	}
-    	
+
     	private Vector2D averageOfVectors(Vector2D[] vectorArray){
     		Vector2D sum = new Vector2D(true, 0, 0);
     		for(int i=0; i<vectorArray.length; i++){
@@ -431,14 +407,6 @@ public class Drivetrain extends Subsystem {
     		sum.setMagnitude(sum.getMagnitude()/vectorArray.length);
     		return sum;
     	}
-    	
-    	private double sumOfDoubles(double[] doubleArray){
-			double sum = 0;
-			for(int i=0; i<doubleArray.length; i++){
-				sum = sum + doubleArray[i];
-			}
-			return sum;
-		}
 
 		@Override
 		public double pidGet() {
