@@ -101,11 +101,6 @@ public class RobotMap {
     public static final double EAST = 270;
     
     public static final double ACCELERATION_CONSTANT = 20;
-    
-    // for OTSGetTote
-    public static final double PARALLEL_TOTE_SHIFT_MAGNITUDE = 4; // distance (from corner) along tote's short side where getter should hit 
-    public static final Vector2D LEFT_GRABBER_LOCATION = new Vector2D(true, 2, 3); // TODO: set these values. Locations relative to OTS
-    public static final Vector2D RIGHT_GRABBER_LOCATION = new Vector2D(true, -2, 3);
 	
 //Getters
 	
@@ -355,29 +350,7 @@ public class RobotMap {
 	public static final double GRABBER_UNSAFE_MIN = -258;
 	public static final double GRABBER_UNSAFE_MAX = 128;
 	
-//OTS
-	
-	//Motors
-	
-	public static SpeedController246 otsMotor;
-	
-	//Sensors
-	
-	public static AnalogIn otsRPM;
-	
-	//Constants
-	
-	public static final double OTS_kP = 1;
-	public static final double OTS_kI = 1;
-	public static final double OTS_kD = 1;
-	public static final double OTS_kF = 1;
-	
-	public static final double OTS_TARGET_RPM = 300;
 
-	public static final double OTS_PARTIAL_TOTE_DISTANCE = 12;
-	public static final double OTS_FULL_TOTE_DISTANCE = 4;
-	
-	
 	static void init()
 	{
 		pdp = new PowerDistributionPanel();
@@ -634,17 +607,5 @@ public class RobotMap {
 		grabberEncoder = new Encoder(6, 7);
 		LiveWindow.addSensor("Grabber", "grabberEncoder", grabberEncoder);
 		Diagnostics.addEncoder(grabberEncoder, "Grabber", grabberMotor);
-		
-	//OTS
-		
-		//Motors
-		
-		otsMotor = new VictorSP246(14, 0 ,pdp);
-		LiveWindow.addActuator("OTS", "otsMotor", (LiveWindowSendable) otsMotor);
-		
-		//Sensors
-		
-		otsRPM = new AnalogIn(0, false);
-		LiveWindow.addSensor("OTS", "otsRPM", otsRPM);		
 	}
 }
