@@ -58,7 +58,6 @@ public class Auto20Points extends CommandGroup {
 		addSequential(new Outgest(), .25);
 		addParallel(new Intake());
 		addSequential(new WaitCommand(.5));
-		//addParallel(new MoveForklift(LiftSetpoints.FIX_ARM_TOTE, true));
 		addParallel(new OpenGrabber());
 		addSequential(new WaitCommand(1));
 		addSequential(new MoveForklift(LiftSetpoints.BETWEEN_TOTES, true));

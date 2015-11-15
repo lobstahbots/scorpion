@@ -15,31 +15,7 @@ public class Auto20PointsNoArm extends CommandGroup {
     	addParallel(new ZeroNavX(90));
     	if(!Robot.trojan) addParallel(new CloseGrabber());
     	if(!Robot.trojan) addParallel(new MoveForklift(LiftSetpoints.ABOVE_1_TOTE, true));
-    	/*
-		addParallel(AutoSetDriveSpeed.modifyCrabAndSpin(5, 5)); //Set the speed to 5
-		//addSequential(new AutoAlignAndDrive(new Vector2D(true, 0, 2.5), true));
-		addParallel(AutoSetDriveSpeed.modifyCrab(1));
-		//addSequential(new AutoAlignAndDrive(new Vector2D(true, -3, 2.5), false));
-		//addSequential(new AutoAlignAndDrive(new Vector2D(true, -3, 0), false));
-		addParallel(new AutoSlideCan());
-		addSequential(new AutoAlignAndDrive(new Vector2D(true, -4, 0), false));
-		addParallel(new AdjustTote());
-		addParallel(AutoSetDriveSpeed.modifyCrab(4));
-		addSequential(new AutoAlignAndDrive(new Vector2D(true, -6.5, 0), false));
-		if(!Robot.trojan) addSequential(new MoveForklift(LiftSetpoints.GROUND, true));
-		if(!Robot.trojan) addParallel(new MoveForklift(LiftSetpoints.ABOVE_1_TOTE, true));
-		addParallel(AutoSetDriveSpeed.modifyCrab(5)); //Set the speed to 5
-		//addSequential(new AutoAlignAndDrive(new Vector2D(true, -6.5, 2.5), false));
-		addParallel(AutoSetDriveSpeed.modifyCrab(1));
-		//addSequential(new AutoAlignAndDrive(new Vector2D(true, -10, 2.5), false));
-		//addSequential(new AutoAlignAndDrive(new Vector2D(true, -10, 0), false));
-		addParallel(new AutoSlideCan());
-		addSequential(new AutoAlignAndDrive(new Vector2D(true, -10, 0), false));
-		addParallel(AutoSetDriveSpeed.modifyCrab(4));
-		addParallel(new AdjustTote());
-		addSequential(new AutoAlignAndDrive(new Vector2D(true, -14, 0), false));
-		*/
-    	
+
     	addParallel(AutoSetDriveSpeed.modifyCrabAndSpin(5, 6)); //Set the speed to 5
     	addParallel(new MoveForklift(LiftSetpoints.ABOVE_CAN, true));
     	addParallel(new Outgest());

@@ -226,7 +226,6 @@ public class Drivetrain extends Subsystem {
     		drive(speed, direction, spinRate, COR.getX(), COR.getY());
     	}
     }
-    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- congratulations you did it, your prize is the smiley face just to the right----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:( hahaha
     
     public void setFOV(double fov)
     {
@@ -255,17 +254,6 @@ public class Drivetrain extends Subsystem {
     public boolean isMoving()
     {
     	return !Robot.oi.driver.getA().get();
-    	/*
-        if(RobotMap.navX.isMoving())
-        {
-            return Timer.getFPGATimestamp() - lastTimeWasMoving > .5;
-        }
-        else
-        {
-            lastTimeWasMoving = Timer.getFPGATimestamp();
-            return false;
-        }
-        */
     }
     
     public void PIDOn(boolean on)
@@ -325,16 +313,11 @@ public class Drivetrain extends Subsystem {
 			while(true){
 				setSwerveDisplacementVectors();
 				calculateNetLinearDisplacement();
-				//calculateNetAngularDisplacement();
 				Timer.delay(.05); // in seconds	
 			}
 		}
-    	
-////    	GETTERS:
-//    	public Vector2D getRobotCentricLinearDisplacement(){
-//    		return robotCentricLinearDisplacement;
-//    	}
-    	
+
+//    	GETTERS:
     	public double getRobotCentricAngularDisplacement(){
     		return robotCentricAngularDisplacement;
     	}
@@ -373,29 +356,6 @@ public class Drivetrain extends Subsystem {
 //    	CALCULATE NETS for Odometry:
     	private void calculateNetLinearDisplacement(){
     		ArrayList<Vector2D> dispVectors = new ArrayList<Vector2D>(Arrays.asList(swervesDisplacementVectors));
-    		
-    		/*
-    		double ratio01 = dispVectors.get(0).getMagnitude()/dispVectors.get(1).getMagnitude();
-    		double ratio02 = dispVectors.get(0).getMagnitude()/dispVectors.get(2).getMagnitude();
-    		double ratio12 = dispVectors.get(1).getMagnitude()/dispVectors.get(2).getMagnitude();
-    		UdpAlertService.sendAlert(new AlertMessage("01: " + ratio01 + ", 02: " + ratio02 + ", 12: " + ratio12 + ", " + Math.random()));
-    		UdpAlertService.sendAlert(new AlertMessage("Voting"));
-    		if((ratio01 < .5 || ratio01 > 2) && (ratio02 < .5 || ratio02 > 2))
-    		{
-    			UdpAlertService.sendAlert(new AlertMessage("Voting 0 off the island " + Math.random()));
-    			dispVectors.remove(0);
-    		}
-    		if((ratio01 < .5 || ratio01 > 2) && (ratio12 < .5 || ratio12 > 2)) 
-    		{
-    			UdpAlertService.sendAlert(new AlertMessage("Voting 1 off the island " + Math.random()));
-    			dispVectors.remove(1);
-    		}
-    		if((ratio02 < .5 || ratio02 > 2) && (ratio12 < .5 || ratio12 > 2)) {
-    			UdpAlertService.sendAlert(new AlertMessage("Voting 2 off the island " + Math.random()));
-    			dispVectors.remove(2);
-    		}
-    		*/
-    		
     		fieldCentricLinearDisplacement = Vector2D.addVectors(fieldCentricLinearDisplacement, averageOfVectors(dispVectors.toArray(new Vector2D[0])));    		
     	}
 
@@ -411,14 +371,6 @@ public class Drivetrain extends Subsystem {
 		@Override
 		public double pidGet() {
 			return getFieldCentricLinearDisplacement().getMagnitude();
-//			double sum = 0;
-//			for(int i = 0; i < swerves.length; i++)
-//			{
-//				double dist = swerves[i].getWheelDistance();
-//				if(swerves[i].invertSpeed) dist = -dist;
-//				sum += dist;
-//			}
-//			return sum/swerves.length;
 		}
     }
 }

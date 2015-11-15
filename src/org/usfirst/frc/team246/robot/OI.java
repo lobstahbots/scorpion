@@ -45,7 +45,7 @@ import edu.wpi.first.wpilibj.buttons.Trigger;
  */
 public class OI {
     
-    public LogitechF310 driver; //TODO: instantiate these when we get the controllers
+    public LogitechF310 driver;
     public LogitechF310 operator;
     public LogitechF310 transitioner;
     public Joystick buttonBox;

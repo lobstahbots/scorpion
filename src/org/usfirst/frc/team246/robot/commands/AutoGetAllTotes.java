@@ -43,20 +43,6 @@ public class AutoGetAllTotes extends CommandGroup {
 			@Override
 			protected void execute()
 			{
-				/*
-				if(Robot.getters.hasTote()) 
-				{
-					super.execute();
-					waiting = false;
-				}                                           //THIS ANONYMOUS CLASS NEED TO BE COMMENTED OUT
-				else
-				{
-					waiting = true;
-					UdpAlertService.sendAlert(new AlertMessage("Failed to get tote"));
-				}
-				*/
-				
-				
 				if(Math.abs(RobotMap.navX.getPitch()) > 10 || Math.abs(RobotMap.navX.getRoll()) > 10) 
 				{
 					setpoint = LiftSetpoints.ABOVE_CAN.getValue();
@@ -90,20 +76,6 @@ public class AutoGetAllTotes extends CommandGroup {
 			@Override
 			protected void execute()
 			{
-				/*
-				if(Robot.getters.hasTote()) 
-				{
-					super.execute();
-					waiting = false;
-				}                                           //THIS ANONYMOUS CLASS NEED TO BE COMMENTED OUT
-				else
-				{
-					waiting = true;
-					UdpAlertService.sendAlert(new AlertMessage("Failed to get tote"));
-				}
-				*/
-				
-				
 				if(Math.abs(RobotMap.navX.getPitch()) > 10 || Math.abs(RobotMap.navX.getRoll()) > 10) 
 				{
 					setpoint = LiftSetpoints.ABOVE_CAN.getValue();
@@ -117,53 +89,5 @@ public class AutoGetAllTotes extends CommandGroup {
 				return super.isFinished() && !waiting;
 			}
 		});
-		
-		/*
-		addParallel(new AutoSetDriveSpeed(3)); //Set the speed to 3
-		addParallel(new AutoSlideCan()); //Slide for the first can
-		addParallel(new AutoSpin(135)); //Spin to the right angle
-		addSequential(new WaitCommand(1.5)); //Wait for fork to get above can
-		addSequential(new AutoAlignAndDrive(new Vector2D(false, 2, 0))); //Drive towards the center of the field
-		addSequential(new AutoAlignAndDrive(new Vector2D(false, 4, 95)));
-		addParallel(new Intake());
-		addSequential(new AutoAlignAndDrive(new Vector2D(false, 2.25, 95)));
-		addSequential(new WaitCommand(1.5));
-		addParallel(new AutoSlideCan());
-		addSequential(new AutoAlignAndDrive(new Vector2D(false, 6.5, 95)));
-		addParallel(new Intake());
-		addSequential(new AutoAlignAndDrive(new Vector2D(false, .5, 95)));
-		addSequential(new WaitCommand(.5));
-		addParallel(new AutoSetDriveSpeed(5)); //Set the speed to 5
-		addSequential(new AutoAlignAndDrive(new Vector2D(false, 8.5, 0)));
-		*/
-		
-//		addParallel(new Intake());
-//		addSequential(new AutoAlignAndDrive(new Vector2D(false, 2, 90)));
-//		addSequential(new AutoSetDriveSpeed(4));
-//		addSequential(new AutoSpin(135));
-//		addSequential(new AutoAlignAndDrive(new Vector2D(false, 3.5, 0)));
-//		addSequential(new AutoAlignAndDrive(new Vector2D(true, -6, -1.5)));
-//		addParallel(new Intake());
-//		addParallel(new AutoSetDriveSpeed(2));
-//		addSequential(new AutoAlignAndDrive(new Vector2D(true, -.5, -.25)));
-//		addParallel(new AlignWheels(0));
-//		addSequential(new WaitCommand(.75));
-//		addParallel(new Outgest());
-//		addSequential(new WaitCommand(.2));
-//		addParallel(new Intake());
-//		addSequential(new WaitCommand(.75));
-//		addParallel(new AutoSetDriveSpeed(4));
-//		addSequential(new AutoAlignAndDrive(new Vector2D(false, 1.75, 0)));
-//		addSequential(new AutoAlignAndDrive(new Vector2D(true, -6.25, -1.5)));
-//		addParallel(new AutoSetDriveSpeed(2));
-//		addSequential(new AutoAlignAndDrive(new Vector2D(true, -.5, -.25)));
-//		addParallel(new AlignWheels(0));
-//		addSequential(new WaitCommand(.75));
-//		addParallel(new Outgest());
-//		addSequential(new WaitCommand(.2));
-//		addParallel(new Intake());
-//		addSequential(new WaitCommand(.75));
-//		addParallel(new AutoSetDriveSpeed(4));
-//		addSequential(new AutoAlignAndDrive(new Vector2D(false, 7.5, 0)));
     }
 }

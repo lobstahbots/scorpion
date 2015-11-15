@@ -549,7 +549,7 @@ public class RobotMap {
 		
 		if(!Robot.trojan)
 		{
-			liftPot = new AnalogPot(3, 54.8, -3.00, true); //TODO: Get this constant
+			liftPot = new AnalogPot(3, 54.8, -3.00, true);
 			LiveWindow.addSensor("Forklift", "liftPot", liftPot);
 			Diagnostics.addAnalogPot(liftPot, "Forklift", liftMotor);
 		}
@@ -566,7 +566,7 @@ public class RobotMap {
 		
 		if(!Robot.trojan)
 		{
-			pusherPot = new AnalogPot(4, 5.15, -2.025, true); //TODO: Get this constant
+			pusherPot = new AnalogPot(4, 5.15, -2.025, true);
 			LiveWindow.addSensor("Pusher", "pusherEncoder", pusherPot);
 			Diagnostics.addAnalogPot(pusherPot, "Pusher", pusherMotor);
 		}
