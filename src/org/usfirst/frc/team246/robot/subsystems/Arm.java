@@ -127,41 +127,18 @@ public class Arm extends Subsystem {
 	    	
 	    	//Limit the grabber to staying above the ground and below the ceiling
 	    	//4 points of the rectangle of the grabber
-//	    	double p0 = v12.getY() + RobotMap.ARM_SHOULDER_HEIGHT + Vector2D.addVectors(new Vector2D(false, RobotMap.GRABBER_SMALL_LENGTH, v3.getAngle()), new Vector2D(false, RobotMap.GRABBER_WIDTH/2, v3.getAngle() + 90)).getY();
-//	    	double p1 = v12.getY() + RobotMap.ARM_SHOULDER_HEIGHT + Vector2D.addVectors(new Vector2D(false, RobotMap.GRABBER_SMALL_LENGTH, v3.getAngle()), new Vector2D(false, RobotMap.GRABBER_WIDTH/2, v3.getAngle() - 90)).getY();
 	    	double p2 = v123.getY() + RobotMap.ARM_SHOULDER_HEIGHT;
 	    	double p3 = v123.getY() + RobotMap.ARM_SHOULDER_HEIGHT;
-	    	if(/*p0 < RobotMap.ARM_GROUND_TOLERANCE || p1 < RobotMap.ARM_GROUND_TOLERANCE || */ p2 < RobotMap.ARM_GROUND_TOLERANCE || p3 < RobotMap.ARM_GROUND_TOLERANCE) 
+	    	if(p2 < RobotMap.ARM_GROUND_TOLERANCE || p3 < RobotMap.ARM_GROUND_TOLERANCE) 
 			{
 	    		UdpAlertService.sendAlert(new AlertMessage("Arm Constraint: Grabber Ground").playSound("GrabberGround.wav"));
 	    		return false;
 			}
-	    	if(/*p0 > ceilingHeight + RobotMap.ARM_CEILING_TOLERANCE|| p1 > ceilingHeight + RobotMap.ARM_CEILING_TOLERANCE || */ p2 > ceilingHeight - RobotMap.ARM_CEILING_TOLERANCE || p3 > ceilingHeight - RobotMap.ARM_CEILING_TOLERANCE) 
+	    	if(p2 > ceilingHeight - RobotMap.ARM_CEILING_TOLERANCE || p3 > ceilingHeight - RobotMap.ARM_CEILING_TOLERANCE) 
 			{
 	    		UdpAlertService.sendAlert(new AlertMessage("Arm Constraint: Grabber Ceiling").playSound("GrabberCeiling.wav"));
 	    		return false;
 			}
-	    	
-	    	//Stop the arm from hitting our lift
-	//    	Vector2D liftVector = new Vector2D(true, RobotMap.ARM_LIFT_LOCATION, RobotMap.ARM_LIFT_HEIGHT - RobotMap.ARM_SHOULDER_HEIGHT); //Vector from the shoulder to the lift
-	//    	Vector2D v2b = Vector2D.subtractVectors(liftVector, v1); //Vector from elbow to lift corner
-	//    	Vector2D v2c = Vector2D.addVectors(v2b, new Vector2D(false, RobotMap.ARM_WIDTH/2, v2b.getAngle() + 90)); //Vector accounting for the width of the arm
-	    	/*
-	    	if(v12.getX() < RobotMap.ARM_LIFT_LOCATION + RobotMap.ARM_LIFT_TOLERANCE && v12.getY() - RobotMap.ARM_WIDTH < RobotMap.ARM_LIFT_HEIGHT - RobotMap.ARM_SHOULDER_HEIGHT + RobotMap.ARM_LIFT_TOLERANCE) 
-			{
-	    		System.out.println("Forearm lift");
-	    		return false;
-			}
-			*/
-	//    	Vector2D v3b = new Vector2D(false, -(RobotMap.ARM_LIFT_LOCATION + v12.getX())/Math.cos(v3.getAngle()), v3.getAngle());
-	//    	Vector2D v3c = Vector2D.addVectors(v3b, new Vector2D(false, RobotMap.GRABBER_WIDTH/2, v3b.getAngle() + 90));
-	//    	Vector2D v3b = Vector2D.addVectors(v3, new Vector2D(false, RobotMap.GRABBER_WIDTH/2, v3.getAngle() + 90));
-	//    	Vector2D v123b = Vector2D.addVectors(v3b, v12);
-	//    	if(v12.getX() < RobotMap.ARM_LIFT_LOCATION && v123b.getY() < RobotMap.ARM_LIFT_HEIGHT - RobotMap.ARM_SHOULDER_HEIGHT + RobotMap.ARM_LIFT_TOLERANCE && v123b.getX() > RobotMap.ARM_LIFT_LOCATION - RobotMap.ARM_LIFT_TOLERANCE) 
-	//		{
-	//    		System.out.println("Grabber Lift");
-	//    		return false;
-	//		}
     	}
     	
     	return true;

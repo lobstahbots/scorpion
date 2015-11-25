@@ -6,8 +6,6 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Arrays;
-import java.util.List;
 
 import org.usfirst.frc.team246.robot.RobotMap.LiftSetpoints;
 import org.usfirst.frc.team246.robot.commands.Auto20Points;
@@ -21,14 +19,12 @@ import org.usfirst.frc.team246.robot.overclockedLibraries.AnalogIn;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Diagnostics;
 import org.usfirst.frc.team246.robot.overclockedLibraries.SwerveModule;
 import org.usfirst.frc.team246.robot.overclockedLibraries.UdpAlertService;
-import org.usfirst.frc.team246.robot.overclockedLibraries.Vector2D;
 import org.usfirst.frc.team246.robot.overclockedLibraries.Victor246;
 import org.usfirst.frc.team246.robot.subsystems.Arm;
 import org.usfirst.frc.team246.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team246.robot.subsystems.Forklift;
 import org.usfirst.frc.team246.robot.subsystems.Getters;
 import org.usfirst.frc.team246.robot.subsystems.Grabber;
-import org.usfirst.frc.team246.robot.subsystems.OTS;
 import org.usfirst.frc.team246.robot.subsystems.Pusher;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -56,7 +52,6 @@ public class Robot extends IterativeRobot {
 	public static double toteCornerY = 65536;
 	public static int toteAngle = 255;
 	public static double toteDistance = 65536;
-	public static double otsRPM = 0;
 	
 	public static boolean hasTote = false;
 	
@@ -75,10 +70,8 @@ public class Robot extends IterativeRobot {
 	public static Pusher pusher;
 	public static Arm arm;
 	public static Grabber grabber;
-	public static OTS ots;
 	
 	public static AnalogIn[] BBBAnalogs;
-	public static OTSReciever otsReciever;
 	
 	public static boolean autonRun = false;
 	
@@ -101,15 +94,11 @@ public class Robot extends IterativeRobot {
      */
     public void robotInit() {
     	BBBAnalogs = new AnalogIn[6];
-    	otsReciever = new OTSReciever();
     	
     	Diagnostics.initialize();
         RobotMap.init();
         
-        //RobotMap.grabberEncoder.reset();
-        
         (new Thread(new AnalogInputCollector())).start();
-        (new Thread(otsReciever)).start();
         
         drivetrain = new Drivetrain();
         getters = new Getters();
@@ -117,7 +106,6 @@ public class Robot extends IterativeRobot {
         pusher = new Pusher();
         arm = new Arm();
         grabber = new Grabber();
-        ots = new OTS();
         
         oi = new OI();
         
@@ -175,13 +163,7 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("ARM_ELBOW_MANUAL_SPEED", 5);
         SmartDashboard.putNumber("ARM_WRIST_MANUAL_SPEED", 5);
         SmartDashboard.putNumber("startHeading", 0);
-        
-        /*
-        SmartDashboard.putNumber("crabP", 0);
-        SmartDashboard.putNumber("crabI", 0);
-        SmartDashboard.putNumber("crabD", 0);
-        */
-        
+
         SmartDashboard.putData(Scheduler.getInstance());
     }
     
@@ -220,21 +202,6 @@ public class Robot extends IterativeRobot {
 	    	auton.start();
     	}
     	else UdpAlertService.sendAlert(new AlertMessage("THE FIELD BROKE OUR AUTONOMOUS!").playSound("uhoh.wav").severity(Severity.FATAL));
-    	/* CHANGE NAVX HEADING IF PUTTING IN AUTONOMOUS
-    	drivetrain.PIDOn(true);
-    	new DeadReckoningDrive(new Vector2D(false, 1, -90)) {
-			
-    		@Override
-    		protected void initialize() {
-    			super.initialize();
-    			setTimeout(6.5);
-    		}
-			@Override
-			protected boolean isFinished() {
-				return isTimedOut();
-			}
-		}.start();
-		*/
     }
 
     /**
@@ -248,8 +215,6 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putNumber("rightWheelEncoderDistance", drivetrain.rightModule.getWheelDistance());
     	SmartDashboard.putNumber("odometryDistance", drivetrain.odometry.getFieldCentricLinearDisplacement().getMagnitude());
     	SmartDashboard.putNumber("odometryAngle", drivetrain.odometry.getFieldCentricLinearDisplacement().getAngle());
-    	
-    	//drivetrain.absoluteCrabPID.setPID(SmartDashboard.getNumber("crabP"), SmartDashboard.getNumber("crabI"), SmartDashboard.getNumber("crabD"));
     	
         Scheduler.getInstance().run();
     }
@@ -399,7 +364,6 @@ public class Robot extends IterativeRobot {
     	public void run() {
     		try{
     			AIs = new DatagramSocket(5800);
-				//AIs.setSoTimeout(10000);
 				AIs.setReuseAddress(true);
 			} catch (SocketException e) {
 				e.printStackTrace();
@@ -407,7 +371,6 @@ public class Robot extends IterativeRobot {
     		System.out.println("AIs initialized");
 			while(true)
 			{
-//				System.out.println("loopin'");
 				byte[] data = new byte[1000];
 		        DatagramPacket packet = new DatagramPacket(data, data.length);
 		        try {
@@ -415,10 +378,7 @@ public class Robot extends IterativeRobot {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-//		        System.out.println("0: " + Integer.toHexString(data[0]&0xff));
-//		        System.out.println("1: " + Integer.toHexString(data[1]&0xff));
-//		        System.out.println("2: " + Integer.toHexString(data[2]&0xff));
-//		        System.out.println("3: " + Integer.toHexString(data[3]&0xff));
+
 		        for(int i = 1; i <= data[0]*3; i += 3)
 		        {
 		        	try
@@ -427,74 +387,10 @@ public class Robot extends IterativeRobot {
 		        	}
 		        	catch(NullPointerException e) {}
 		        }
-//		        System.out.println("Grabber Pot value" + getShort(data, 2));
-//		        System.out.println("Grabber Pot value hex" + Integer.toHexString(getShort(data, 2)&0xffff));
-		        //BBBAnalogs.get(1).updateVal(getShort(data, 2));
 			}
 		}
 	}
-    
-    public class OTSReciever implements Runnable {
-    	private Vector2D toteCorner = new Vector2D(true, 0, 0);
-    	private double toteAngle = 0;
-    	private boolean seesTote = false;
-    	
-    	public void run() {
-    		try {
-                int port = 5810;
 
-                // Create a socket to listen on the port.
-                DatagramSocket dsocket = new DatagramSocket(port);
-
-                // Create a buffer to read datagrams into. If a
-                // packet is larger than this buffer, the
-                // excess will simply be discarded!
-                byte[] buffer = new byte[2048];
-
-                // Create a packet to receive data into the buffer
-                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-                System.out.println("Waiting for tote detection message");
-                // Now loop forever, waiting to receive packets and printing them.
-                while (true) {
-                  // Wait to receive a datagram
-                  dsocket.receive(packet);
-
-                  // Convert the contents to a string, and display them
-                  String msg = new String(buffer, 0, packet.getLength());
-                  System.out.println(packet.getAddress().getHostName() + ": "
-                      + msg);
-
-                  if (msg != "none") {
-                    List<String> fields = Arrays.asList(msg.split(","));
-                    seesTote = true;
-                    System.out.println("Tote detected at X = " + fields.get(0) + ", Y = " + fields.get(1) + ", Theta = " + fields.get(2));
-                    toteCorner = new Vector2D(true, Double.parseDouble(fields.get(0)), Double.parseDouble(fields.get(1)));
-                    toteAngle = Double.parseDouble(fields.get(2));
-                  } else {
-                      seesTote = false;
-                      System.out.println("No totes detected");
-                  }
-                  // Reset the length of the packet before reusing it.
-                  packet.setLength(buffer.length);
-                }
-            } catch (Exception e) {
-                System.err.println(e);
-            }
-    	}
-    	
-    	public Vector2D getToteCorner() {
-    		return toteCorner;
-    	}
-    	
-    	public double getToteAngle() {
-    		return toteAngle;
-    	}
-    	
-    	public boolean seesTote() {
-    		return seesTote;
-    	}
-    }
-    
     public static int getShort(byte[] input, int offset)
     {
     	ByteBuffer buff = ByteBuffer.wrap(input);
@@ -504,29 +400,6 @@ public class Robot extends IterativeRobot {
     
     public static int littleEndianConcatenation(byte byte1, byte byte2)
 	{
-    	
-    	
     	return 0;
-    	
-    	/*
-		byte[] arr1 = {byte1};
-		BitSet bits1 = BitSet.valueOf(arr1);
-		byte[] arr2 = {byte2};
-		BitSet bits2 = BitSet.valueOf(arr2);
-		BitSet resultBits = bits1;
-		for(int i = 0; i < bits2.size(); i++)
-		{
-			bits1.set(bits1.size(), bits2.get(i));
-		}
-		int result = 0;
-		for(int i = 0; i < resultBits.size(); i++)
-		{
-			if(resultBits.get(i))
-			{
-				result += Math.pow(2, i);
-			}
-		}
-		return result;
-		*/
 	}
 }

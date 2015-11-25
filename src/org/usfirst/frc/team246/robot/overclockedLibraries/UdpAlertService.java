@@ -6,9 +6,9 @@
 package org.usfirst.frc.team246.robot.overclockedLibraries;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.DatagramSocket;
 import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 
 /**
  *
@@ -44,7 +44,6 @@ public class UdpAlertService {
     
     public static void sendAlert(AlertMessage alertMessage)
     {
-//    	if (!isInitialized) initialize();
     	if (!isInitialized) return;
         String xmlString = alertMessage.toXml();
         DatagramPacket packet = new DatagramPacket(xmlString.getBytes(), xmlString.length(), alertServerAddress, alertServicePort);

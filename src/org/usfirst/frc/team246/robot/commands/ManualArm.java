@@ -2,6 +2,7 @@ package org.usfirst.frc.team246.robot.commands;
 
 import org.usfirst.frc.team246.robot.Robot;
 import org.usfirst.frc.team246.robot.RobotMap;
+
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
@@ -34,20 +35,6 @@ public class ManualArm extends Command {
     	if(Robot.oi.operator.getLeftYAxis() == 0) w = Robot.arm.getTargetWrist();
     	else Robot.arm.currentSetpoint = null;
     	Robot.arm.set(s, e, w);
-    	
-    	
-    	/* 
-    	double x = Robot.arm.getVector().getX() - Robot.oi.operator.getRightXAxis() * RobotMap.ARM_X_MANUAL_SPEED;
-    	if(Robot.oi.operator.getRightXAxis() == 0) x = Robot.arm.getTargetVector().getX();
-    	else Robot.arm.currentSetpoint = null;
-    	double y = Robot.arm.getVector().getY() + Robot.oi.operator.getRightYAxis() * RobotMap.ARM_Y_MANUAL_SPEED;
-    	if(Robot.oi.operator.getRightYAxis() == 0) y = Robot.arm.getTargetVector().getY();
-    	else Robot.arm.currentSetpoint = null;
-    	double w = Robot.arm.getWrist() - Robot.oi.operator.getLeftYAxis() * RobotMap.ARM_WRIST_MANUAL_SPEED;
-    	if(Robot.oi.operator.getLeftYAxis() == 0) w = Robot.arm.getTargetWrist();
-    	else Robot.arm.currentSetpoint = null;
-    	Robot.arm.setCartesian(x, y, w);
-    	 */
     }
 
     // Make this return true when this Command no longer needs to run execute()
